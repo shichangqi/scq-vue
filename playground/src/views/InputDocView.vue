@@ -1,9 +1,9 @@
 <template>
   <section class="doc-block">
-    <h1>Input 输入框</h1>
-    <p class="lead">通过键盘输入字符内容，支持清空、密码显示和多行文本。</p>
+    <h1>{{ t('input.title') }}</h1>
+    <p class="lead">{{ t('input.lead') }}</p>
 
-    <h2>基础用法</h2>
+    <h2>{{ t('input.basic') }}</h2>
     <DocExample :code="basicCode" lang="html">
       <div class="demo-grid">
         <scq-input v-model="text" placeholder="请输入内容" clearable />
@@ -13,27 +13,27 @@
     </DocExample>
 
 
-    <h2>配置项</h2>
+    <h2>{{ t('input.props') }}</h2>
     <table class="prop-table">
       <thead>
         <tr>
-          <th>参数</th>
-          <th>说明</th>
-          <th>类型</th>
-          <th>默认值</th>
+          <th>{{ t('doc.param') }}</th>
+          <th>{{ t('doc.desc') }}</th>
+          <th>{{ t('doc.type') }}</th>
+          <th>{{ t('doc.default') }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>modelValue</td><td>绑定值</td><td>string | number</td><td>''</td></tr>
-        <tr><td>type</td><td>输入框类型</td><td>text | password | textarea | number | email | tel | url | search</td><td>text</td></tr>
-        <tr><td>size</td><td>输入框尺寸</td><td>large | default | small</td><td>default</td></tr>
-        <tr><td>placeholder</td><td>占位文本</td><td>string</td><td>''</td></tr>
-        <tr><td>disabled</td><td>禁用</td><td>boolean</td><td>false</td></tr>
-        <tr><td>readonly</td><td>只读</td><td>boolean</td><td>false</td></tr>
-        <tr><td>clearable</td><td>可清空</td><td>boolean</td><td>false</td></tr>
-        <tr><td>showPassword</td><td>显示密码切换</td><td>boolean</td><td>false</td></tr>
-        <tr><td>prefixIcon</td><td>前缀图标类名</td><td>string</td><td>''</td></tr>
-        <tr><td>suffixIcon</td><td>后缀图标类名</td><td>string</td><td>''</td></tr>
+        <tr><td>modelValue</td><td>{{ t('input.modelValue.desc') }}</td><td>string | number</td><td>''</td></tr>
+        <tr><td>type</td><td>{{ t('input.type.desc') }}</td><td>text | password | textarea | number | email | tel | url | search</td><td>text</td></tr>
+        <tr><td>size</td><td>{{ t('input.size.desc') }}</td><td>large | default | small</td><td>default</td></tr>
+        <tr><td>placeholder</td><td>{{ t('input.placeholder.desc') }}</td><td>string</td><td>''</td></tr>
+        <tr><td>disabled</td><td>{{ t('input.disabled.desc') }}</td><td>boolean</td><td>false</td></tr>
+        <tr><td>readonly</td><td>{{ t('input.readonly.desc') }}</td><td>boolean</td><td>false</td></tr>
+        <tr><td>clearable</td><td>{{ t('input.clearable.desc') }}</td><td>boolean</td><td>false</td></tr>
+        <tr><td>showPassword</td><td>{{ t('input.showPassword.desc') }}</td><td>boolean</td><td>false</td></tr>
+        <tr><td>prefixIcon</td><td>{{ t('input.prefixIcon.desc') }}</td><td>string</td><td>''</td></tr>
+        <tr><td>suffixIcon</td><td>{{ t('input.suffixIcon.desc') }}</td><td>string</td><td>''</td></tr>
       </tbody>
     </table>
   </section>
@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import { t } from '../i18n'
 
 const text = ref('')
 const password = ref('')

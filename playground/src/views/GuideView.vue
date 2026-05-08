@@ -1,28 +1,29 @@
 <template>
   <section class="doc-block">
-    <h1>快速开始</h1>
-    <p class="lead">scq-vue 是一个 Vue 3 组件库，目前提供 Button 和 Input。</p>
+    <h1>{{ t('guide.title') }}</h1>
+    <p class="lead">{{ t('guide.lead') }}</p>
 
-    <h2>安装</h2>
+    <h2>{{ t('guide.install') }}</h2>
     <DocExample :code="installCode" lang="bash" :show-demo="false" :default-expanded="true" :collapsible="false" />
 
-    <h2>全局引入</h2>
+    <h2>{{ t('guide.global') }}</h2>
     <DocExample :code="globalUseCode" lang="ts" :show-demo="false" :default-expanded="true" :collapsible="false" />
 
     <p class="lead">
-      全局引入后，请使用前缀标签：&lt;scq-button /&gt;、&lt;scq-input /&gt;。
+      {{ t('guide.global.tip') }}
     </p>
 
-    <h2>按需引入</h2>
+    <h2>{{ t('guide.ondemand') }}</h2>
     <DocExample :code="onDemandCode" lang="ts" :show-demo="false" :default-expanded="true" :collapsible="false" />
 
-    <h2>按需样式</h2>
+    <h2>{{ t('guide.style') }}</h2>
     <DocExample :code="styleCode" lang="ts" :show-demo="false" :default-expanded="true" :collapsible="false" />
   </section>
 </template>
 
 <script setup lang="ts">
 import DocExample from '../components/DocExample.vue'
+import { t } from '../i18n'
 
 const installCode = `pnpm add scq-vue`
 

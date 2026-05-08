@@ -11,7 +11,7 @@
       :aria-expanded="expanded ? 'true' : 'false'"
       @click="expanded = !expanded"
     >
-      {{ expanded ? '收起代码' : '查看代码' }}
+      {{ expanded ? t('example.collapse') : t('example.expand') }}
     </button>
 
     <div v-show="props.collapsible ? expanded : true" class="doc-example__code-wrap">
@@ -27,6 +27,7 @@ import xml from 'highlight.js/lib/languages/xml'
 import typescript from 'highlight.js/lib/languages/typescript'
 import javascript from 'highlight.js/lib/languages/javascript'
 import bash from 'highlight.js/lib/languages/bash'
+import { t } from '../i18n'
 
 hljs.registerLanguage('html', xml)
 hljs.registerLanguage('vue', xml)

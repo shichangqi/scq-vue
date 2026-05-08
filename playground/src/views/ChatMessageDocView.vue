@@ -1,9 +1,9 @@
 <template>
   <section class="doc-block">
-    <h1>ChatMessage 聊天气泡</h1>
-    <p class="lead">支持字符串、JSON、Markdown 渲染和代码高亮，并可区分 AI / 用户消息样式。</p>
+    <h1>{{ t('chat.title') }}</h1>
+    <p class="lead">{{ t('chat.lead') }}</p>
 
-    <h2>基础用法</h2>
+    <h2>{{ t('chat.basic') }}</h2>
     <DocExample :code="basicCode" lang="html">
       <div class="demo-grid">
         <scq-chat-message :message="plainText" role="ai" :timestamp="messageTime" />
@@ -11,14 +11,14 @@
       </div>
     </DocExample>
 
-    <h2>JSON 数据</h2>
+    <h2>{{ t('chat.json') }}</h2>
     <DocExample :code="jsonCode" lang="html">
       <div class="demo-grid">
         <scq-chat-message :message="jsonPayload" role="ai" content-type="json" :timestamp="messageTime" />
       </div>
     </DocExample>
 
-    <h2>Markdown + 代码高亮</h2>
+    <h2>{{ t('chat.markdown') }}</h2>
     <DocExample :code="markdownCode" lang="html">
       <div class="demo-grid">
         <scq-chat-message
@@ -31,7 +31,7 @@
       </div>
     </DocExample>
 
-    <h2>复杂 Markdown 表格</h2>
+    <h2>{{ t('chat.markdown.table') }}</h2>
     <DocExample :code="complexMarkdownCode" lang="html">
       <div class="demo-grid">
         <scq-chat-message
@@ -44,7 +44,7 @@
       </div>
     </DocExample>
 
-    <h2>完整使用示例</h2>
+    <h2>{{ t('chat.full') }}</h2>
     <DocExample :code="fullExampleCode" lang="vue" :default-expanded="true">
       <div class="demo-grid">
         <scq-chat-message
@@ -58,23 +58,23 @@
       </div>
     </DocExample>
 
-    <h2>配置项</h2>
+    <h2>{{ t('chat.props') }}</h2>
     <table class="prop-table">
       <thead>
         <tr>
-          <th>参数</th>
-          <th>说明</th>
-          <th>类型</th>
-          <th>默认值</th>
+          <th>{{ t('doc.param') }}</th>
+          <th>{{ t('doc.desc') }}</th>
+          <th>{{ t('doc.type') }}</th>
+          <th>{{ t('doc.default') }}</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td>message</td><td>接口返回的消息内容</td><td>unknown</td><td>-</td></tr>
-        <tr><td>role</td><td>消息发起方</td><td>ai | user</td><td>ai</td></tr>
-        <tr><td>contentType</td><td>内容类型</td><td>auto | text | markdown | json</td><td>auto</td></tr>
-        <tr><td>showTime</td><td>是否显示时间</td><td>boolean</td><td>true</td></tr>
-        <tr><td>timestamp</td><td>消息时间</td><td>string | number | Date | null</td><td>null</td></tr>
-        <tr><td>timeFormatter</td><td>自定义时间格式化函数</td><td>(value) =&gt; string</td><td>-</td></tr>
+        <tr><td>message</td><td>{{ t('chat.message.desc') }}</td><td>unknown</td><td>-</td></tr>
+        <tr><td>role</td><td>{{ t('chat.role.desc') }}</td><td>ai | user</td><td>ai</td></tr>
+        <tr><td>contentType</td><td>{{ t('chat.contentType.desc') }}</td><td>auto | text | markdown | json</td><td>auto</td></tr>
+        <tr><td>showTime</td><td>{{ t('chat.showTime.desc') }}</td><td>boolean</td><td>true</td></tr>
+        <tr><td>timestamp</td><td>{{ t('chat.timestamp.desc') }}</td><td>string | number | Date | null</td><td>null</td></tr>
+        <tr><td>timeFormatter</td><td>{{ t('chat.timeFormatter.desc') }}</td><td>(value) =&gt; string</td><td>-</td></tr>
       </tbody>
     </table>
   </section>
@@ -83,6 +83,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import { t } from '../i18n'
 
 const plainText = '这是普通字符串消息，适合展示接口直接返回的文本。'
 
