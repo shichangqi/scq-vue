@@ -10,4 +10,4 @@ A lightweight Vue 3 component library with Button, Input, and ChatMessage.
 
 See full usage examples, props, and interaction demos here:
 
-https://shichangqi.github.io/scq-vue/
+[🔗 点击查看在线示例 / View Online Demo](https://shichangqi.github.io/scq-vue/)
