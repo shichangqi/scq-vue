@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "./dist/types",
+    "noEmit": false,
+    "skipLibCheck": true
+  },
+  "include": ["src/index.ts", "src/components/**/*.ts", "src/**/*.vue", "src/**/*.d.ts"]
+}

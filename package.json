@@ -1,0 +1,66 @@
+{
+  "name": "scq-vue",
+  "version": "1.0.9",
+  "description": "A Vue 3 component library made by Chauncy",
+  "main": "./dist/scq-vue.umd.js",
+  "module": "./dist/scq-vue.es.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "styles"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/scq-vue.es.js",
+      "require": "./dist/scq-vue.umd.js"
+    },
+    "./style.css": "./dist/style.css",
+    "./styles/index.css": "./styles/index.css",
+    "./styles/button.css": "./styles/button.css",
+    "./styles/input.css": "./styles/input.css",
+    "./styles/chat-message.css": "./styles/chat-message.css"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "pnpm run clean && vite build && vue-tsc -p tsconfig.build.json",
+    "dev": "vite",
+    "dev:play": "vite --config playground/vite.config.mjs",
+    "build:play": "vite build --config playground/vite.config.mjs",
+    "prepublishOnly": "pnpm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "component-library",
+    "ui",
+    "button",
+    "input",
+    "scq-vue"
+  ],
+  "author": "Chauncy",
+  "license": "ISC",
+  "packageManager": "pnpm@10.33.3",
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.1.0"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "rimraf": "^6.0.1",
+    "sass": "^1.99.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21",
+    "vue": "^3.5.34",
+    "vue-router": "^4.6.4",
+    "vue-tsc": "^2.2.12"
+  }
+}

@@ -1,0 +1,87 @@
+.scq-input {
+  display: inline-flex;
+  width: 100%;
+  color: #303133;
+}
+
+.scq-input__wrapper {
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.scq-input.is-focus .scq-input__wrapper {
+  border-color: #409eff;
+}
+
+.scq-input.is-disabled .scq-input__wrapper {
+  background: #f5f7fa;
+  cursor: not-allowed;
+}
+
+.scq-input__inner {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.scq-textarea__inner {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.scq-input--large .scq-input__inner {
+  padding: 10px 14px;
+  font-size: 16px;
+}
+
+.scq-input--small .scq-input__inner {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.scq-input__prefix,
+.scq-input__suffix,
+.scq-input__clear,
+.scq-input__password {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #909399;
+  padding: 0 8px;
+  user-select: none;
+}
+
+.scq-input__clear,
+.scq-input__password {
+  cursor: pointer;
+}
+
+.scq-input__group-prepend,
+.scq-input__group-append {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid #dcdfe6;
+  background: #f5f7fa;
+  color: #606266;
+  font-size: 14px;
+}
+
+.scq-input__group-prepend {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.scq-input__group-append {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
