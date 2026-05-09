@@ -4,7 +4,7 @@
     <p class="lead">{{ t('input.lead') }}</p>
 
     <h2>{{ t('input.basic') }}</h2>
-    <DocExample :code="basicCode" lang="html">
+    <DocExample :code="basicCode" lang="vue">
       <div class="demo-grid">
         <scq-input v-model="text" placeholder="请输入内容" clearable />
         <scq-input v-model="password" type="password" show-password placeholder="请输入密码" />
@@ -48,8 +48,20 @@ const text = ref('')
 const password = ref('')
 const desc = ref('')
 
-const basicCode = `<scq-input v-model="text" placeholder="请输入内容" clearable />
-<scq-input v-model="password" type="password" show-password placeholder="请输入密码" />
-<scq-input v-model="desc" type="textarea" placeholder="请输入多行内容" />`
+const basicCode = `<template>
+  <div class="demo-grid">
+    <scq-input v-model="text" placeholder="请输入内容" clearable />
+    <scq-input v-model="password" type="password" show-password placeholder="请输入密码" />
+    <scq-input v-model="desc" type="textarea" placeholder="请输入多行内容" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const text = ref('')
+const password = ref('')
+const desc = ref('')
+<\/script>`
 
 </script>

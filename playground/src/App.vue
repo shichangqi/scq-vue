@@ -39,6 +39,8 @@
       <RouterLink class="menu-item" to="/components/button">{{ t('app.button') }}</RouterLink>
       <RouterLink class="menu-item" to="/components/input">{{ t('app.input') }}</RouterLink>
       <RouterLink class="menu-item" to="/components/chat-message">{{ t('app.chatMessage') }}</RouterLink>
+      <RouterLink class="menu-item" to="/components/dialog">{{ t('app.dialog') }}</RouterLink>
+      <RouterLink class="menu-item" to="/components/modal">{{ t('app.modal') }}</RouterLink>
     </aside>
     <main class="docs-main">
       <RouterView />

@@ -1,0 +1,150 @@
+.scq-dialog__overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.46);
+  padding: 20px;
+}
+
+.scq-dialog {
+  position: relative;
+  width: 520px;
+  max-height: calc(100vh - 40px);
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.scq-dialog.is-fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-height: 100vh;
+  border-radius: 0;
+}
+
+.scq-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 54px;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.scq-dialog__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scq-dialog__type-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.scq-dialog__type-icon.is-info,
+.scq-dialog__type-icon.is-confirm {
+  background: #ecf5ff;
+  color: #409eff;
+}
+
+.scq-dialog__type-icon.is-success {
+  background: #f0f9eb;
+  color: #67c23a;
+}
+
+.scq-dialog__type-icon.is-warning {
+  background: #fdf6ec;
+  color: #e6a23c;
+}
+
+.scq-dialog__type-icon.is-error {
+  background: #fef0f0;
+  color: #f56c6c;
+}
+
+.scq-dialog__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.scq-dialog__close {
+  border: none;
+  background: transparent;
+  color: #909399;
+  font-size: 26px;
+  line-height: 1;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.scq-dialog__close:hover {
+  color: #606266;
+  background: #f5f7fa;
+}
+
+.scq-dialog__body {
+  padding: 18px;
+  color: #606266;
+  line-height: 1.65;
+  overflow: auto;
+}
+
+.scq-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 18px 18px;
+  border-top: 1px solid #ebeef5;
+}
+
+.scq-dialog-fade-enter-active,
+.scq-dialog-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.scq-dialog-fade-enter-active .scq-dialog,
+.scq-dialog-fade-leave-active .scq-dialog {
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+.scq-dialog-fade-enter-from,
+.scq-dialog-fade-leave-to {
+  opacity: 0;
+}
+
+.scq-dialog-fade-enter-from .scq-dialog,
+.scq-dialog-fade-leave-to .scq-dialog {
+  transform: translateY(-12px);
+  opacity: 0.4;
+}
+
+@media (max-width: 768px) {
+  .scq-dialog__overlay {
+    padding: 10px;
+  }
+
+  .scq-dialog {
+    max-height: calc(100vh - 20px);
+  }
+
+  .scq-dialog__title {
+    font-size: 16px;
+  }
+}

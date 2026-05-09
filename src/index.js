@@ -2,12 +2,16 @@
 import Button from './components/Button'
 import Input from './components/Input'
 import ChatMessage from './components/ChatMessage'
+import Dialog from './components/Dialog'
+import Modal from './components/Modal'
 
 // 组件列表
 const components = [
   Button,
   Input,
-  ChatMessage
+  ChatMessage,
+  Dialog,
+  Modal
 ]
 
 const getPrefixedName = (name) => {
@@ -30,6 +34,8 @@ if (typeof window !== 'undefined' && window.Vue) {
 const ScqButton = Button
 const ScqInput = Input
 const ScqChatMessage = ChatMessage
+const ScqDialog = Dialog
+const ScqModal = Modal
 
 // 导出install方法和所有组件
 export default {
@@ -37,9 +43,13 @@ export default {
   Button,
   Input,
   ChatMessage,
+  Dialog,
+  Modal,
   ScqButton,
   ScqInput,
-  ScqChatMessage
+  ScqChatMessage,
+  ScqDialog,
+  ScqModal
 }
 
 // 按需导出各个组件
@@ -47,7 +57,11 @@ export {
   Button,
   Input,
   ChatMessage,
+  Dialog,
+  Modal,
   ScqButton,
   ScqInput,
-  ScqChatMessage
+  ScqChatMessage,
+  ScqDialog,
+  ScqModal
 }

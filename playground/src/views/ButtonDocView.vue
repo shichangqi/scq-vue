@@ -4,7 +4,7 @@
     <p class="lead">{{ t('button.lead') }}</p>
 
     <h2>{{ t('button.basic') }}</h2>
-    <DocExample :code="basicCode" lang="html">
+    <DocExample :code="basicCode" lang="vue">
       <div class="demo-panel">
         <scq-button>Default</scq-button>
         <scq-button type="primary">Primary</scq-button>
@@ -16,7 +16,7 @@
     </DocExample>
 
     <h2>{{ t('button.plain') }}</h2>
-    <DocExample :code="plainCode" lang="html">
+    <DocExample :code="plainCode" lang="vue">
       <div class="demo-panel">
         <scq-button plain type="primary">Primary Plain</scq-button>
         <scq-button plain type="success">Success Plain</scq-button>
@@ -27,7 +27,7 @@
     </DocExample>
 
     <h2>{{ t('button.state') }}</h2>
-    <DocExample :code="stateCode" lang="html">
+    <DocExample :code="stateCode" lang="vue">
       <div class="demo-panel">
         <scq-button round type="success">Round</scq-button>
         <scq-button circle type="danger">+</scq-button>
@@ -70,23 +70,44 @@
 import DocExample from '../components/DocExample.vue'
 import { t } from '../i18n'
 
-const basicCode = `<scq-button>Default</scq-button>
-<scq-button type="primary">Primary</scq-button>
-<scq-button type="success">Success</scq-button>
-<scq-button type="warning">Warning</scq-button>
-<scq-button type="info">Info</scq-button>
-<scq-button type="danger">Danger</scq-button>`
+const basicCode = `<template>
+  <div class="demo-panel">
+    <scq-button>Default</scq-button>
+    <scq-button type="primary">Primary</scq-button>
+    <scq-button type="success">Success</scq-button>
+    <scq-button type="warning">Warning</scq-button>
+    <scq-button type="info">Info</scq-button>
+    <scq-button type="danger">Danger</scq-button>
+  </div>
+</template>
 
-const plainCode = `<scq-button plain type="primary">Primary Plain</scq-button>
-<scq-button plain type="success">Success Plain</scq-button>
-<scq-button plain type="warning">Warning Plain</scq-button>
-<scq-button plain type="info">Info Plain</scq-button>
-<scq-button plain type="danger">Danger Plain</scq-button>`
+<script setup lang="ts">
+<\/script>`
 
-const stateCode = `<scq-button round type="success">Round</scq-button>
-<scq-button circle type="danger">+</scq-button>
-<scq-button loading type="primary">Loading</scq-button>
-<scq-button disabled>Disabled</scq-button>
-<scq-button text>Text</scq-button>
-<scq-button link>Link</scq-button>`
+const plainCode = `<template>
+  <div class="demo-panel">
+    <scq-button plain type="primary">Primary Plain</scq-button>
+    <scq-button plain type="success">Success Plain</scq-button>
+    <scq-button plain type="warning">Warning Plain</scq-button>
+    <scq-button plain type="info">Info Plain</scq-button>
+    <scq-button plain type="danger">Danger Plain</scq-button>
+  </div>
+</template>
+
+<script setup lang="ts">
+<\/script>`
+
+const stateCode = `<template>
+  <div class="demo-panel">
+    <scq-button round type="success">Round</scq-button>
+    <scq-button circle type="danger">+</scq-button>
+    <scq-button loading type="primary">Loading</scq-button>
+    <scq-button disabled>Disabled</scq-button>
+    <scq-button text>Text</scq-button>
+    <scq-button link>Link</scq-button>
+  </div>
+</template>
+
+<script setup lang="ts">
+<\/script>`
 </script>

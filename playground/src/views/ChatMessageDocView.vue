@@ -4,7 +4,7 @@
     <p class="lead">{{ t('chat.lead') }}</p>
 
     <h2>{{ t('chat.basic') }}</h2>
-    <DocExample :code="basicCode" lang="html">
+    <DocExample :code="basicCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message :message="plainText" role="ai" :timestamp="messageTime" />
         <scq-chat-message :message="plainText" role="user" :show-time="false" />
@@ -12,14 +12,14 @@
     </DocExample>
 
     <h2>{{ t('chat.json') }}</h2>
-    <DocExample :code="jsonCode" lang="html">
+    <DocExample :code="jsonCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message :message="jsonPayload" role="ai" content-type="json" :timestamp="messageTime" />
       </div>
     </DocExample>
 
     <h2>{{ t('chat.markdown') }}</h2>
-    <DocExample :code="markdownCode" lang="html">
+    <DocExample :code="markdownCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
           :message="markdownPayload"
@@ -32,7 +32,7 @@
     </DocExample>
 
     <h2>{{ t('chat.markdown.table') }}</h2>
-    <DocExample :code="complexMarkdownCode" lang="html">
+    <DocExample :code="complexMarkdownCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
           :message="vueComparePayload"
@@ -87,19 +87,27 @@ import { t } from '../i18n'
 
 const plainText = '这是普通字符串消息，适合展示接口直接返回的文本。'
 
-const basicCode = `\u003Cscript setup lang="ts">
-const aiMessage = '这是普通字符串消息，适合展示接口直接返回的文本。'
-const userMessage = '这是用户输入的一条消息。'
+const basicCode = `<template>
+  <scq-chat-message :message="plainText" role="ai" :timestamp="messageTime" />
+  <scq-chat-message :message="plainText" role="user" :show-time="false" />
+</template>
+
+<script setup lang="ts">
+const plainText = '这是普通字符串消息，适合展示接口直接返回的文本。'
 const messageTime = Date.now()
-\u003C/script>
+<\/script>`
 
-\u003Ctemplate>
-  \u003Cscq-chat-message :message="aiMessage" role="ai" :timestamp="messageTime" />
-  \u003Cscq-chat-message :message="userMessage" role="user" :show-time="false" />
-\u003C/template>`
+const jsonCode = `<template>
+  <scq-chat-message
+    :message="jsonPayload"
+    role="ai"
+    content-type="json"
+    :timestamp="messageTime"
+  />
+</template>
 
-const jsonCode = `\u003Cscript setup lang="ts">
-const jsonMessage = {
+<script setup lang="ts">
+const jsonPayload = {
   id: 'msg_001',
   status: 'ok',
   data: {
@@ -109,19 +117,20 @@ const jsonMessage = {
 }
 
 const messageTime = Date.now()
-\u003C/script>
+<\/script>`
 
-\u003Ctemplate>
-  \u003Cscq-chat-message
-    :message="jsonMessage"
+const markdownCode = `<template>
+  <scq-chat-message
+    :message="markdownPayload"
     role="ai"
-    content-type="json"
+    content-type="markdown"
     :timestamp="messageTime"
+    :time-formatter="formatTime"
   />
-\u003C/template>`
+</template>
 
-const markdownCode = `\u003Cscript setup lang="ts">
-const markdownMessage = '# 接口返回 Markdown\\n\\n- 第一项\\n- 第二项\\n- 第三项'
+<script setup lang="ts">
+const markdownPayload = '# 接口返回 Markdown\\n\\n- 第一项\\n- 第二项\\n- 第三项'
 const messageTime = Date.now()
 
 const formatTime = (value: string | number | Date | null | undefined): string => {
@@ -130,20 +139,20 @@ const formatTime = (value: string | number | Date | null | undefined): string =>
   if (Number.isNaN(date.getTime())) return String(value)
   return '消息时间: ' + date.toLocaleString('zh-CN', { hour12: false })
 }
-\u003C/script>
+<\/script>`
 
-\u003Ctemplate>
-  \u003Cscq-chat-message
-    :message="markdownMessage"
+const complexMarkdownCode = `<template>
+  <scq-chat-message
+    :message="vueComparePayload"
     role="ai"
     content-type="markdown"
     :timestamp="messageTime"
     :time-formatter="formatTime"
   />
-\u003C/template>`
+</template>
 
-const complexMarkdownCode = `\u003Cscript setup lang="ts">
-const tableMessage = '| 维度 | Vue 2 | Vue 3 |\\n|---|---|---|\\n| 响应式 | defineProperty | Proxy |\\n| 组合能力 | Mixin 为主 | Composition API |'
+<script setup lang="ts">
+const vueComparePayload = '| 对比维度 | Vue 2 | Vue 3 |\\n|---|---|---|\\n| 响应式 | defineProperty | Proxy |\\n| 组合能力 | Mixin 为主 | Composition API |'
 const messageTime = Date.now()
 
 const formatTime = (value: string | number | Date | null | undefined): string => {
@@ -152,20 +161,10 @@ const formatTime = (value: string | number | Date | null | undefined): string =>
   if (Number.isNaN(date.getTime())) return String(value)
   return '消息时间: ' + date.toLocaleString('zh-CN', { hour12: false })
 }
-\u003C/script>
+<\/script>`
 
-\u003Ctemplate>
-  \u003Cscq-chat-message
-    :message="tableMessage"
-    role="ai"
-    content-type="markdown"
-    :timestamp="messageTime"
-    :time-formatter="formatTime"
-  />
-\u003C/template>`
-
-const fullExampleCode = `\u003Ctemplate>
-  \u003Cscq-chat-message
+const fullExampleCode = `<template>
+  <scq-chat-message
     :message="apiData"
     role="ai"
     content-type="json"
@@ -173,9 +172,9 @@ const fullExampleCode = `\u003Ctemplate>
     :timestamp="currentTime"
     :time-formatter="formatTime"
   />
-\u003C/template>
+</template>
 
-\u003Cscript setup lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue'
 
 const apiData = {
@@ -191,7 +190,7 @@ const formatTime = (value: string | number | Date | null | undefined): string =>
   if (Number.isNaN(date.getTime())) return String(value)
   return \`消息时间: \${date.toLocaleString('zh-CN', { hour12: false })}\`
 }
-\u003C/script>`
+<\/script>`
 
 const apiData = {
   answer: '下面是一个示例函数',
