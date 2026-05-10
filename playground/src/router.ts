@@ -5,6 +5,7 @@ import InputDocView from './views/InputDocView.vue'
 import ChatMessageDocView from './views/ChatMessageDocView.vue'
 import DialogDocView from './views/DialogDocView.vue'
 import ModalDocView from './views/ModalDocView.vue'
+import PopupDocView from './views/PopupDocView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -16,6 +17,7 @@ const router = createRouter({
     { path: '/components/chat-message', name: 'chat-message', component: ChatMessageDocView },
     { path: '/components/dialog', name: 'dialog', component: DialogDocView },
     { path: '/components/modal', name: 'modal', component: ModalDocView },
+    { path: '/components/popup', name: 'popup', component: PopupDocView },
   ],
 })
 

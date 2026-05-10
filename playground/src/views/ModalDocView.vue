@@ -13,9 +13,9 @@
         <p class="modal-lab__desc">{{ t('modal.slotDesc') }}</p>
         <DocExample :code="slotCode" lang="vue" :default-expanded="true" :collapsible="false" :show-demo="false" />
 
-        <h2>{{ t('modal.sec.template.custom') }}</h2>
-        <p class="modal-lab__desc">{{ t('modal.customCardDesc') }}</p>
-        <DocExample :code="customCode" lang="vue" :default-expanded="true" :collapsible="false" :show-demo="false" />
+        <h2>{{ t('modal.sec.template.confirm') }}</h2>
+        <p class="modal-lab__desc">{{ t('modal.confirmDesc') }}</p>
+        <DocExample :code="confirmCode" lang="vue" :default-expanded="true" :collapsible="false" :show-demo="false" />
 
         <h2>{{ t('modal.sec.api.main') }}</h2>
         <p class="modal-lab__desc">{{ t('modal.phoneApiDesc') }}</p>
@@ -46,12 +46,12 @@
                         <span>{{ t('modal.sec.template.footerSlot') }}</span>
                         <span class="phone-demo__example-arrow">›</span>
                       </button>
-                      <button type="button" class="phone-demo__example-item" @click="openCustomDemo">
-                        <span>{{ t('modal.sec.template.custom') }}</span>
+                      <button type="button" class="phone-demo__example-item" @click="openConfirmDemo">
+                        <span>{{ t('modal.sec.template.confirm') }}</span>
                         <span class="phone-demo__example-arrow">›</span>
                       </button>
                       <button type="button" class="phone-demo__example-item" @click="openApiInfoDemo">
-                        <span>Modal.open (info)</span>
+                        <span>Modal.info</span>
                         <span class="phone-demo__example-arrow">›</span>
                       </button>
                       <button type="button" class="phone-demo__example-item" @click="openApiConfirmDemo">
@@ -100,17 +100,16 @@
     </scq-modal>
 
     <scq-modal
-      v-model="customVisible"
-      type="custom"
-      :show-close="true"
-      :show-footer="false"
+      v-model="confirmVisible"
+      :title="t('modal.confirmTitle')"
+      type="confirm"
+      :show-close="false"
+      :show-cancel-button="true"
+      :confirm-button-text="t('modal.btn.confirm')"
+      :cancel-button-text="t('modal.btn.cancel')"
       :teleport="previewTeleport"
     >
-      <div class="custom-card">
-        <img class="custom-card__image" :src="customImage" alt="Modal custom preview" />
-        <strong>{{ t('modal.customCardTitle') }}</strong>
-        <p>{{ t('modal.customCardDesc') }}</p>
-      </div>
+      <p>{{ t('modal.confirmDesc') }}</p>
     </scq-modal>
 
     <h2>{{ t('modal.props') }}</h2>
@@ -125,7 +124,7 @@
       </thead>
       <tbody>
         <tr><td>v-model</td><td>{{ t('modal.model.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>type</td><td>{{ t('modal.type.desc') }}</td><td>info | confirm | custom</td><td>info</td></tr>
+        <tr><td>type</td><td>{{ t('modal.type.desc') }}</td><td>info | confirm</td><td>info</td></tr>
         <tr><td>showClose</td><td>{{ t('modal.showClose.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>showFooter</td><td>{{ t('modal.showFooter.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>showCancelButton</td><td>{{ t('modal.showCancel.desc') }}</td><td>boolean</td><td>false</td></tr>
@@ -146,7 +145,7 @@ import { Modal } from 'scq-vue'
 
 const basicVisible = ref(false)
 const slotVisible = ref(false)
-const customVisible = ref(false)
+const confirmVisible = ref(false)
 const previewTeleport = ref<boolean | string>(false)
 
 onMounted(() => {
@@ -177,7 +176,7 @@ const basicVisible = ref(false)
 const slotCode = `<template>
   <scq-button type="primary" @click="slotVisible = true">打开自定义底部 Modal</scq-button>
 
-  <scq-modal v-model="slotVisible" title="自定义内容" :show-close="true" teleport="#phone-screen">
+  <scq-modal v-model="slotVisible" title="自定义内容和底部" :show-close="true" teleport="#phone-screen">
     <div class="modal-custom-body">
       <h4>发布前检查项</h4>
       <p>默认插槽可以放任意内容，footer 插槽支持 cancel / confirm。</p>
@@ -200,40 +199,32 @@ import { ref } from 'vue'
 const slotVisible = ref(false)
 <\/script>`
 
-const customCode = `<template>
-  <scq-button type="primary" @click="customVisible = true">打开自定义内容 Modal</scq-button>
+const confirmCode = `<template>
+  <scq-button type="primary" @click="confirmVisible = true">打开确认 Modal</scq-button>
 
   <scq-modal
-    v-model="customVisible"
-    type="custom"
-    :show-close="true"
-    :show-footer="false"
+    v-model="confirmVisible"
+    title="确认操作"
+    type="confirm"
+    :show-close="false"
+    :show-cancel-button="true"
+    cancel-button-text="取消"
+    confirm-button-text="确定"
     teleport="#phone-screen"
   >
-    <div class="custom-card">
-      <img
-        class="custom-card__image"
-        :src="customImage"
-        alt="Modal custom preview"
-      />
-      <strong>完全自定义</strong>
-      <p>custom 类型适合没有固定标题和图标的内容展示。</p>
-    </div>
+    <p>用于确认关键操作，保留取消与确认按钮。</p>
   </scq-modal>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const customVisible = ref(false)
-const customImage = 'https://images.unsplash.com/photo-1526779259212-939e64788e3c?auto=format&fit=crop&w=900&q=80'
+const confirmVisible = ref(false)
 <\/script>`
-
-const customImage = 'https://images.unsplash.com/photo-1526779259212-939e64788e3c?auto=format&fit=crop&w=900&q=80'
 
 const apiCode = `<template>
   <div class="demo-panel">
-    <scq-button @click="openApi('info')">Modal.open (info)</scq-button>
+    <scq-button @click="openApi('info')">Modal.info</scq-button>
     <scq-button type="primary" @click="openApi('confirm')">Modal.confirm</scq-button>
   </div>
 </template>
@@ -247,12 +238,12 @@ const titleMap = {
 }
 
 const messageMap = {
-  info: '这是通过 Modal.open 打开的移动端提示框。',
+  info: '这是通过 Modal.info 打开的移动端提示框。',
   confirm: '按钮文案不为空时，底部按钮会自动显示。',
 }
 
 const openApi = (type: 'info' | 'confirm') => {
-  const api = type === 'confirm' ? Modal.confirm : Modal.open
+  const api = type === 'confirm' ? Modal.confirm : Modal.info
 
   api({
     type,
@@ -270,11 +261,11 @@ const openApi = (type: 'info' | 'confirm') => {
 const closeAllTemplateModals = () => {
   basicVisible.value = false
   slotVisible.value = false
-  customVisible.value = false
+  confirmVisible.value = false
 }
 
 const openApi = (type: 'info' | 'confirm') => {
-  const api = type === 'confirm' ? Modal.confirm : Modal.open
+  const api = type === 'confirm' ? Modal.confirm : Modal.info
 
   api({
     type,
@@ -288,7 +279,7 @@ const openApi = (type: 'info' | 'confirm') => {
   })
 }
 
-const runTemplateDemo = (key: 'basic' | 'slot' | 'custom') => {
+const runTemplateDemo = (key: 'basic' | 'slot' | 'confirm') => {
   closeAllTemplateModals()
   Modal.destroyAll()
 
@@ -302,12 +293,12 @@ const runTemplateDemo = (key: 'basic' | 'slot' | 'custom') => {
     return
   }
 
-  customVisible.value = true
+  confirmVisible.value = true
 }
 
 const openBasicDemo = () => runTemplateDemo('basic')
 const openSlotDemo = () => runTemplateDemo('slot')
-const openCustomDemo = () => runTemplateDemo('custom')
+const openConfirmDemo = () => runTemplateDemo('confirm')
 
 const openApiInfoDemo = () => {
   closeAllTemplateModals()
@@ -478,36 +469,20 @@ const openApiConfirmDemo = () => {
   z-index: 2;
 }
 
-.modal-custom-body,
-.custom-card {
+.modal-custom-body {
   border: 1px solid rgba(210, 214, 220, 0.9);
   border-radius: 12px;
   padding: 14px;
   background: rgba(255, 255, 255, 0.92);
 }
 
-.custom-card {
-  overflow: hidden;
-}
-
-.custom-card__image {
-  width: 100%;
-  height: 132px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  display: block;
-}
-
-.modal-custom-body h4,
-.custom-card strong {
+.modal-custom-body h4 {
   display: block;
   margin-bottom: 8px;
   color: #0f172a;
 }
 
-.modal-custom-body p,
-.custom-card p {
+.modal-custom-body p {
   margin: 0 0 8px;
   color: #475569;
 }

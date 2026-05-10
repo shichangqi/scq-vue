@@ -8,6 +8,10 @@
   padding: 20px;
 }
 
+.scq-dialog__overlay.is-fullscreen {
+  padding: 0;
+}
+
 .scq-dialog {
   position: relative;
   width: 520px;

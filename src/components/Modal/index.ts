@@ -5,7 +5,6 @@ import { modal, type ModalApiOptions, type ModalInstance } from './modal-method'
 type SFCWithInstall<T> = T & Plugin
 
 type ModalWithApi = SFCWithInstall<typeof Modal> & {
-  open: typeof modal.open
   setGlobalZIndex: typeof modal.setGlobalZIndex
   destroyAll: typeof modal.destroyAll
   info: typeof modal.info

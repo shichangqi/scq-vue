@@ -104,10 +104,9 @@ const setModalZIndexSeed = (value: number): void => {
   modalZIndexSeed = Math.max(0, Math.floor(value))
 }
 
-const defaultTitleMap: Record<NonNullable<ModalType>, string> = {
+const defaultTitleMap: Record<ModalType, string> = {
   info: '提示',
   confirm: '确认',
-  custom: '',
 }
 
 const resolveSlotContent = (state: ModalApiOptions): VNodeChild => {
@@ -395,7 +394,6 @@ export const openModal: ModalApiMethod = (options) => {
 }
 
 export const modal = Object.assign(openModal, {
-  open: openModal,
   setGlobalZIndex: (value: number) => setModalZIndexSeed(value),
   destroyAll: () => {
     openedModalSet.forEach((item) => {
@@ -409,7 +407,6 @@ export const modal = Object.assign(openModal, {
       type: 'confirm',
     }),
 }) as ModalApiMethod & {
-  open: ModalApiMethod
   setGlobalZIndex: (value: number) => void
   destroyAll: () => void
   info: ModalApiMethod

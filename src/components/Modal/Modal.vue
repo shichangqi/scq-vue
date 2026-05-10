@@ -92,7 +92,7 @@ defineOptions({
   name: 'Modal',
 })
 
-export type ModalType = 'info' | 'confirm' | 'custom'
+export type ModalType = 'info' | 'confirm'
 export type ModalCloseReason = 'cancel' | 'confirm' | 'close-icon' | 'mask' | 'esc' | 'api'
 type BeforeCloseHandler = (reason: ModalCloseReason) => boolean | void | Promise<boolean | void>
 type ModalOriginPoint = { x: number; y: number }

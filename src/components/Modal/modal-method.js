@@ -65,7 +65,6 @@ const setModalZIndexSeed = (value) => {
 const defaultTitleMap = {
   info: '提示',
   confirm: '确认',
-  custom: '',
 }
 
 const resolveSlotContent = (state) => {
@@ -354,7 +353,6 @@ export const openModal = (options) => {
 }
 
 export const modal = Object.assign(openModal, {
-  open: openModal,
   setGlobalZIndex: (value) => setModalZIndexSeed(value),
   destroyAll: () => {
     openedModalSet.forEach((item) => {

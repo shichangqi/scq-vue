@@ -8,6 +8,7 @@
       <div
         v-if="visible"
         class="scq-dialog__overlay"
+        :class="{ 'is-fullscreen': fullscreen }"
         :style="overlayStyle"
         @click.self="handleOverlayClick"
       >
@@ -443,6 +444,10 @@ onUnmounted(() => {
   justify-content: center;
   background: rgba(0, 0, 0, 0.46);
   padding: 20px;
+}
+
+.scq-dialog__overlay.is-fullscreen {
+  padding: 0;
 }
 
 .scq-dialog {

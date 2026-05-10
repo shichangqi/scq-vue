@@ -4,6 +4,7 @@ import Input from './components/Input'
 import ChatMessage from './components/ChatMessage'
 import Dialog from './components/Dialog'
 import Modal from './components/Modal'
+import Popup from './components/Popup'
 
 // 组件列表
 const components = [
@@ -11,7 +12,8 @@ const components = [
   Input,
   ChatMessage,
   Dialog,
-  Modal
+  Modal,
+  Popup
 ]
 
 const getPrefixedName = (name) => {
@@ -36,6 +38,7 @@ const ScqInput = Input
 const ScqChatMessage = ChatMessage
 const ScqDialog = Dialog
 const ScqModal = Modal
+const ScqPopup = Popup
 
 // 导出install方法和所有组件
 export default {
@@ -45,11 +48,13 @@ export default {
   ChatMessage,
   Dialog,
   Modal,
+  Popup,
   ScqButton,
   ScqInput,
   ScqChatMessage,
   ScqDialog,
-  ScqModal
+  ScqModal,
+  ScqPopup
 }
 
 // 按需导出各个组件
@@ -59,9 +64,11 @@ export {
   ChatMessage,
   Dialog,
   Modal,
+  Popup,
   ScqButton,
   ScqInput,
   ScqChatMessage,
   ScqDialog,
-  ScqModal
+  ScqModal,
+  ScqPopup
 }
