@@ -5,8 +5,10 @@ import ChatMessage from './components/ChatMessage'
 import Dialog from './components/Dialog/index'
 import Modal from './components/Modal/index'
 import Popup from './components/Popup/index'
+import Radio, { RadioGroup } from './components/Radio'
+import Checkbox, { CheckboxGroup } from './components/Checkbox'
 
-const components = [Button, Input, ChatMessage, Dialog, Modal, Popup]
+const components = [Button, Input, ChatMessage, Dialog, Modal, Popup, Radio, RadioGroup, Checkbox, CheckboxGroup]
 
 const getPrefixedName = (name: string): string => {
   return `scq-${name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()}`
@@ -31,9 +33,37 @@ const ScqChatMessage = ChatMessage
 const ScqDialog = Dialog
 const ScqModal = Modal
 const ScqPopup = Popup
+const ScqRadio = Radio
+const ScqRadioGroup = RadioGroup
+const ScqCheckbox = Checkbox
+const ScqCheckboxGroup = CheckboxGroup
 
 export default ScqVue
-export { install, Button, Input, ChatMessage, Dialog, Modal, Popup, ScqButton, ScqInput, ScqChatMessage, ScqDialog, ScqModal, ScqPopup }
+export {
+  install,
+  Button,
+  Input,
+  ChatMessage,
+  Dialog,
+  Modal,
+  Popup,
+  Radio,
+  RadioGroup,
+  Checkbox,
+  CheckboxGroup,
+  ScqButton,
+  ScqInput,
+  ScqChatMessage,
+  ScqDialog,
+  ScqModal,
+  ScqPopup,
+  ScqRadio,
+  ScqRadioGroup,
+  ScqCheckbox,
+  ScqCheckboxGroup,
+}
 export type { DialogApiOptions, DialogInstance } from './components/Dialog/index'
 export type { ModalApiOptions, ModalInstance } from './components/Modal/index'
 export type { PopupPosition, PopupOverlayTheme, PopupCloseReason } from './components/Popup/index'
+export type { RadioDirection, RadioSize, RadioValue } from './components/Radio'
+export type { CheckboxDirection, CheckboxSize, CheckboxValue } from './components/Checkbox'

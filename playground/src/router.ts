@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import GuideView from './views/GuideView.vue'
 import ButtonDocView from './views/ButtonDocView.vue'
 import InputDocView from './views/InputDocView.vue'
+import RadioDocView from './views/RadioDocView.vue'
+import CheckboxDocView from './views/CheckboxDocView.vue'
 import ChatMessageDocView from './views/ChatMessageDocView.vue'
 import DialogDocView from './views/DialogDocView.vue'
 import ModalDocView from './views/ModalDocView.vue'
@@ -14,6 +16,8 @@ const router = createRouter({
     { path: '/guide', name: 'guide', component: GuideView },
     { path: '/components/button', name: 'button', component: ButtonDocView },
     { path: '/components/input', name: 'input', component: InputDocView },
+    { path: '/components/radio', name: 'radio', component: RadioDocView },
+    { path: '/components/checkbox', name: 'checkbox', component: CheckboxDocView },
     { path: '/components/chat-message', name: 'chat-message', component: ChatMessageDocView },
     { path: '/components/dialog', name: 'dialog', component: DialogDocView },
     { path: '/components/modal', name: 'modal', component: ModalDocView },

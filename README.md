@@ -1,6 +1,6 @@
 # scq-vue
 
-A lightweight Vue 3 component library with Button, Input, and ChatMessage.
+A lightweight Vue 3 component library
 
 ### Online Demo
 

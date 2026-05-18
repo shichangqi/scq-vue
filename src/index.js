@@ -5,6 +5,8 @@ import ChatMessage from './components/ChatMessage'
 import Dialog from './components/Dialog'
 import Modal from './components/Modal'
 import Popup from './components/Popup'
+import Radio, { RadioGroup } from './components/Radio'
+import Checkbox, { CheckboxGroup } from './components/Checkbox'
 
 // 组件列表
 const components = [
@@ -13,7 +15,11 @@ const components = [
   ChatMessage,
   Dialog,
   Modal,
-  Popup
+  Popup,
+  Radio,
+  RadioGroup,
+  Checkbox,
+  CheckboxGroup
 ]
 
 const getPrefixedName = (name) => {
@@ -39,6 +45,10 @@ const ScqChatMessage = ChatMessage
 const ScqDialog = Dialog
 const ScqModal = Modal
 const ScqPopup = Popup
+const ScqRadio = Radio
+const ScqRadioGroup = RadioGroup
+const ScqCheckbox = Checkbox
+const ScqCheckboxGroup = CheckboxGroup
 
 // 导出install方法和所有组件
 export default {
@@ -49,12 +59,20 @@ export default {
   Dialog,
   Modal,
   Popup,
+  Radio,
+  RadioGroup,
+  Checkbox,
+  CheckboxGroup,
   ScqButton,
   ScqInput,
   ScqChatMessage,
   ScqDialog,
   ScqModal,
-  ScqPopup
+  ScqPopup,
+  ScqRadio,
+  ScqRadioGroup,
+  ScqCheckbox,
+  ScqCheckboxGroup
 }
 
 // 按需导出各个组件
@@ -65,10 +83,18 @@ export {
   Dialog,
   Modal,
   Popup,
+  Radio,
+  RadioGroup,
+  Checkbox,
+  CheckboxGroup,
   ScqButton,
   ScqInput,
   ScqChatMessage,
   ScqDialog,
   ScqModal,
-  ScqPopup
+  ScqPopup,
+  ScqRadio,
+  ScqRadioGroup,
+  ScqCheckbox,
+  ScqCheckboxGroup
 }

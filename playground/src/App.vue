@@ -38,6 +38,8 @@
       <div class="menu-group">{{ t('app.components') }}</div>
       <RouterLink class="menu-item" to="/components/button">{{ t('app.button') }}</RouterLink>
       <RouterLink class="menu-item" to="/components/input">{{ t('app.input') }}</RouterLink>
+      <RouterLink class="menu-item" to="/components/radio">{{ t('app.radio') }}</RouterLink>
+      <RouterLink class="menu-item" to="/components/checkbox">{{ t('app.checkbox') }}</RouterLink>
       <RouterLink class="menu-item" to="/components/chat-message">{{ t('app.chatMessage') }}</RouterLink>
       <RouterLink class="menu-item" to="/components/dialog">{{ t('app.dialog') }}</RouterLink>
       <RouterLink class="menu-item" to="/components/modal">{{ t('app.modal') }}</RouterLink>
