@@ -44,6 +44,7 @@
       <RouterLink class="menu-item" to="/components/dialog">{{ t('app.dialog') }}</RouterLink>
       <RouterLink class="menu-item" to="/components/modal">{{ t('app.modal') }}</RouterLink>
       <RouterLink class="menu-item" to="/components/popup">{{ t('app.popup') }}</RouterLink>
+      <RouterLink class="menu-item" to="/components/watermark">{{ t('app.watermark') }}</RouterLink>
     </aside>
     <main class="docs-main">
       <RouterView />

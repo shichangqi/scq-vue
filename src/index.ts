@@ -7,8 +7,9 @@ import Modal from './components/Modal/index'
 import Popup from './components/Popup/index'
 import Radio, { RadioGroup } from './components/Radio'
 import Checkbox, { CheckboxGroup } from './components/Checkbox'
+import Watermark from './components/Watermark'
 
-const components = [Button, Input, ChatMessage, Dialog, Modal, Popup, Radio, RadioGroup, Checkbox, CheckboxGroup]
+const components = [Button, Input, ChatMessage, Dialog, Modal, Popup, Radio, RadioGroup, Checkbox, CheckboxGroup, Watermark]
 
 const getPrefixedName = (name: string): string => {
   return `scq-${name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()}`
@@ -37,6 +38,7 @@ const ScqRadio = Radio
 const ScqRadioGroup = RadioGroup
 const ScqCheckbox = Checkbox
 const ScqCheckboxGroup = CheckboxGroup
+const ScqWatermark = Watermark
 
 export default ScqVue
 export {
@@ -51,6 +53,7 @@ export {
   RadioGroup,
   Checkbox,
   CheckboxGroup,
+  Watermark,
   ScqButton,
   ScqInput,
   ScqChatMessage,
@@ -60,6 +63,7 @@ export {
   ScqRadio,
   ScqRadioGroup,
   ScqCheckbox,
+  ScqWatermark,
   ScqCheckboxGroup,
 }
 export type { DialogApiOptions, DialogInstance } from './components/Dialog/index'
