@@ -36,7 +36,7 @@ createApp(App).use(ScqVue).mount('#app')`
 
 const onDemandCode = `import { createApp } from 'vue'
 import App from './App.vue'
-import { ScqButton, ScqInput, ScqRadio, ScqRadioGroup, ScqCheckbox, ScqCheckboxGroup, ScqWatermark } from 'scq-vue'
+import { ScqButton, ScqInput, ScqRadio, ScqRadioGroup, ScqCheckbox, ScqCheckboxGroup, ScqWatermark, ScqSelect } from 'scq-vue'
 import 'scq-vue/style.css'
 
 const app = createApp(App)
@@ -47,12 +47,14 @@ app.use(ScqRadioGroup)
 app.use(ScqCheckbox)
 app.use(ScqCheckboxGroup)
 app.use(ScqWatermark)
+app.use(ScqSelect)
 app.mount('#app')`
 
-const styleCode = `import { ScqButton, ScqInput, ScqRadio, ScqRadioGroup, ScqCheckbox, ScqCheckboxGroup, ScqWatermark } from 'scq-vue'
+const styleCode = `import { ScqButton, ScqInput, ScqRadio, ScqRadioGroup, ScqCheckbox, ScqCheckboxGroup, ScqWatermark, ScqSelect } from 'scq-vue'
 import 'scq-vue/styles/button.css'
 import 'scq-vue/styles/input.css'
 import 'scq-vue/styles/radio.css'
 import 'scq-vue/styles/checkbox.css'
-import 'scq-vue/styles/watermark.css'`
+import 'scq-vue/styles/watermark.css'
+import 'scq-vue/styles/select.css'`
 </script>

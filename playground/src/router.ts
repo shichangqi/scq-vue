@@ -9,6 +9,7 @@ import DialogDocView from './views/DialogDocView.vue'
 import ModalDocView from './views/ModalDocView.vue'
 import PopupDocView from './views/PopupDocView.vue'
 import WatermarkDocView from './views/WatermarkDocView.vue'
+import SelectDocView from './views/SelectDocView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -24,6 +25,7 @@ const router = createRouter({
     { path: '/components/modal', name: 'modal', component: ModalDocView },
     { path: '/components/popup', name: 'popup', component: PopupDocView },
     { path: '/components/watermark', name: 'watermark', component: WatermarkDocView },
+    { path: '/components/select', name: 'select', component: SelectDocView },
   ],
 })
 

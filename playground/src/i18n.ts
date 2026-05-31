@@ -18,6 +18,7 @@ const messages: Record<Locale, Record<string, string>> = {
     'app.modal': 'Modal 弹窗',
     'app.popup': 'Popup 弹出层',
     'app.watermark': 'Watermark 水印',
+    'app.select': 'Select 下拉框',
     'app.lang.zh': '中文',
     'app.lang.en': 'English',
 
@@ -380,6 +381,7 @@ const messages: Record<Locale, Record<string, string>> = {
     'app.modal': 'Modal',
     'app.popup': 'Popup',
     'app.watermark': 'Watermark',
+    'app.select': 'Select',
     'app.lang.zh': 'Chinese',
     'app.lang.en': 'English',
 

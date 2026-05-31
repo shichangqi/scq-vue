@@ -1,6 +1,6 @@
 {
   "name": "scq-vue",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "A Vue 3 component library made by Chauncy",
   "main": "./dist/scq-vue.umd.js",
   "module": "./dist/scq-vue.es.js",
@@ -25,7 +25,8 @@
     "./styles/popup.css": "./styles/popup.css",
     "./styles/radio.css": "./styles/radio.css",
     "./styles/checkbox.css": "./styles/checkbox.css",
-    "./styles/watermark.css": "./styles/watermark.css"
+    "./styles/watermark.css": "./styles/watermark.css",
+    "./styles/select.css": "./styles/select.css"
   },
   "scripts": {
     "clean": "rimraf dist",

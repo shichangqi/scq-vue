@@ -8,6 +8,7 @@ import Popup from './components/Popup'
 import Radio, { RadioGroup } from './components/Radio'
 import Checkbox, { CheckboxGroup } from './components/Checkbox'
 import Watermark from './components/Watermark'
+import Select from './components/Select'
 
 // 组件列表
 const components = [
@@ -21,7 +22,8 @@ const components = [
   RadioGroup,
   Checkbox,
   CheckboxGroup,
-  Watermark
+  Watermark,
+  Select
 ]
 
 const getPrefixedName = (name) => {
@@ -52,6 +54,7 @@ const ScqRadioGroup = RadioGroup
 const ScqCheckbox = Checkbox
 const ScqCheckboxGroup = CheckboxGroup
 const ScqWatermark = Watermark
+const ScqSelect = Select
 
 // 导出install方法和所有组件
 export default {
@@ -67,6 +70,7 @@ export default {
   Checkbox,
   CheckboxGroup,
   Watermark,
+  Select,
   ScqButton,
   ScqInput,
   ScqChatMessage,
@@ -77,7 +81,8 @@ export default {
   ScqRadioGroup,
   ScqCheckbox,
   ScqCheckboxGroup,
-  ScqWatermark
+  ScqWatermark,
+  ScqSelect
 }
 
 // 按需导出各个组件
@@ -92,6 +97,7 @@ export {
   RadioGroup,
   Checkbox,
   CheckboxGroup,
+  Select,
   ScqButton,
   ScqInput,
   ScqChatMessage,
@@ -102,5 +108,6 @@ export {
   ScqRadioGroup,
   ScqCheckbox,
   ScqCheckboxGroup,
-  ScqWatermark
+  ScqWatermark,
+  ScqSelect
 }
