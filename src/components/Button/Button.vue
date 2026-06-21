@@ -418,6 +418,7 @@ const handleClick = (event) => {
 .my-btn__content {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
 }
 
 .my-btn__content.is-hidden {

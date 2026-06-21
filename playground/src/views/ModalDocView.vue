@@ -346,8 +346,9 @@ const openApiConfirmDemo = () => {
   width: 286px;
   border-radius: 42px;
   padding: 12px;
-  background: linear-gradient(180deg, #1b1b1f 0%, #0f0f12 100%);
-  box-shadow: 0 28px 60px rgba(15, 23, 42, 0.26);
+  border: 1px solid #dbeafe;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
+  box-shadow: 0 24px 52px rgba(64, 158, 255, 0.16);
 }
 
 .phone-demo__notch {

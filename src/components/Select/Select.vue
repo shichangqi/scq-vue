@@ -37,7 +37,8 @@
             type="text"
             :placeholder="selectedOptions.length ? '' : placeholder"
             :disabled="disabled"
-            @focus="openPanel"
+            @focus="handleInputFocus"
+            @input="handleInput"
           />
           <span v-else-if="!selectedOptions.length" class="scq-select__placeholder">{{ placeholder }}</span>
         </template>
@@ -51,7 +52,8 @@
             type="text"
             :placeholder="selectedOptions[0] ? '' : placeholder"
             :disabled="disabled"
-            @focus="openPanel"
+            @focus="handleInputFocus"
+            @input="handleInput"
           />
           <span v-else-if="selectedOptions[0]">{{ selectedOptions[0].label }}</span>
           <span v-else class="scq-select__placeholder">{{ placeholder }}</span>
@@ -80,7 +82,7 @@
           v-if="visible"
           ref="panelRef"
           class="scq-select__panel"
-          :class="`scq-select__panel--${size}`"
+          :class="[`scq-select__panel--${size}`, `is-${dropdownPlacement}`]"
           :style="panelStyle"
         >
           <div class="scq-select__list" @click.stop>
@@ -125,7 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { CSSProperties } from 'vue'
 
 defineOptions({
@@ -199,13 +201,21 @@ const inputRef = ref<HTMLInputElement | null>(null)
 const visible = ref(false)
 const hovering = ref(false)
 const searchKeyword = ref('')
+const isFiltering = ref(false)
 const currentPage = ref(1)
 const remoteOptions = ref<SelectOption[]>([])
 const remoteTotal = ref(0)
 const loading = ref(false)
 let debounceTimer: number | null = null
-const panelRect = ref({ top: 0, left: 0, width: 0 })
+const panelRect = ref({ top: 0, bottom: 0, left: 0, width: 0, maxHeight: 0 })
+const dropdownPlacement = ref<'bottom' | 'top'>('bottom')
 const remoteCache = ref(new Map<string, RemoteResult>())
+const panelGap = 6
+const viewportPadding = 8
+const listPaddingY = 12
+const listMaxHeight = 274
+const emptyHeight = 34
+const pagerHeight = 45
 
 const normalizedModel = computed<SelectValue[]>(() => {
   if (props.multiple) {
@@ -221,11 +231,15 @@ const baseOptions = computed<SelectOption[]>(() => {
   return props.remote ? remoteOptions.value : props.options
 })
 
+const filterKeyword = computed(() => {
+  return props.filterable && isFiltering.value ? searchKeyword.value.trim() : ''
+})
+
 const filteredOptions = computed<SelectOption[]>(() => {
   if (props.remote || !props.filterable) {
     return baseOptions.value
   }
-  const keyword = searchKeyword.value.trim().toLowerCase()
+  const keyword = filterKeyword.value.toLowerCase()
   if (!keyword) {
     return baseOptions.value
   }
@@ -266,17 +280,19 @@ const visibleOptions = computed<SelectOption[]>(() => {
 
 const hasValue = computed(() => normalizedModel.value.length > 0)
 const showClear = computed(() => props.clearable && hasValue.value && !props.disabled && hovering.value)
-const remoteRequestKey = computed(() => `${searchKeyword.value}__${currentPage.value}__${props.pageSize}`)
+const remoteRequestKey = computed(() => `${filterKeyword.value}__${currentPage.value}__${props.pageSize}`)
 const panelStyle = computed<CSSProperties>(() => {
   if (!props.teleported) {
     return {}
   }
   return {
     position: 'fixed',
-    top: `${panelRect.value.top}px`,
+    top: dropdownPlacement.value === 'bottom' ? `${panelRect.value.top}px` : 'auto',
     left: `${panelRect.value.left}px`,
     width: `${panelRect.value.width}px`,
+    maxHeight: panelRect.value.maxHeight ? `${panelRect.value.maxHeight}px` : undefined,
     right: 'auto',
+    bottom: dropdownPlacement.value === 'top' ? `${panelRect.value.bottom}px` : 'auto',
     zIndex: String(props.popperZIndex),
   }
 })
@@ -305,7 +321,7 @@ const fetchRemoteOptions = async (force = false) => {
 
   loading.value = true
   try {
-    const result = await props.remoteMethod(searchKeyword.value, currentPage.value, props.pageSize)
+    const result = await props.remoteMethod(filterKeyword.value, currentPage.value, props.pageSize)
     if (Array.isArray(result)) {
       remoteOptions.value = result
       remoteTotal.value = result.length
@@ -327,7 +343,10 @@ const fetchRemoteOptions = async (force = false) => {
 }
 
 const runSearch = () => {
-  emit('search', searchKeyword.value)
+  if (!isFiltering.value) {
+    return
+  }
+  emit('search', filterKeyword.value)
   currentPage.value = 1
   if (!props.remote) {
     return
@@ -358,6 +377,7 @@ const selectOption = (option: SelectOption) => {
     nextValue = current
   } else {
     nextValue = option.value
+    isFiltering.value = false
     searchKeyword.value = option.label
     visible.value = false
   }
@@ -370,6 +390,7 @@ const clearValue = () => {
   emit('update:modelValue', value)
   emit('change', value)
   emit('clear')
+  isFiltering.value = false
   searchKeyword.value = ''
 }
 
@@ -378,8 +399,9 @@ const openPanel = () => {
     return
   }
   const wasVisible = visible.value
-  visible.value = true
   updatePanelRect()
+  visible.value = true
+  void updatePanelRect()
   if (!wasVisible && props.remote) {
     void fetchRemoteOptions()
   }
@@ -390,9 +412,12 @@ const toggleVisible = () => {
     return
   }
   const nextVisible = !visible.value
-  visible.value = !visible.value
   if (nextVisible) {
     updatePanelRect()
+  }
+  visible.value = !visible.value
+  if (nextVisible) {
+    void updatePanelRect()
   }
   if (nextVisible && props.remote) {
     void fetchRemoteOptions()
@@ -406,6 +431,18 @@ const handleControlClick = () => {
     return
   }
   toggleVisible()
+}
+
+const handleInputFocus = () => {
+  if (!visible.value) {
+    isFiltering.value = false
+    currentPage.value = 1
+  }
+  openPanel()
+}
+
+const handleInput = () => {
+  isFiltering.value = true
 }
 
 const removeTag = (value: SelectValue) => {
@@ -441,15 +478,46 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 }
 
-const updatePanelRect = () => {
-  if (!props.teleported || !rootRef.value) {
+const getEstimatedPanelHeight = () => {
+  const optionCount = loading.value || !visibleOptions.value.length ? 1 : visibleOptions.value.length
+  const optionHeightMap: Record<SelectSize, number> = {
+    large: 36,
+    default: 34,
+    small: 30,
+  }
+  const optionHeight = loading.value || !visibleOptions.value.length ? emptyHeight : optionHeightMap[props.size]
+  const listHeight = Math.min(listMaxHeight, optionCount * optionHeight + listPaddingY)
+  return listHeight + (shouldShowPagination.value ? pagerHeight : 0)
+}
+
+const updatePanelRect = async () => {
+  if (!rootRef.value) {
     return
   }
+
+  if (visible.value) {
+    await nextTick()
+  }
+
   const rect = rootRef.value.getBoundingClientRect()
+  const panelHeight = panelRef.value?.offsetHeight || getEstimatedPanelHeight()
+  const spaceBelow = window.innerHeight - rect.bottom - viewportPadding - panelGap
+  const spaceAbove = rect.top - viewportPadding - panelGap
+  const shouldPlaceTop = panelHeight > spaceBelow && spaceAbove > spaceBelow
+  dropdownPlacement.value = shouldPlaceTop ? 'top' : 'bottom'
+
+  if (!props.teleported) {
+    return
+  }
+
+  const availableHeight = Math.max(0, shouldPlaceTop ? spaceAbove : spaceBelow)
+  const nextHeight = panelHeight ? Math.min(panelHeight, availableHeight) : availableHeight
   panelRect.value = {
-    top: rect.bottom + 6,
+    top: rect.bottom + panelGap,
+    bottom: window.innerHeight - rect.top + panelGap,
     left: rect.left,
     width: rect.width,
+    maxHeight: availableHeight,
   }
 }
 
@@ -503,12 +571,18 @@ watch(
 
 watch(visible, (nextVisible) => {
   if (nextVisible) {
-    updatePanelRect()
+    void updatePanelRect()
     bindPositionListeners()
   } else {
     unbindPositionListeners()
   }
   emit('visible-change', nextVisible)
+})
+
+watch([visibleOptions, shouldShowPagination, loading], () => {
+  if (visible.value) {
+    void updatePanelRect()
+  }
 })
 
 const focus = () => {
@@ -550,6 +624,7 @@ watch(
     if (!props.filterable || props.multiple) {
       return
     }
+    isFiltering.value = false
     searchKeyword.value = selectedOptions.value[0]?.label ?? ''
   },
 )
@@ -753,6 +828,8 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   z-index: 2100;
+  display: flex;
+  flex-direction: column;
   border-radius: 4px;
   border: 1px solid #e4e7ed;
   background: #ffffff;
@@ -760,7 +837,14 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
+.scq-select__panel.is-top {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
 .scq-select__list {
+  flex: 1;
+  min-height: 0;
   max-height: 274px;
   overflow: auto;
   padding: 6px 0;
@@ -843,14 +927,24 @@ onBeforeUnmount(() => {
 
 .scq-select-drop-enter-active,
 .scq-select-drop-leave-active {
-  transition: all 0.24s ease;
+  transition: opacity 0.24s ease, transform 0.24s ease;
   transform-origin: top center;
+}
+
+.scq-select__panel.is-top.scq-select-drop-enter-active,
+.scq-select__panel.is-top.scq-select-drop-leave-active {
+  transform-origin: bottom center;
 }
 
 .scq-select-drop-enter-from,
 .scq-select-drop-leave-to {
   opacity: 0;
   transform: translateY(-4px);
+}
+
+.scq-select__panel.is-top.scq-select-drop-enter-from,
+.scq-select__panel.is-top.scq-select-drop-leave-to {
+  transform: translateY(4px);
 }
 
 @media (max-width: 768px) {

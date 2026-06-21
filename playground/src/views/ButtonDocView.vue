@@ -38,6 +38,27 @@
       </div>
     </DocExample>
 
+    <h2>{{ t('button.icon') }}</h2>
+    <DocExample :code="iconCode" lang="vue">
+      <div class="demo-panel">
+        <scq-button type="primary">
+          <scq-icon name="search" />
+          搜索
+        </scq-button>
+        <scq-button type="success">
+          <scq-icon name="check" />
+          保存
+        </scq-button>
+        <scq-button plain type="warning">
+          <scq-icon name="refresh" />
+          刷新
+        </scq-button>
+        <scq-button circle type="danger" aria-label="删除">
+          <scq-icon name="delete" />
+        </scq-button>
+      </div>
+    </DocExample>
+
     <h2>{{ t('button.props') }}</h2>
     <table class="prop-table">
       <thead>
@@ -105,6 +126,32 @@ const stateCode = `<template>
     <scq-button disabled>Disabled</scq-button>
     <scq-button text>Text</scq-button>
     <scq-button link>Link</scq-button>
+  </div>
+</template>
+
+<script setup lang="ts">
+<\/script>`
+
+const iconCode = `<template>
+  <div class="demo-panel">
+    <scq-button type="primary">
+      <scq-icon name="search" />
+      搜索
+    </scq-button>
+
+    <scq-button type="success">
+      <scq-icon name="check" />
+      保存
+    </scq-button>
+
+    <scq-button plain type="warning">
+      <scq-icon name="refresh" />
+      刷新
+    </scq-button>
+
+    <scq-button circle type="danger" aria-label="删除">
+      <scq-icon name="delete" />
+    </scq-button>
   </div>
 </template>
 

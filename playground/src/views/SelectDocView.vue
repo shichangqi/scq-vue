@@ -314,6 +314,10 @@ const singleValue = ref<string | number | null>(null)
 .select-demo-grid {
   display: grid;
   gap: 10px;
+  width: 100%;
+}
+
+.select-demo-grid > .scq-select {
   max-width: 520px;
 }
 
@@ -346,6 +350,10 @@ const multipleValue = ref<Array<string | number>>([])
 .select-demo-grid {
   display: grid;
   gap: 10px;
+  width: 100%;
+}
+
+.select-demo-grid > .scq-select {
   max-width: 520px;
 }
 

@@ -338,9 +338,9 @@ const clearCallbackLogs = () => {
 
 .callback-log-panel {
   margin-top: 14px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--demo-border-color, #dbeafe);
   border-radius: 10px;
-  background: #f8fafc;
+  background: linear-gradient(135deg, var(--demo-bg-start, #f8fbff) 0%, var(--demo-bg-end, #eff6ff) 100%);
   padding: 12px;
 }
 

@@ -62,7 +62,16 @@
 
 .scq-input__clear,
 .scq-input__password {
+  width: 32px;
+  height: 100%;
+  border: 0;
+  background: transparent;
   cursor: pointer;
+}
+
+.scq-input__clear:hover,
+.scq-input__password:hover {
+  color: #409eff;
 }
 
 .scq-input__group-prepend,

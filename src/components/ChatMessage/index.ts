@@ -15,3 +15,4 @@ _ChatMessage.install = (app: App): void => {
 }
 
 export default _ChatMessage
+export type { ChatAttachment, ChatAttachmentClickPayload, ChatAttachmentStatus, ChatAttachmentType, ChatContentType, ChatMediaMessage, ChatMediaType, ChatMessageStatus, ChatRole, ChatStatusType, ChatVideoPreload } from './ChatMessage.vue'

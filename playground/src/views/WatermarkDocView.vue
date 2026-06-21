@@ -152,19 +152,15 @@ const isTopLayerFullscreen = ref(false)
   min-height: 220px;
   padding: 24px;
   border-radius: 14px;
-  background:
-    radial-gradient(circle at top left, rgba(64, 158, 255, 0.16), transparent 35%),
-    linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-  border: 1px solid #d9e7ff;
+  background: linear-gradient(135deg, var(--demo-bg-start, #f8fbff) 0%, var(--demo-bg-end, #eff6ff) 100%);
+  border: 1px solid var(--demo-border-color, #dbeafe);
   color: #243042;
 }
 
 .watermark-demo--dark {
-  background:
-    radial-gradient(circle at top left, rgba(16, 185, 129, 0.22), transparent 32%),
-    linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border-color: rgba(148, 163, 184, 0.22);
-  color: #e2e8f0;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef2ff 100%);
+  border-color: #dbe3ff;
+  color: #243042;
 }
 
 .watermark-demo h3 {
@@ -190,7 +186,7 @@ const isTopLayerFullscreen = ref(false)
 .watermark-demo__chips span {
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.74);
   border: 1px solid rgba(148, 163, 184, 0.24);
   font-size: 13px;
 }

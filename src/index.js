@@ -1,9 +1,11 @@
 // 导入所有组件
 import Button from './components/Button'
 import Input from './components/Input'
+import Icon, { iconNames, iconPaths, solidIconNames, solidIconPaths } from './components/Icon'
 import ChatMessage from './components/ChatMessage'
 import Dialog from './components/Dialog'
 import Modal from './components/Modal'
+import Message from './components/Message'
 import Popup from './components/Popup'
 import Radio, { RadioGroup } from './components/Radio'
 import Checkbox, { CheckboxGroup } from './components/Checkbox'
@@ -14,9 +16,11 @@ import Select from './components/Select'
 const components = [
   Button,
   Input,
+  Icon,
   ChatMessage,
   Dialog,
   Modal,
+  Message,
   Popup,
   Radio,
   RadioGroup,
@@ -45,9 +49,11 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 const ScqButton = Button
 const ScqInput = Input
+const ScqIcon = Icon
 const ScqChatMessage = ChatMessage
 const ScqDialog = Dialog
 const ScqModal = Modal
+const ScqMessage = Message
 const ScqPopup = Popup
 const ScqRadio = Radio
 const ScqRadioGroup = RadioGroup
@@ -61,9 +67,11 @@ export default {
   install,
   Button,
   Input,
+  Icon,
   ChatMessage,
   Dialog,
   Modal,
+  Message,
   Popup,
   Radio,
   RadioGroup,
@@ -71,11 +79,17 @@ export default {
   CheckboxGroup,
   Watermark,
   Select,
+  iconNames,
+  iconPaths,
+  solidIconNames,
+  solidIconPaths,
   ScqButton,
   ScqInput,
+  ScqIcon,
   ScqChatMessage,
   ScqDialog,
   ScqModal,
+  ScqMessage,
   ScqPopup,
   ScqRadio,
   ScqRadioGroup,
@@ -89,9 +103,11 @@ export default {
 export {
   Button,
   Input,
+  Icon,
   ChatMessage,
   Dialog,
   Modal,
+  Message,
   Popup,
   Radio,
   RadioGroup,
@@ -100,9 +116,11 @@ export {
   Select,
   ScqButton,
   ScqInput,
+  ScqIcon,
   ScqChatMessage,
   ScqDialog,
   ScqModal,
+  ScqMessage,
   ScqPopup,
   ScqRadio,
   ScqRadioGroup,

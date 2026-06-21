@@ -1,8 +1,10 @@
 @import './button.css';
 @import './input.css';
+@import './icon.css';
 @import './chat-message.css';
 @import './dialog.css';
 @import './modal.css';
+@import './message.css';
 @import './popup.css';
 @import './radio.css';
 @import './checkbox.css';

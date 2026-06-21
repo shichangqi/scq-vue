@@ -75,6 +75,7 @@ const highlightedCode = computed(() => {
 
 .doc-example__demo {
   padding: 14px;
+  background: linear-gradient(135deg, var(--demo-bg-start, #f8fbff) 0%, var(--demo-bg-end, #eff6ff) 100%);
 }
 
 .doc-example__toggle {

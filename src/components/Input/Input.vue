@@ -95,7 +95,7 @@
 				@mousedown.prevent
 				@click="togglePassword"
 			>
-				{{ passwordVisible ? 'Hide' : 'Show' }}
+				<Icon :name="passwordVisible ? 'eye-off' : 'eye'" />
 			</button>
 
 			<span v-if="$slots.suffix || suffixIcon" class="scq-input__suffix">
@@ -118,6 +118,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import type { CSSProperties } from 'vue'
+import Icon from '../Icon/Icon.vue'
 
 defineOptions({
 	name: 'Input',
@@ -398,6 +399,8 @@ defineExpose({
 
 .scq-input__clear,
 .scq-input__password {
+	width: 32px;
+	height: 100%;
 	border: none;
 	background: transparent;
 	font: inherit;
