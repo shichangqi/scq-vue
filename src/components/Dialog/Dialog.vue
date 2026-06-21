@@ -551,6 +551,31 @@ onUnmounted(() => {
   color: #606266;
   line-height: 1.65;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 60, 67, 0.42) transparent;
+}
+
+.scq-dialog__body::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scq-dialog__body::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: rgba(60, 60, 67, 0.38);
+  background-clip: content-box;
+}
+
+.scq-dialog__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (hover: hover) {
+  .scq-dialog__body::-webkit-scrollbar-thumb {
+    background: rgba(60, 60, 67, 0.52);
+    background-clip: content-box;
+  }
 }
 
 .scq-dialog__footer {

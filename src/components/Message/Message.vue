@@ -54,7 +54,7 @@ const props = withDefaults(
     closable: false,
     placement: 'top',
     offset: 24,
-    zIndex: 3000,
+    zIndex: 10000,
     teleport: true,
     standalone: true,
   },

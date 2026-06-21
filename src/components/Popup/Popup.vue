@@ -322,7 +322,32 @@ defineExpose({
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.25);
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 60, 67, 0.42) transparent;
   box-sizing: border-box;
+}
+
+.scq-popup::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scq-popup::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: rgba(60, 60, 67, 0.38);
+  background-clip: content-box;
+}
+
+.scq-popup::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (hover: hover) {
+  .scq-popup::-webkit-scrollbar-thumb {
+    background: rgba(60, 60, 67, 0.52);
+    background-clip: content-box;
+  }
 }
 
 .scq-popup.is-center {

@@ -847,9 +847,34 @@ onBeforeUnmount(() => {
   min-height: 0;
   max-height: 274px;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 60, 67, 0.42) transparent;
   padding: 6px 0;
   font-size: 14px;
   color: #606266;
+}
+
+.scq-select__list::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scq-select__list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: rgba(60, 60, 67, 0.38);
+  background-clip: content-box;
+}
+
+.scq-select__list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (hover: hover) {
+  .scq-select__list::-webkit-scrollbar-thumb {
+    background: rgba(60, 60, 67, 0.52);
+    background-clip: content-box;
+  }
 }
 
 .scq-select__option {

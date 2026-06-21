@@ -1,7 +1,7 @@
 import { TransitionGroup, createVNode, defineComponent, h, reactive, render } from 'vue'
 
 let messageSeed = 0
-let messageZIndexSeed = 3000
+let messageZIndexSeed = 10000
 let container = null
 
 const state = reactive({

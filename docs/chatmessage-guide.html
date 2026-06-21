@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ChatMessage 组件使用指南</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 18mm 16mm;
+    }
+
+    :root {
+      color-scheme: light;
+      --ink: #172033;
+      --muted: #5f6b7c;
+      --soft: #f4f7fb;
+      --line: #dce4ef;
+      --brand: #2454c6;
+      --brand-soft: #eaf3ff;
+      --code-bg: #101827;
+      --code-fg: #edf2f7;
+      --warn: #9a5a00;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      font-size: 13.5px;
+      line-height: 1.72;
+    }
+
+    article {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    header.cover {
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-bottom: 2px solid var(--brand);
+      margin-bottom: 30px;
+      padding-bottom: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--brand);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      color: var(--ink);
+      line-height: 1.32;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 34px;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      margin: 30px 0 12px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid var(--line);
+      font-size: 22px;
+    }
+
+    h3 {
+      margin: 22px 0 8px;
+      font-size: 17px;
+    }
+
+    h4 {
+      margin: 16px 0 6px;
+      font-size: 14px;
+    }
+
+    p {
+      margin: 0 0 10px;
+    }
+
+    .lead {
+      max-width: 760px;
+      color: #334155;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .meta div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: var(--soft);
+    }
+
+    .meta strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #334155;
+      font-size: 12px;
+    }
+
+    nav.toc {
+      margin: 18px 0 26px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+    }
+
+    nav.toc ol {
+      margin: 0;
+      padding-left: 20px;
+      columns: 2;
+      column-gap: 34px;
+    }
+
+    a {
+      color: var(--brand);
+      text-decoration: none;
+    }
+
+    ul,
+    ol {
+      margin: 6px 0 12px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 3px 0;
+    }
+
+    code {
+      border-radius: 4px;
+      padding: 1px 5px;
+      background: #eef3f8;
+      color: #14345f;
+      font-family: Consolas, "SFMono-Regular", Menlo, Monaco, monospace;
+      font-size: 12px;
+    }
+
+    pre {
+      margin: 10px 0 14px;
+      padding: 13px 15px;
+      border-radius: 8px;
+      background: var(--code-bg);
+      color: var(--code-fg);
+      line-height: 1.58;
+      overflow: hidden;
+      white-space: pre-wrap;
+      word-break: break-word;
+      page-break-inside: avoid;
+    }
+
+    pre code {
+      padding: 0;
+      background: transparent;
+      color: inherit;
+      font-size: 11.5px;
+    }
+
+    table {
+      width: 100%;
+      margin: 10px 0 18px;
+      border-collapse: collapse;
+      page-break-inside: auto;
+    }
+
+    tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+
+    th,
+    td {
+      padding: 8px 9px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--brand-soft);
+      color: #163a73;
+      font-weight: 700;
+    }
+
+    td:first-child,
+    th:first-child {
+      width: 150px;
+    }
+
+    .note,
+    .scenario {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--brand);
+      border-radius: 8px;
+      background: #fbfdff;
+      page-break-inside: avoid;
+    }
+
+    .note strong,
+    .scenario strong {
+      color: #173f7a;
+    }
+
+    .warning {
+      border-left-color: #f59e0b;
+      color: var(--warn);
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 14px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tag-list li {
+      margin: 0;
+      border: 1px solid #cbd7e5;
+      border-radius: 999px;
+      padding: 2px 9px;
+      background: #ffffff;
+      color: #42526a;
+      font-size: 12px;
+    }
+
+    .section-break {
+      page-break-before: always;
+    }
+
+    footer {
+      margin-top: 34px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<article>
+  <header class="cover">
+    <p class="eyebrow">scq-vue · component guide</p>
+    <h1>ChatMessage 组件使用指南</h1>
+    <p class="lead">ChatMessage 用来呈现聊天产品中的单条消息。它负责把接口返回的文本、结构化数据、Markdown、媒体和附件展示成稳定的消息气泡，并提供状态、流式输出、图片预览、附件点击等业务接口。</p>
+    <div class="meta" aria-label="文档信息">
+      <div><strong>适用版本</strong>scq-vue 1.0.16 及以上</div>
+      <div><strong>框架要求</strong>Vue 3.3+</div>
+      <div><strong>文档日期</strong>2026-06-21</div>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="目录">
+    <ol>
+      <li><a href="#overview">组件定位</a></li>
+      <li><a href="#install">安装与引入</a></li>
+      <li><a href="#quick-start">快速上手</a></li>
+      <li><a href="#content">内容类型</a></li>
+      <li><a href="#profile">头像、昵称和时间</a></li>
+      <li><a href="#streaming">流式输出</a></li>
+      <li><a href="#status">消息状态</a></li>
+      <li><a href="#media">图片与视频</a></li>
+      <li><a href="#attachments">文件附件</a></li>
+      <li><a href="#actions">消息操作</a></li>
+      <li><a href="#style">样式定制</a></li>
+      <li><a href="#api">配置项、事件和类型</a></li>
+      <li><a href="#practice">使用建议</a></li>
+    </ol>
+  </nav>
+
+  <section id="overview">
+    <h2>1. 组件定位</h2>
+    <p>ChatMessage 只处理“单条消息”的展示和交互，不内置消息列表、滚动到底部、接口请求或会话状态管理。这样做的好处是边界清楚：业务侧可以自由组合消息列表、SSE、WebSocket、分页加载、消息撤回等逻辑。</p>
+    <ul class="tag-list" aria-label="能力标签">
+      <li>AI / 用户气泡</li>
+      <li>Markdown</li>
+      <li>JSON</li>
+      <li>代码高亮</li>
+      <li>图片预览</li>
+      <li>视频播放</li>
+      <li>文件附件</li>
+      <li>流式光标</li>
+      <li>状态提示</li>
+      <li>操作插槽</li>
+    </ul>
+    <div class="scenario"><strong>典型使用场景：</strong>AI 助手、客服对话、知识库问答、工单沟通、审核记录、数据分析结果展示、带附件的消息流。</div>
+  </section>
+
+  <section id="install">
+    <h2>2. 安装与引入</h2>
+    <h3>2.1 安装</h3>
+    <pre><code class="language-bash">pnpm add scq-vue
+# 或
+npm install scq-vue
+# 或
+yarn add scq-vue</code></pre>
+
+    <h3>2.2 全局注册</h3>
+    <p>适合中后台或组件使用频率较高的项目。样式可直接引入完整样式包。</p>
+    <pre><code class="language-ts">import { createApp } from 'vue'
+import ScqVue from 'scq-vue'
+import 'scq-vue/style.css'
+import App from './App.vue'
+
+createApp(App).use(ScqVue).mount('#app')</code></pre>
+    <pre><code class="language-vue">&lt;template&gt;
+  &lt;scq-chat-message message="你好，我是 SCQ Assistant。" role="ai" /&gt;
+&lt;/template&gt;</code></pre>
+
+    <h3>2.3 按需引入</h3>
+    <p>如果项目只用到 ChatMessage，可以按需引入组件和对应样式。</p>
+    <pre><code class="language-ts">import { ChatMessage } from 'scq-vue'
+import 'scq-vue/styles/chat-message.css'</code></pre>
+    <pre><code class="language-vue">&lt;template&gt;
+  &lt;ChatMessage :message="message" role="ai" /&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { ChatMessage } from 'scq-vue'
+import 'scq-vue/styles/chat-message.css'
+
+const message = '这是一条来自接口的普通文本。'
+&lt;/script&gt;</code></pre>
+
+    <div class="note"><strong>样式说明：</strong>使用 `scq-vue/style.css` 会引入构建后的完整样式；使用 `scq-vue/styles/chat-message.css` 只引入 ChatMessage 的独立样式。团队可以根据打包策略选择其中一种。</div>
+  </section>
+
+  <section id="quick-start">
+    <h2>3. 快速上手</h2>
+    <p>最少只需要传入 `message`。`role` 决定气泡方向和视觉样式，默认是 `ai`。</p>
+    <pre><code class="language-vue">&lt;template&gt;
+  &lt;scq-chat-message
+    message="我已经整理好结果，你可以继续追问。"
+    role="ai"
+    name="SCQ Assistant"
+    :timestamp="Date.now()"
+  /&gt;
+
+  &lt;scq-chat-message
+    message="帮我把结论压缩成三句话。"
+    role="user"
+    name="Chauncy"
+    :show-time="false"
+  /&gt;
+&lt;/template&gt;</code></pre>
+    <p>如果要做消息列表，建议由外层组件负责循环、滚动和数据加载，ChatMessage 只负责渲染一条消息。</p>
+    <pre><code class="language-vue">&lt;template&gt;
+  &lt;section class="message-list"&gt;
+    &lt;scq-chat-message
+      v-for="item in messages"
+      :key="item.id"
+      :message="item.content"
+      :role="item.role"
+      :name="item.name"
+      :timestamp="item.createdAt"
+    /&gt;
+  &lt;/section&gt;
+&lt;/template&gt;</code></pre>
+  </section>
+
+  <section id="content" class="section-break">
+    <h2>4. 内容类型</h2>
+    <p>`contentType` 控制消息正文的渲染方式。默认值是 `auto`，组件会先识别媒体，再识别 JSON 和 Markdown，最后回退到普通文本。</p>
+    <table>
+      <thead><tr><th>类型</th><th>适合场景</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>auto</td><td>接口返回内容不固定</td><td>自动识别图片、视频、JSON、Markdown 和纯文本。</td></tr>
+        <tr><td>text</td><td>普通聊天文本</td><td>按纯文本显示，保留换行，不解析 Markdown。</td></tr>
+        <tr><td>markdown</td><td>AI 回复、富文本说明、代码片段</td><td>支持标题、列表、链接、表格、代码块和自动换行。</td></tr>
+        <tr><td>json</td><td>调试接口、展示结构化结果</td><td>对象会格式化成缩进 JSON，字符串 JSON 会尝试美化。</td></tr>
+        <tr><td>image</td><td>图片消息、截图、生成图</td><td>支持懒加载、加载失败文案和点击预览。</td></tr>
+        <tr><td>video</td><td>视频消息、录屏、演示片段</td><td>支持 controls、poster、autoplay、muted、loop、preload。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4.1 普通文本</h3>
+    <pre><code class="language-vue">&lt;scq-chat-message
+  content-type="text"
+  message="第一行\n第二行会保留换行。"
+/&gt;</code></pre>
+
+    <h3>4.2 Markdown 与代码高亮</h3>
+    <p>适合 AI 输出、使用说明和带代码的回答。Markdown 链接默认添加 `target="_blank"` 和 `rel="noopener noreferrer"`，也可以通过配置修改。</p>
+    <pre><code class="language-vue">&lt;scq-chat-message
+  role="ai"
+  content-type="markdown"
+  :message="markdownText"
+  link-target="_blank"
+  link-rel="noopener noreferrer"
+/&gt;</code></pre>
+    <pre><code class="language-ts">const markdownText = `# 分析结果
+
+- 已读取项目配置
+- 已完成构建检查
+
+\`\`\`ts
+const passed = true
+\`\`\``</code></pre>
+
+    <h3>4.3 JSON 数据</h3>
+    <pre><code class="language-vue">&lt;scq-chat-message
+  role="ai"
+  content-type="json"
+  :message="apiResult"
+/&gt;</code></pre>
+    <pre><code class="language-ts">const apiResult = {
+  code: 0,
+  message: 'ok',
+  data: [{ id: 1, name: 'SCQ' }],
+}</code></pre>
+  </section>
+
+  <section id="profile">
+    <h2>5. 头像、昵称和时间</h2>
+    <p>`avatar`、`name` 和 `timestamp` 用于补充消息来源。没有头像但传了昵称时，会显示昵称首字母头像。</p>
+    <pre><code class="language-vue">&lt;scq-chat-message
+  message="头像可以传图片，也可以只传昵称。"
+  role="ai"
+  name="SCQ Assistant"
+  avatar="https://example.com/avatar.png"
+  :timestamp="Date.now()"
+  :time-formatter="formatTime"
+/&gt;</code></pre>
+    <pre><code class="language-ts">const formatTime = (value: string | number | Date | null | undefined) =&gt; {
+  if (!value) return ''
+  const date = value instanceof Date ? value : new Date(value)
+  return date.toLocaleString('zh-CN', { hour12: false })
+}</code></pre>
+    <table>
+      <thead><tr><th>需求</th><th>推荐配置</th></tr></thead>
+      <tbody>
+        <tr><td>紧凑消息列表</td><td>`showAvatar=false`、`showName=false`、`showTime=false`</td></tr>
+        <tr><td>客服或多人会话</td><td>保留 `name` 和 `avatar`，便于区分角色。</td></tr>
+        <tr><td>消息时间格式统一</td><td>在外层封装 `timeFormatter`，不要在每条消息里写重复逻辑。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="streaming">
+    <h2>6. 流式输出</h2>
+    <p>`streaming` 只负责显示流式光标，不负责建立 SSE 或 WebSocket 连接。业务侧持续更新 `message` 即可。</p>
+    <pre><code class="language-vue">&lt;template&gt;
+  &lt;scq-chat-message
+    :message="answer || '正在生成...'"
+    role="ai"
+    content-type="markdown"
+    :streaming="streaming"
+  /&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+
+const answer = ref('')
+const streaming = ref(false)
+
+const start = () =&gt; {
+  const source = new EventSource('/api/chat')
+  streaming.value = true
+
+  source.onmessage = (event) =&gt; {
+    answer.value += event.data
+  }
+
+  source.onerror = () =&gt; {
+    streaming.value = false
+    source.close()
+  }
+}
+&lt;/script&gt;</code></pre>
+    <div class="note"><strong>行为说明：</strong>图片和视频内容不会显示流式光标。它们通常是完整资源，不适合用文本光标表达“生成中”。</div>
+  </section>
+
+  <section id="status">
+    <h2>7. 消息状态</h2>
+    <p>状态适合展示“正在思考”“正在调用工具”“处理完成”“失败”等消息级反馈。组件统一通过 <code>status</code> 对象配置状态；不传 <code>status</code> 时，不展示状态区域。</p>
+    <pre><code class="language-vue">&lt;scq-chat-message
+  message="正在整理上下文，稍后给出完整回答。"
+  role="ai"
+  :status="{ type: 'thinking', text: '正在思考中' }"
+/&gt;
+
+&lt;scq-chat-message
+  message="构建检查完成。"
+  role="ai"
+  :status="{ type: 'success', text: '处理完成', loading: false }"
+/&gt;</code></pre>
+    <table>
+      <thead><tr><th>状态类型</th><th>适合场景</th></tr></thead>
+      <tbody>
+        <tr><td>thinking</td><td>AI 正在组织回答、规划步骤。</td></tr>
+        <tr><td>tool</td><td>正在调用接口、工具、插件或外部系统。</td></tr>
+        <tr><td>loading</td><td>普通处理中状态。</td></tr>
+        <tr><td>success</td><td>任务已经完成。</td></tr>
+        <tr><td>warning</td><td>结果可用，但需要用户注意。</td></tr>
+        <tr><td>error</td><td>请求失败、工具失败或内容不可用。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="media" class="section-break">
+    <h2>8. 图片与视频</h2>
+    <h3>8.1 图片消息</h3>
+    <p>图片可以直接传 URL，也可以传对象。`previewable` 控制是否允许点击预览，加载失败会显示 `imageFallbackText`。</p>
+    <pre><code class="language-vue">&lt;scq-chat-message
+  :message="imageUrl"
+  role="ai"
+  content-type="image"
+  image-fallback-text="图片暂时无法加载"
+  @preview-open="handlePreviewOpen"
+  @preview-close="handlePreviewClose"
+  @image-error="handleImageError"
+/&gt;</code></pre>
+    <pre><code class="language-ts">const imageUrl = 'https://example.com/result.png'
+
+const handlePreviewOpen = (src: string) =&gt; {
+  console.log('打开预览', src)
+}
+
+const handlePreviewClose = (src: string) =&gt; {
+  console.log('关闭预览', src)
+}
+
+const handleImageError = (src: string) =&gt; {
+  console.warn('图片加载失败', src)
+}</code></pre>
+
+    <h3>8.2 视频消息</h3>
+    <pre><code class="language-vue">&lt;scq-chat-message
+  role="user"
+  content-type="video"
+  :message="videoPayload"
+/&gt;</code></pre>
+    <pre><code class="language-ts">const videoPayload = {
+  src: 'https://example.com/demo.mp4',
+  poster: 'https://example.com/poster.png',
+  controls: true,
+  preload: 'metadata',
+}</code></pre>
+
+    <h3>8.3 自动识别媒体</h3>
+    <p>`contentType="auto"` 时，组件会识别对象里的 `type`、`mediaType`、`contentType`，也会根据 URL 后缀判断图片或视频。</p>
+    <pre><code class="language-ts">const mediaMessage = {
+  type: 'image',
+  src: 'https://example.com/chart.webp',
+  alt: '分析图表',
+}</code></pre>
+  </section>
+
+  <section id="attachments">
+    <h2>9. 文件附件</h2>
+    <p>附件适合展示模型生成的文件、用户上传的材料、工单附件和下载资源。组件会根据文件名识别常见类型，也可以手动指定 `type`。</p>
+    <pre><code class="language-vue">&lt;scq-chat-message
+  :message="attachmentMessage"
+  role="ai"
+  :attachments="fileAttachments"
+  :attachment-click="handleAttachmentClick"
+  @attachment-click="trackAttachmentClick"
+/&gt;</code></pre>
+    <pre><code class="language-ts">const attachmentMessage = '下面是本次分析用到的文件。'
+
+const fileAttachments = [
+  {
+    name: '需求说明.pdf',
+    url: 'https://example.com/spec.pdf',
+    size: 245760,
+    download: true,
+  },
+  {
+    name: '数据分析.xlsx',
+    url: 'https://example.com/report.xlsx',
+    size: '1.2 MB',
+  },
+  {
+    name: '上传中.zip',
+    status: 'uploading',
+    progress: 48,
+    statusText: '上传中',
+  },
+]
+
+const handleAttachmentClick = (payload, event) =&gt; {
+  if (payload.status === 'uploading') {
+    event.preventDefault()
+    return false
+  }
+}
+
+const trackAttachmentClick = (payload) =&gt; {
+  console.log('附件点击', payload.name, payload.type)
+}</code></pre>
+    <table>
+      <thead><tr><th>附件状态</th><th>展示含义</th><th>常见用法</th></tr></thead>
+      <tbody>
+        <tr><td>default</td><td>普通附件</td><td>可打开或下载。</td></tr>
+        <tr><td>uploading</td><td>上传中</td><td>配合 `progress` 显示进度，默认阻止打开。</td></tr>
+        <tr><td>success</td><td>上传或生成成功</td><td>用于明确任务结果。</td></tr>
+        <tr><td>error</td><td>失败</td><td>提示用户重新上传或重试。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="actions">
+    <h2>10. 消息操作</h2>
+    <p>通过 `actions` 插槽可以放置复制、重新生成、点赞、点踩、引用、删除等按钮。组件只提供容器样式，具体行为由业务决定。</p>
+    <pre><code class="language-vue">&lt;scq-chat-message message="这是一条可操作的回答。" role="ai"&gt;
+  &lt;template #actions&gt;
+    &lt;button type="button" class="scq-chat-message__action" @click="copy"&gt;复制&lt;/button&gt;
+    &lt;button type="button" class="scq-chat-message__action" @click="retry"&gt;重新生成&lt;/button&gt;
+    &lt;button type="button" class="scq-chat-message__action" @click="feedback('up')"&gt;有帮助&lt;/button&gt;
+  &lt;/template&gt;
+&lt;/scq-chat-message&gt;</code></pre>
+    <div class="scenario"><strong>建议：</strong>如果同一项目中所有消息都有相同操作，可以在业务侧再封装一层 `AppChatMessage`，把复制、重试、反馈等动作统一进去。</div>
+  </section>
+
+  <section id="style" class="section-break">
+    <h2>11. 样式定制</h2>
+    <p>ChatMessage 的样式类名统一使用 <code>scq-chat-message</code> 前缀。项目里如果需要调整消息框外观，推荐在业务样式文件中覆盖这些类名，而不是直接改组件源码。这样后续升级组件时更容易合并。</p>
+
+    <h3>11.1 推荐覆盖方式</h3>
+    <p>全局样式文件中可以直接覆盖类名。若在 Vue 单文件组件的 <code>scoped</code> 样式里修改，需要使用 <code>:deep()</code> 穿透到组件内部。</p>
+    <pre><code class="language-css">/* src/styles/chat-theme.css */
+.scq-chat-message.is-ai .scq-chat-message__bubble {
+  background: #ffffff;
+  border-color: #d7e2f0;
+  color: #1f2937;
+}
+
+.scq-chat-message.is-user .scq-chat-message__bubble {
+  background: #1677ff;
+  border-color: #1677ff;
+  color: #ffffff;
+}
+
+.scq-chat-message__content {
+  max-width: min(86%, 760px);
+}</code></pre>
+    <pre><code class="language-vue">&lt;style scoped&gt;
+.chat-page :deep(.scq-chat-message.is-ai .scq-chat-message__bubble) {
+  background: #ffffff;
+}
+
+.chat-page :deep(.scq-chat-message__avatar) {
+  width: 40px;
+  height: 40px;
+  flex-basis: 40px;
+}
+&lt;/style&gt;</code></pre>
+
+    <h3>11.2 常用样式入口</h3>
+    <table>
+      <thead><tr><th>类名</th><th>可调整内容</th><th>常见场景</th></tr></thead>
+      <tbody>
+        <tr><td>.scq-chat-message</td><td>单条消息的外层间距、整体布局。</td><td>调整消息之间的距离。</td></tr>
+        <tr><td>.scq-chat-message.is-ai</td><td>AI 消息整体方向和派生样式。</td><td>给助手消息设置统一主题。</td></tr>
+        <tr><td>.scq-chat-message.is-user</td><td>用户消息整体方向和派生样式。</td><td>修改用户气泡颜色或对齐方式。</td></tr>
+        <tr><td>.scq-chat-message__body</td><td>头像和内容区的横向布局。</td><td>调整头像与气泡的间距。</td></tr>
+        <tr><td>.scq-chat-message__content</td><td>消息内容最大宽度、内部排列。</td><td>让气泡更宽或更窄。</td></tr>
+        <tr><td>.scq-chat-message__bubble</td><td>气泡背景、边框、圆角、阴影、字号、内边距。</td><td>定制消息框视觉风格。</td></tr>
+        <tr><td>.scq-chat-message__avatar</td><td>头像尺寸、边框、背景。</td><td>适配项目头像尺寸规范。</td></tr>
+        <tr><td>.scq-chat-message__name</td><td>昵称字号、颜色、间距。</td><td>多人会话或客服场景。</td></tr>
+        <tr><td>.scq-chat-message__time</td><td>时间颜色、字号、位置。</td><td>弱化时间信息或贴近气泡。</td></tr>
+        <tr><td>.scq-chat-message__markdown</td><td>Markdown 段落、表格、链接、代码样式。</td><td>让 AI 输出符合项目内容样式。</td></tr>
+        <tr><td>.scq-chat-message__code-block</td><td>代码块背景、文字颜色、滚动条、圆角。</td><td>适配深色或浅色代码主题。</td></tr>
+        <tr><td>.scq-chat-message__attachments</td><td>附件列表宽度和间距。</td><td>调整附件卡片展示密度。</td></tr>
+        <tr><td>.scq-chat-message__attachment</td><td>附件卡片背景、边框、悬停效果。</td><td>贴合项目文件卡片风格。</td></tr>
+        <tr><td>.scq-chat-message__actions</td><td>操作区布局和间距。</td><td>放置复制、重试、反馈按钮。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>11.3 场景示例</h3>
+    <h4>扩大消息框宽度</h4>
+    <pre><code class="language-css">.scq-chat-message__content {
+  max-width: min(92%, 860px);
+}</code></pre>
+
+    <h4>改成更圆润的气泡</h4>
+    <pre><code class="language-css">.scq-chat-message__bubble {
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+
+.scq-chat-message.is-ai .scq-chat-message__bubble,
+.scq-chat-message.is-user .scq-chat-message__bubble {
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}</code></pre>
+
+    <h4>改用户消息颜色</h4>
+    <pre><code class="language-css">.scq-chat-message.is-user .scq-chat-message__bubble {
+  background: #0f766e;
+  border-color: #0f766e;
+}
+
+.scq-chat-message.is-user .scq-chat-message__avatar {
+  background: #0f766e;
+}</code></pre>
+
+    <h4>调整 Markdown 表格和代码块</h4>
+    <pre><code class="language-css">.scq-chat-message__markdown table {
+  font-size: 13px;
+}
+
+.scq-chat-message__markdown th {
+  background: #eef6ff;
+}
+
+.scq-chat-message__code-block {
+  background: #111827;
+  border-radius: 8px;
+}</code></pre>
+
+    <div class="note"><strong>维护建议：</strong>如果一个项目有统一的聊天主题，可以新建 <code>chat-theme.css</code>，集中覆盖 ChatMessage 样式，再在应用入口引入它。不要把样式分散写在多个页面里，后续会更难排查。</div>
+  </section>
+
+  <section id="api" class="section-break">
+    <h2>12. 配置项、事件和类型</h2>
+
+    <h3>12.1 Props</h3>
+    <table>
+      <thead><tr><th>参数</th><th>类型</th><th>默认值</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>message</td><td>unknown</td><td>-</td><td>消息内容。可以是字符串、对象、媒体对象等。</td></tr>
+        <tr><td>role</td><td>'ai' | 'user'</td><td>'ai'</td><td>消息角色，决定对齐方向和气泡视觉。</td></tr>
+        <tr><td>contentType</td><td>'auto' | 'text' | 'markdown' | 'json' | 'image' | 'video'</td><td>'auto'</td><td>正文渲染方式。</td></tr>
+        <tr><td>showTime</td><td>boolean</td><td>true</td><td>是否显示时间。没有 timestamp 或 formatter 返回空字符串时不会显示。</td></tr>
+        <tr><td>timestamp</td><td>string | number | Date | null</td><td>null</td><td>消息时间。</td></tr>
+        <tr><td>timeFormatter</td><td>(value) =&gt; string</td><td>-</td><td>自定义时间格式化函数。</td></tr>
+        <tr><td>streaming</td><td>boolean</td><td>false</td><td>是否显示流式输出光标。</td></tr>
+        <tr><td>status</td><td>ChatMessageStatus | null</td><td>null</td><td>消息状态对象。不传时不展示状态区域。</td></tr>
+        <tr><td>avatar</td><td>string</td><td>''</td><td>头像图片地址。</td></tr>
+        <tr><td>name</td><td>string</td><td>''</td><td>消息昵称。未传 avatar 时可生成首字母头像。</td></tr>
+        <tr><td>showAvatar</td><td>boolean</td><td>true</td><td>是否展示头像。</td></tr>
+        <tr><td>showName</td><td>boolean</td><td>true</td><td>是否展示昵称。</td></tr>
+        <tr><td>linkTarget</td><td>string</td><td>'_blank'</td><td>Markdown 链接 target。传空字符串可不设置。</td></tr>
+        <tr><td>linkRel</td><td>string</td><td>'noopener noreferrer'</td><td>Markdown 链接 rel。传空字符串可不设置。</td></tr>
+        <tr><td>previewable</td><td>boolean</td><td>true</td><td>图片是否支持点击预览。</td></tr>
+        <tr><td>imageFallbackText</td><td>string</td><td>'图片加载失败'</td><td>图片加载失败时显示的文案。</td></tr>
+        <tr><td>attachments</td><td>ChatAttachment[]</td><td>[]</td><td>消息附件列表。</td></tr>
+        <tr><td>attachmentClick</td><td>(payload, event) =&gt; boolean | void</td><td>-</td><td>附件点击回调。返回 false 可阻止默认打开或下载。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>12.2 Events</h3>
+    <table>
+      <thead><tr><th>事件</th><th>参数</th><th>触发时机</th></tr></thead>
+      <tbody>
+        <tr><td>attachment-click</td><td>(payload, nativeEvent)</td><td>点击附件时触发。</td></tr>
+        <tr><td>preview-open</td><td>(src)</td><td>图片预览打开时触发。</td></tr>
+        <tr><td>preview-close</td><td>(src)</td><td>图片预览关闭时触发，包括点击遮罩、点击关闭按钮和按 Esc。</td></tr>
+        <tr><td>image-error</td><td>(src)</td><td>图片加载失败时触发。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>12.3 Slots</h3>
+    <table>
+      <thead><tr><th>插槽</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>actions</td><td>消息操作区。适合放复制、重试、反馈、引用、删除等按钮。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>12.4 TypeScript 类型</h3>
+    <pre><code class="language-ts">type ChatRole = 'ai' | 'user'
+type ChatMediaType = 'image' | 'video'
+type ChatContentType = 'auto' | 'text' | 'markdown' | 'json' | ChatMediaType
+type ChatStatusType = 'thinking' | 'tool' | 'loading' | 'success' | 'warning' | 'error'
+type ChatVideoPreload = 'auto' | 'metadata' | 'none'
+type ChatAttachmentType = 'pdf' | 'word' | 'excel' | 'ppt' | 'zip' | 'code' | 'text' | 'image' | 'video' | 'audio' | 'file'
+type ChatAttachmentStatus = 'default' | 'uploading' | 'success' | 'error'</code></pre>
+
+    <pre><code class="language-ts">interface ChatMessageStatus {
+  type?: ChatStatusType
+  text?: string
+  loading?: boolean
+  visible?: boolean
+}
+
+interface ChatMediaMessage {
+  type?: ChatMediaType
+  mediaType?: ChatMediaType
+  contentType?: ChatMediaType
+  src?: string
+  url?: string
+  source?: string
+  alt?: string
+  title?: string
+  poster?: string
+  controls?: boolean
+  autoplay?: boolean
+  muted?: boolean
+  loop?: boolean
+  preload?: ChatVideoPreload
+}
+
+interface ChatAttachment {
+  name: string
+  url?: string
+  type?: ChatAttachmentType | string
+  size?: number | string
+  download?: boolean | string
+  target?: string
+  rel?: string
+  status?: ChatAttachmentStatus
+  statusText?: string
+  progress?: number
+}</code></pre>
+  </section>
+
+  <section id="practice">
+    <h2>13. 使用建议</h2>
+    <ul>
+      <li>消息列表、滚动到底部、接口请求和重试队列放在外层组件里管理，ChatMessage 保持单条消息职责。</li>
+      <li>Markdown 内容来自用户输入时，当前组件默认关闭 HTML 解析；如果业务要放开 HTML，需要另外做安全审核。</li>
+      <li>附件点击如果要接入权限校验、预览系统或下载签名，优先使用 `attachmentClick` 接管默认行为。</li>
+      <li>图片预览事件适合做埋点、暂停页面快捷键、恢复滚动锁定等工作。</li>
+      <li>复杂项目建议封装业务版消息组件，把当前用户信息、统一时间格式、默认操作区、埋点等逻辑收进去。</li>
+    </ul>
+    <div class="warning note"><strong>注意：</strong>ChatMessage 不是聊天 SDK。它不负责网络连接、消息协议、登录态和会话持久化。把这些职责留在业务层，组件会更容易维护，也更方便在不同产品里复用。</div>
+  </section>
+
+  <footer>
+    <p>更多组件示例和在线演示可参考：<a href="https://shichangqi.github.io/scq-vue/#/guide">https://shichangqi.github.io/scq-vue/#/guide</a></p>
+  </footer>
+</article>
+</body>
+</html>

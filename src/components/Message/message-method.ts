@@ -28,7 +28,7 @@ type MessageRecord = Required<Pick<MessageApiOptions, 'type' | 'duration' | 'sho
 }
 
 let messageSeed = 0
-let messageZIndexSeed = 3000
+let messageZIndexSeed = 10000
 let container: HTMLDivElement | null = null
 
 const state = reactive({

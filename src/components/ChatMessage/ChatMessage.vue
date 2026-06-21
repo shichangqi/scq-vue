@@ -29,9 +29,7 @@
             v-html="renderedMarkdown"
           ></div>
 
-          <pre v-else-if="resolvedContentType === 'json'" class="scq-chat-message__code-block">
-            <code class="hljs language-json" v-html="highlightedJson"></code>
-          </pre>
+          <pre v-else-if="resolvedContentType === 'json'" class="scq-chat-message__code-block"><code class="hljs language-json" v-html="highlightedJson"></code></pre>
 
           <div v-else-if="resolvedContentType === 'image'" class="scq-chat-message__media">
             <img
@@ -112,7 +110,16 @@
     </div>
 
     <Teleport to="body">
-      <div v-if="showImagePreview" class="scq-chat-message__preview" role="dialog" aria-modal="true" @click="closeImagePreview">
+      <div
+        v-if="showImagePreview"
+        ref="previewRef"
+        class="scq-chat-message__preview"
+        role="dialog"
+        aria-modal="true"
+        tabindex="-1"
+        @click="closeImagePreview"
+        @keydown.esc="closeImagePreview"
+      >
         <button type="button" class="scq-chat-message__preview-close" aria-label="关闭预览" @click.stop="closeImagePreview">×</button>
         <img :src="resolvedMedia.src" :alt="resolvedMedia.alt" @click.stop />
       </div>
@@ -129,7 +136,7 @@ import typescriptLang from 'highlight.js/lib/languages/typescript'
 import xmlLang from 'highlight.js/lib/languages/xml'
 import cssLang from 'highlight.js/lib/languages/css'
 import bashLang from 'highlight.js/lib/languages/bash'
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 
 defineOptions({
   name: 'ChatMessage',
@@ -259,10 +266,6 @@ const props = withDefaults(
     contentType?: ChatContentType
     showTime?: boolean
     streaming?: boolean
-    showStatus?: boolean
-    statusText?: string
-    statusType?: ChatStatusType
-    statusLoading?: boolean
     status?: ChatMessageStatus | null
     avatar?: string
     name?: string
@@ -282,10 +285,6 @@ const props = withDefaults(
     contentType: 'auto',
     showTime: true,
     streaming: false,
-    showStatus: false,
-    statusText: '',
-    statusType: 'thinking',
-    statusLoading: true,
     status: null,
     avatar: '',
     name: '',
@@ -304,6 +303,9 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (event: 'attachment-click', payload: ChatAttachmentClickPayload, nativeEvent: MouseEvent): void
+  (event: 'preview-open', src: string): void
+  (event: 'preview-close', src: string): void
+  (event: 'image-error', src: string): void
 }>()
 
 const statusTextMap: Record<ChatStatusType, string> = {
@@ -345,6 +347,7 @@ const attachmentIconMap: Record<ChatAttachmentType, string> = {
 
 const showImagePreview = ref(false)
 const imageLoadFailed = ref(false)
+const previewRef = ref<HTMLElement | null>(null)
 
 const defaultLinkOpen = markdown.renderer.rules.link_open ?? ((tokens, index, options, _env, self) => {
   return self.renderToken(tokens, index, options)
@@ -662,15 +665,15 @@ const shouldShowStreamCursor = computed(() => {
 })
 
 const resolvedStatusType = computed<ChatStatusType>(() => {
-  return props.status?.type ?? props.statusType
+  return props.status?.type ?? 'thinking'
 })
 
 const resolvedStatusLoading = computed(() => {
-  return props.status?.loading ?? props.statusLoading
+  return props.status?.loading ?? true
 })
 
 const resolvedStatusText = computed(() => {
-  const text = props.status?.text?.trim() ?? props.statusText.trim()
+  const text = props.status?.text?.trim() ?? ''
   return text || statusTextMap[resolvedStatusType.value]
 })
 
@@ -679,11 +682,7 @@ const shouldShowStatus = computed(() => {
     return props.status.visible && Boolean(resolvedStatusText.value)
   }
 
-  if (props.status) {
-    return Boolean(resolvedStatusText.value)
-  }
-
-  return props.showStatus && Boolean(resolvedStatusText.value)
+  return Boolean(props.status && resolvedStatusText.value)
 })
 
 const bubbleClasses = computed(() => {
@@ -702,15 +701,26 @@ const openImagePreview = () => {
   }
 
   showImagePreview.value = true
+  emit('preview-open', resolvedMedia.value.src)
+
+  nextTick(() => {
+    previewRef.value?.focus()
+  })
 }
 
 const closeImagePreview = () => {
+  if (!showImagePreview.value) {
+    return
+  }
+
   showImagePreview.value = false
+  emit('preview-close', resolvedMedia.value.src)
 }
 
 const handleImageError = () => {
   imageLoadFailed.value = true
   showImagePreview.value = false
+  emit('image-error', resolvedMedia.value.src)
 }
 
 const handleAttachmentClick = (event: MouseEvent, attachment: NormalizedAttachment) => {
@@ -1093,6 +1103,7 @@ watch(
   align-items: center;
   justify-content: center;
   padding: 32px;
+  outline: none;
   background: rgba(15, 23, 42, 0.78);
 }
 
@@ -1264,7 +1275,7 @@ watch(
   overflow-x: auto;
   margin: 10px 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.55) transparent;
+  scrollbar-color: rgba(60, 60, 67, 0.42) transparent;
 }
 
 .scq-chat-message__table-wrap::before,
@@ -1293,12 +1304,15 @@ watch(
 }
 
 .scq-chat-message__table-wrap::-webkit-scrollbar {
+  width: 8px;
   height: 8px;
 }
 
 .scq-chat-message__table-wrap::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(148, 163, 184, 0.5);
+  border: 2px solid transparent;
+  background: rgba(60, 60, 67, 0.38);
+  background-clip: content-box;
 }
 
 .scq-chat-message__table-wrap::-webkit-scrollbar-track {
@@ -1358,8 +1372,38 @@ watch(
   border-radius: 10px;
   padding: 10px 12px;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 60, 67, 0.42) transparent;
   background: #0f172a;
   color: #e2e8f0;
+}
+
+.scq-chat-message__code-block::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scq-chat-message__code-block::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: rgba(226, 232, 240, 0.45);
+  background-clip: content-box;
+}
+
+.scq-chat-message__code-block::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (hover: hover) {
+  .scq-chat-message__table-wrap::-webkit-scrollbar-thumb {
+    background: rgba(60, 60, 67, 0.52);
+    background-clip: content-box;
+  }
+
+  .scq-chat-message__code-block::-webkit-scrollbar-thumb {
+    background: rgba(226, 232, 240, 0.62);
+    background-clip: content-box;
+  }
 }
 
 .scq-chat-message__code-block code {

@@ -164,6 +164,9 @@
           image-fallback-text="图片暂时无法加载"
           :timestamp="messageTime"
           :time-formatter="formatTime"
+          @preview-open="handlePreviewOpen"
+          @preview-close="handlePreviewClose"
+          @image-error="handleImageError"
         />
         <scq-chat-message
           :message="videoPayload"
@@ -183,6 +186,7 @@
           name="SCQ Assistant"
           :attachments="fileAttachments"
           :attachment-click="handleAttachmentClick"
+          @attachment-click="trackAttachmentClick"
           :timestamp="messageTime"
           :time-formatter="formatTime"
         />
@@ -223,20 +227,33 @@
         <tr><td>showName</td><td>{{ t('chat.showName.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>streaming</td><td>{{ t('chat.streaming.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>status</td><td>{{ t('chat.status.desc') }}</td><td>{ type, text, loading, visible }</td><td>null</td></tr>
-        <tr><td>showStatus</td><td>{{ t('chat.showStatus.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>statusText</td><td>{{ t('chat.statusText.desc') }}</td><td>string</td><td>-</td></tr>
-        <tr><td>statusType</td><td>{{ t('chat.statusType.desc') }}</td><td>thinking | tool | loading | success | warning | error</td><td>thinking</td></tr>
-        <tr><td>statusLoading</td><td>{{ t('chat.statusLoading.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>linkTarget</td><td>{{ t('chat.linkTarget.desc') }}</td><td>string</td><td>_blank</td></tr>
         <tr><td>linkRel</td><td>{{ t('chat.linkRel.desc') }}</td><td>string</td><td>noopener noreferrer</td></tr>
         <tr><td>previewable</td><td>{{ t('chat.previewable.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>imageFallbackText</td><td>{{ t('chat.imageFallbackText.desc') }}</td><td>string</td><td>图片加载失败</td></tr>
         <tr><td>attachments</td><td>{{ t('chat.attachments.desc') }}</td><td>ChatAttachment[]</td><td>[]</td></tr>
         <tr><td>attachmentClick</td><td>{{ t('chat.attachmentClick.desc') }}</td><td>(payload, event) =&gt; boolean | void</td><td>-</td></tr>
-        <tr><td>@attachment-click</td><td>{{ t('chat.attachmentClickEvent.desc') }}</td><td>(payload, event) =&gt; void</td><td>-</td></tr>
         <tr><td>showTime</td><td>{{ t('chat.showTime.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>timestamp</td><td>{{ t('chat.timestamp.desc') }}</td><td>string | number | Date | null</td><td>null</td></tr>
         <tr><td>timeFormatter</td><td>{{ t('chat.timeFormatter.desc') }}</td><td>(value) =&gt; string</td><td>-</td></tr>
+      </tbody>
+    </table>
+
+    <h2>{{ t('chat.events') }}</h2>
+    <table class="prop-table">
+      <thead>
+        <tr>
+          <th>{{ t('doc.param') }}</th>
+          <th>{{ t('doc.desc') }}</th>
+          <th>{{ t('doc.type') }}</th>
+          <th>{{ t('doc.default') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>@attachment-click</td><td>{{ t('chat.attachmentClickEvent.desc') }}</td><td>(payload, event) =&gt; void</td><td>-</td></tr>
+        <tr><td>@preview-open</td><td>{{ t('chat.previewOpen.desc') }}</td><td>(src) =&gt; void</td><td>-</td></tr>
+        <tr><td>@preview-close</td><td>{{ t('chat.previewClose.desc') }}</td><td>(src) =&gt; void</td><td>-</td></tr>
+        <tr><td>@image-error</td><td>{{ t('chat.imageError.desc') }}</td><td>(src) =&gt; void</td><td>-</td></tr>
       </tbody>
     </table>
   </section>
@@ -480,6 +497,9 @@ const mediaCode = `<template>
     image-fallback-text="图片暂时无法加载"
     :timestamp="messageTime"
     :time-formatter="formatTime"
+    @preview-open="handlePreviewOpen"
+    @preview-close="handlePreviewClose"
+    @image-error="handleImageError"
   />
 
   <!-- 视频：传对象，可配置 controls、poster 等媒体属性 -->
@@ -499,6 +519,8 @@ const mediaCode = `<template>
 </template>
 
 <script setup lang="ts">
+import { Message } from 'scq-vue'
+
 const imageUrl = 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80'
 
 const videoPayload = {
@@ -513,6 +535,18 @@ const autoImagePayload = {
 }
 
 const messageTime = Date.now()
+
+const handlePreviewOpen = (src: string) => {
+  Message.info({ message: '图片预览已打开', description: src })
+}
+
+const handlePreviewClose = (src: string) => {
+  Message.success({ message: '图片预览已关闭', description: src })
+}
+
+const handleImageError = (src: string) => {
+  Message.error({ message: '图片加载失败', description: src })
+}
 <\/script>`
 
 const attachmentsCode = `<template>
@@ -522,6 +556,7 @@ const attachmentsCode = `<template>
     name="SCQ Assistant"
     :attachments="fileAttachments"
     :attachment-click="handleAttachmentClick"
+    @attachment-click="trackAttachmentClick"
     :timestamp="messageTime"
   />
 </template>
@@ -579,6 +614,10 @@ const handleAttachmentClick = (payload, event) => {
     message: '附件点击数据',
     description: 'name: ' + payload.name + '\nurl: ' + payload.url + '\ntype: ' + payload.type + '\nlabel: ' + payload.label + '\nstatus: ' + payload.status,
   })
+}
+
+const trackAttachmentClick = (payload) => {
+  console.log('附件点击事件', payload.name, payload.type)
 }
 
 const messageTime = Date.now()
@@ -764,6 +803,18 @@ const vueComparePayload = `以下是 Vue 2 与 Vue 3 的核心特性对比表格
 如需我为你生成一份 **Vue 2 → Vue 3 迁移检查清单** 或 **一个最小可运行的 Vue 3 + TS + Vite 示例结构**，欢迎随时提出！`
 
 const imageUrl = 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80'
+
+const handlePreviewOpen = (src: string) => {
+  Message.info({ message: '图片预览已打开', description: src })
+}
+
+const handlePreviewClose = (src: string) => {
+  Message.success({ message: '图片预览已关闭', description: src })
+}
+
+const handleImageError = (src: string) => {
+  Message.error({ message: '图片加载失败', description: src })
+}
 
 const videoPayload = {
   src: 'https://www.w3schools.com/html/movie.mp4',

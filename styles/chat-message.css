@@ -346,6 +346,7 @@
   align-items: center;
   justify-content: center;
   padding: 32px;
+  outline: none;
   background: rgba(15, 23, 42, 0.78);
 }
 
@@ -517,7 +518,7 @@
   overflow-x: auto;
   margin: 10px 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.55) transparent;
+  scrollbar-color: rgba(60, 60, 67, 0.42) transparent;
 }
 
 .scq-chat-message__table-wrap::before,
@@ -546,12 +547,15 @@
 }
 
 .scq-chat-message__table-wrap::-webkit-scrollbar {
+  width: 8px;
   height: 8px;
 }
 
 .scq-chat-message__table-wrap::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  background: rgba(148, 163, 184, 0.5);
+  border: 2px solid transparent;
+  background: rgba(60, 60, 67, 0.38);
+  background-clip: content-box;
 }
 
 .scq-chat-message__table-wrap::-webkit-scrollbar-track {
@@ -611,8 +615,38 @@
   border-radius: 10px;
   padding: 10px 12px;
   overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 60, 67, 0.42) transparent;
   background: #0f172a;
   color: #e2e8f0;
+}
+
+.scq-chat-message__code-block::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scq-chat-message__code-block::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background: rgba(226, 232, 240, 0.45);
+  background-clip: content-box;
+}
+
+.scq-chat-message__code-block::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (hover: hover) {
+  .scq-chat-message__table-wrap::-webkit-scrollbar-thumb {
+    background: rgba(60, 60, 67, 0.52);
+    background-clip: content-box;
+  }
+
+  .scq-chat-message__code-block::-webkit-scrollbar-thumb {
+    background: rgba(226, 232, 240, 0.62);
+    background-clip: content-box;
+  }
 }
 
 .scq-chat-message__code-block code {
