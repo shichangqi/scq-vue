@@ -1,4 +1,5 @@
 import type { App, Plugin } from 'vue'
+import '../styles/index.css'
 import Button from './components/Button'
 import Input from './components/Input'
 import Icon from './components/Icon'

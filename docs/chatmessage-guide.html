@@ -309,7 +309,7 @@
       <li>图片预览</li>
       <li>视频播放</li>
       <li>文件附件</li>
-      <li>流式光标</li>
+      <li>流式状态</li>
       <li>状态提示</li>
       <li>操作插槽</li>
     </ul>
@@ -442,11 +442,13 @@ const passed = true
 
   <section id="profile">
     <h2>5. 头像、昵称和时间</h2>
-    <p>`avatar`、`name` 和 `timestamp` 用于补充消息来源。没有头像但传了昵称时，会显示昵称首字母头像。</p>
+    <p>`avatar`、`avatarText`、`avatarAlt`、`name` 和 `timestamp` 用于补充消息来源。头像图片、头像文字和展示昵称可以分别配置；没有头像图片时，会优先显示 `avatarText`，未传时再使用昵称首字母。</p>
     <pre><code class="language-vue">&lt;scq-chat-message
   message="头像可以传图片，也可以只传昵称。"
   role="ai"
   name="SCQ Assistant"
+  avatar-text="AI"
+  avatar-alt="SCQ Assistant avatar"
   avatar="https://example.com/avatar.png"
   :timestamp="Date.now()"
   :time-formatter="formatTime"
@@ -468,7 +470,7 @@ const passed = true
 
   <section id="streaming">
     <h2>6. 流式输出</h2>
-    <p>`streaming` 只负责显示流式光标，不负责建立 SSE 或 WebSocket 连接。业务侧持续更新 `message` 即可。</p>
+    <p>`streaming` 用于标记消息处于流式输出状态，不负责建立 SSE 或 WebSocket 连接，也不再额外显示光标。业务侧持续更新 `message` 即可。</p>
     <pre><code class="language-vue">&lt;template&gt;
   &lt;scq-chat-message
     :message="answer || '正在生成...'"
@@ -498,7 +500,7 @@ const start = () =&gt; {
   }
 }
 &lt;/script&gt;</code></pre>
-    <div class="note"><strong>行为说明：</strong>图片和视频内容不会显示流式光标。它们通常是完整资源，不适合用文本光标表达“生成中”。</div>
+    <div class="note"><strong>行为说明：</strong>流式输出时组件会保留 `aria-live` 提示，方便辅助技术感知内容更新。</div>
   </section>
 
   <section id="status">
@@ -756,10 +758,12 @@ const trackAttachmentClick = (payload) =&gt; {
         <tr><td>showTime</td><td>boolean</td><td>true</td><td>是否显示时间。没有 timestamp 或 formatter 返回空字符串时不会显示。</td></tr>
         <tr><td>timestamp</td><td>string | number | Date | null</td><td>null</td><td>消息时间。</td></tr>
         <tr><td>timeFormatter</td><td>(value) =&gt; string</td><td>-</td><td>自定义时间格式化函数。</td></tr>
-        <tr><td>streaming</td><td>boolean</td><td>false</td><td>是否显示流式输出光标。</td></tr>
+        <tr><td>streaming</td><td>boolean</td><td>false</td><td>是否标记为流式输出状态，用于 aria-live 提示。</td></tr>
         <tr><td>status</td><td>ChatMessageStatus | null</td><td>null</td><td>消息状态对象。不传时不展示状态区域。</td></tr>
         <tr><td>avatar</td><td>string</td><td>''</td><td>头像图片地址。</td></tr>
-        <tr><td>name</td><td>string</td><td>''</td><td>消息昵称。未传 avatar 时可生成首字母头像。</td></tr>
+        <tr><td>avatarText</td><td>string</td><td>''</td><td>头像文字。未传 avatar 时展示，默认使用昵称首字母。</td></tr>
+        <tr><td>avatarAlt</td><td>string</td><td>''</td><td>头像图片替代文本。未传时根据头像文字或昵称生成。</td></tr>
+        <tr><td>name</td><td>string</td><td>''</td><td>消息展示昵称。</td></tr>
         <tr><td>showAvatar</td><td>boolean</td><td>true</td><td>是否展示头像。</td></tr>
         <tr><td>showName</td><td>boolean</td><td>true</td><td>是否展示昵称。</td></tr>
         <tr><td>linkTarget</td><td>string</td><td>'_blank'</td><td>Markdown 链接 target。传空字符串可不设置。</td></tr>

@@ -5,7 +5,7 @@
     </div>
 
     <div class="scq-chat-message__body">
-      <div v-if="shouldShowAvatar" class="scq-chat-message__avatar" :title="name || undefined">
+      <div v-if="shouldShowAvatar" class="scq-chat-message__avatar" :title="avatarTitle">
         <img v-if="avatar" :src="avatar" :alt="avatarAlt" />
         <span v-else>{{ avatarInitial }}</span>
       </div>
@@ -71,8 +71,6 @@
           </div>
 
           <div v-else class="scq-chat-message__text">{{ renderedText }}</div>
-
-          <span v-if="shouldShowStreamCursor" class="scq-chat-message__stream-cursor" aria-hidden="true"></span>
         </div>
 
         <div v-if="normalizedAttachments.length" class="scq-chat-message__attachments">
@@ -268,6 +266,8 @@ const props = withDefaults(
     streaming?: boolean
     status?: ChatMessageStatus | null
     avatar?: string
+    avatarText?: string
+    avatarAlt?: string
     name?: string
     showAvatar?: boolean
     showName?: boolean
@@ -287,6 +287,8 @@ const props = withDefaults(
     streaming: false,
     status: null,
     avatar: '',
+    avatarText: '',
+    avatarAlt: '',
     name: '',
     showAvatar: true,
     showName: true,
@@ -549,7 +551,7 @@ const highlightedJson = computed(() => {
 })
 
 const renderedMarkdown = computed(() => {
-  return markdown.render(String(props.message ?? ''), {
+  return markdown.render(String(props.message ?? '').trimEnd(), {
     linkTarget: props.linkTarget,
     linkRel: props.linkRel,
   })
@@ -639,8 +641,12 @@ const shouldShowTime = computed(() => {
   return props.showTime && Boolean(formattedTime.value)
 })
 
+const resolvedAvatarText = computed(() => {
+  return props.avatarText.trim() || props.name.trim()
+})
+
 const shouldShowAvatar = computed(() => {
-  return props.showAvatar && Boolean(props.avatar || props.name)
+  return props.showAvatar && Boolean(props.avatar || resolvedAvatarText.value)
 })
 
 const shouldShowName = computed(() => {
@@ -648,20 +654,21 @@ const shouldShowName = computed(() => {
 })
 
 const avatarInitial = computed(() => {
-  const text = props.name.trim()
+  const text = resolvedAvatarText.value
   return text ? text.slice(0, 1).toUpperCase() : ''
 })
 
 const avatarAlt = computed(() => {
-  return props.name ? `${props.name} avatar` : 'avatar'
+  const text = props.avatarAlt.trim()
+  if (text) {
+    return text
+  }
+
+  return resolvedAvatarText.value ? `${resolvedAvatarText.value} avatar` : 'avatar'
 })
 
-const isMediaContent = computed(() => {
-  return resolvedContentType.value === 'image' || resolvedContentType.value === 'video'
-})
-
-const shouldShowStreamCursor = computed(() => {
-  return props.streaming && !isMediaContent.value
+const avatarTitle = computed(() => {
+  return resolvedAvatarText.value || undefined
 })
 
 const resolvedStatusType = computed<ChatStatusType>(() => {
@@ -689,7 +696,6 @@ const bubbleClasses = computed(() => {
   return [
     `is-${resolvedContentType.value}`,
     {
-      'is-streaming': shouldShowStreamCursor.value,
       'has-status': shouldShowStatus.value,
     },
   ]
@@ -824,7 +830,7 @@ watch(
   line-height: 1.6;
   font-size: 14px;
   word-break: break-word;
-  white-space: pre-wrap;
+  white-space: normal;
 }
 
 .scq-chat-message.is-ai {
@@ -879,6 +885,7 @@ watch(
 
 .scq-chat-message__text {
   margin: 0;
+  white-space: pre-wrap;
 }
 
 .scq-chat-message__status {
@@ -975,38 +982,6 @@ watch(
   40% {
     transform: translateY(-2px);
     opacity: 1;
-  }
-}
-
-.scq-chat-message__bubble.is-streaming {
-  position: relative;
-}
-
-.scq-chat-message__stream-cursor {
-  display: inline-block;
-  width: 7px;
-  height: 1.2em;
-  margin-left: 2px;
-  border-radius: 999px;
-  background: currentColor;
-  vertical-align: -0.18em;
-  animation: scq-chat-message-cursor 0.9s steps(2, start) infinite;
-}
-
-.scq-chat-message__code-block + .scq-chat-message__stream-cursor,
-.scq-chat-message__markdown + .scq-chat-message__stream-cursor {
-  margin-top: 6px;
-}
-
-@keyframes scq-chat-message-cursor {
-  0%,
-  45% {
-    opacity: 1;
-  }
-
-  46%,
-  100% {
-    opacity: 0;
   }
 }
 
@@ -1261,11 +1236,20 @@ watch(
   color: rgba(255, 255, 255, 0.92);
 }
 
+.scq-chat-message__markdown {
+  display: flow-root;
+  white-space: normal;
+}
+
 .scq-chat-message__markdown :deep(p) {
   margin: 0 0 10px;
 }
 
-.scq-chat-message__markdown :deep(p:last-child) {
+.scq-chat-message__markdown :deep(:first-child) {
+  margin-top: 0;
+}
+
+.scq-chat-message__markdown :deep(:last-child) {
   margin-bottom: 0;
 }
 

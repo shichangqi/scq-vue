@@ -15,9 +15,11 @@
     <DocExample :code="profileCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
-          message="头像可以传图片，也可以只传昵称生成首字母头像。"
+          message="头像图片、头像文字和展示昵称可以分别配置。"
           role="ai"
           name="SCQ Assistant"
+          avatar-text="AI"
+          avatar-alt="SCQ Assistant avatar"
           :avatar="assistantAvatar"
           :timestamp="messageTime"
           :time-formatter="formatTime"
@@ -222,6 +224,8 @@
         <tr><td>role</td><td>{{ t('chat.role.desc') }}</td><td>ai | user</td><td>ai</td></tr>
         <tr><td>contentType</td><td>{{ t('chat.contentType.desc') }}</td><td>auto | text | markdown | json | image | video</td><td>auto</td></tr>
         <tr><td>avatar</td><td>{{ t('chat.avatar.desc') }}</td><td>string</td><td>-</td></tr>
+        <tr><td>avatarText</td><td>{{ t('chat.avatarText.desc') }}</td><td>string</td><td>-</td></tr>
+        <tr><td>avatarAlt</td><td>{{ t('chat.avatarAlt.desc') }}</td><td>string</td><td>-</td></tr>
         <tr><td>name</td><td>{{ t('chat.name.desc') }}</td><td>string</td><td>-</td></tr>
         <tr><td>showAvatar</td><td>{{ t('chat.showAvatar.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>showName</td><td>{{ t('chat.showName.desc') }}</td><td>boolean</td><td>true</td></tr>
@@ -279,9 +283,11 @@ const messageTime = Date.now()
 
 const profileCode = `<template>
   <scq-chat-message
-    message="头像可以传图片，也可以只传昵称生成首字母头像。"
+    message="头像图片、头像文字和展示昵称可以分别配置。"
     role="ai"
     name="SCQ Assistant"
+    avatar-text="AI"
+    avatar-alt="SCQ Assistant avatar"
     :avatar="assistantAvatar"
     :timestamp="messageTime"
   />
@@ -415,7 +421,7 @@ const chunks = [
   '### 分析结果\\n',
   '- 文本会随着 message 更新逐步渲染\\n',
   '- Markdown、代码块和 JSON 也可以同步刷新\\n',
-  '- 图片和视频内容不会显示流式光标\\n\\n',
+  '- streaming 会标记消息处于持续更新状态\\n\\n',
   '~~~ts\\nconst source = new EventSource(url)\\n',
   'source.onmessage = (event) => {\\n  streamMessage.value += event.data\\n}\\n',
   '~~~',
@@ -719,7 +725,7 @@ const streamChunks = [
   '### 分析结果\n',
   '- 文本会随着 message 更新逐步渲染\n',
   '- Markdown、代码块和 JSON 也可以同步刷新\n',
-  '- 图片和视频内容不会显示流式光标\n\n',
+  '- streaming 会标记消息处于持续更新状态\n\n',
   '~~~ts\nconst source = new EventSource(url)\n',
   'source.onmessage = (event) => {\n  streamMessage.value += event.data\n}\n',
   '~~~',
