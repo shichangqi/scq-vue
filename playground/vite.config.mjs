@@ -18,5 +18,16 @@ export default defineConfig({
   server: {
     host: '127.0.0.1',
     port: 5174,
+    proxy: {
+      '/api/AI': {
+        target: 'http://116.62.202.77:8001',
+        changeOrigin: true,
+      },
+      '/chatos8/go': {
+        target: 'https://siomi.aichat83.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/chatos8\/go/, '/go'),
+      },
+    },
   },
 })

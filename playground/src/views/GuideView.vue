@@ -36,12 +36,33 @@ createApp(App).use(ScqVue).mount('#app')`
 
 const onDemandCode = `import { createApp } from 'vue'
 import App from './App.vue'
-import { ScqButton, ScqInput, ScqRadio, ScqRadioGroup, ScqCheckbox, ScqCheckboxGroup, ScqWatermark, ScqSelect } from 'scq-vue'
+import {
+  ScqButton,
+  ScqInput,
+  ScqIcon,
+  ScqChatMessage,
+  ScqDialog,
+  ScqModal,
+  ScqMessage,
+  ScqPopup,
+  ScqRadio,
+  ScqRadioGroup,
+  ScqCheckbox,
+  ScqCheckboxGroup,
+  ScqWatermark,
+  ScqSelect,
+} from 'scq-vue'
 import 'scq-vue/style.css'
 
 const app = createApp(App)
 app.use(ScqButton)
 app.use(ScqInput)
+app.use(ScqIcon)
+app.use(ScqChatMessage)
+app.use(ScqDialog)
+app.use(ScqModal)
+app.use(ScqMessage)
+app.use(ScqPopup)
 app.use(ScqRadio)
 app.use(ScqRadioGroup)
 app.use(ScqCheckbox)
@@ -50,9 +71,30 @@ app.use(ScqWatermark)
 app.use(ScqSelect)
 app.mount('#app')`
 
-const styleCode = `import { ScqButton, ScqInput, ScqRadio, ScqRadioGroup, ScqCheckbox, ScqCheckboxGroup, ScqWatermark, ScqSelect } from 'scq-vue'
+const styleCode = `import {
+  ScqButton,
+  ScqInput,
+  ScqIcon,
+  ScqChatMessage,
+  ScqDialog,
+  ScqModal,
+  ScqMessage,
+  ScqPopup,
+  ScqRadio,
+  ScqRadioGroup,
+  ScqCheckbox,
+  ScqCheckboxGroup,
+  ScqWatermark,
+  ScqSelect,
+} from 'scq-vue'
 import 'scq-vue/styles/button.css'
 import 'scq-vue/styles/input.css'
+import 'scq-vue/styles/icon.css'
+import 'scq-vue/styles/chat-message.css'
+import 'scq-vue/styles/dialog.css'
+import 'scq-vue/styles/modal.css'
+import 'scq-vue/styles/message.css'
+import 'scq-vue/styles/popup.css'
 import 'scq-vue/styles/radio.css'
 import 'scq-vue/styles/checkbox.css'
 import 'scq-vue/styles/watermark.css'

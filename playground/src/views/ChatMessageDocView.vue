@@ -54,6 +54,83 @@
       </div>
     </DocExample>
 
+    <!-- <h2>真实流式 SSE 调试</h2>
+    <DocExample :code="streamingMarkdownCode" lang="vue" :default-expanded="true">
+      <div class="demo-grid">
+        <div class="stream-debug-panel">
+          <label class="stream-debug-panel__label" for="chat-stream-question">question</label>
+          <textarea
+            id="chat-stream-question"
+            v-model="streamQuestion"
+            class="stream-debug-panel__textarea"
+            rows="3"
+          ></textarea>
+          <div class="stream-debug-panel__fields">
+            <label class="stream-debug-panel__field">
+              <span>Chatos8 user_id</span>
+              <input v-model="aichatosUserId" class="stream-debug-panel__input" placeholder="/home 链路必填，free 可留空" />
+            </label>
+            <label class="stream-debug-panel__field">
+              <span>Chatos8 Authorization Token</span>
+              <input
+                v-model="aichatosAuthorization"
+                class="stream-debug-panel__input"
+                type="password"
+                autocomplete="off"
+                placeholder="可粘原始 token、token=... 或含 %2B/%3D 的值"
+              />
+            </label>
+          </div>
+          <div class="stream-debug-panel__actions">
+            <button type="button" class="stream-debug-panel__button" :disabled="streamLoading" @click="runStreamDebug">
+              {{ streamLoading ? '请求中...' : '调用真实流式接口' }}
+            </button>
+            <button type="button" class="stream-debug-panel__button" :disabled="streamLoading" @click="runStreamTableDebug">
+              调用真实表格接口
+            </button>
+            <button type="button" class="stream-debug-panel__button" :disabled="streamLoading" @click="runAichatosFreeStreamDebug">
+              调用 Chatos8 free SSE
+            </button>
+            <button
+              type="button"
+              class="stream-debug-panel__button"
+              :disabled="streamLoading || !aichatosUserId.trim() || !aichatosAuthorization.trim()"
+              @click="runAichatosHomeStreamDebug"
+            >
+              调用 Chatos8 /home 链路
+            </button>
+            <button type="button" class="stream-debug-panel__button is-secondary" :disabled="streamLoading" @click="loadStreamFixture">
+              加载 Markdown 样例
+            </button>
+            <button type="button" class="stream-debug-panel__button is-secondary" :disabled="streamLoading" @click="loadStreamTableFixture">
+              加载 Markdown 表格样例
+            </button>
+            <button type="button" class="stream-debug-panel__button is-secondary" :disabled="!streamLoading" @click="abortStreamDebug">
+              停止
+            </button>
+          </div>
+          <p class="stream-debug-panel__meta">
+            Markdown 长度：{{ (streamMarkdownContent || '').length }} 字符；SSE data 帧：{{ streamFrameCount }}；stop 帧：{{ streamStopFrameCount }}；组件只接收 markdown。
+          </p>
+          <p v-if="streamSourceMeta" class="stream-debug-panel__meta">来源：{{ streamSourceMeta }}</p>
+          <pre v-if="streamLastFrameSample" class="stream-debug-panel__frame">最近 data 帧：{{ streamLastFrameSample }}</pre>
+          <pre v-if="streamRecentFrameSamples.length" class="stream-debug-panel__frame">最近 {{ streamRecentFrameSamples.length }} 个原始 data payload：
+{{ streamRecentFrameSamples.join('\n---\n') }}</pre>
+          <p v-if="streamError" class="stream-debug-panel__error">{{ streamError }}</p>
+        </div>
+
+        <scq-chat-message
+          :message="streamMarkdownContent"
+          role="ai"
+          name="真实接口 Markdown"
+          content-type="markdown"
+          :status="streamStatus"
+          :timestamp="messageTime"
+          :time-formatter="formatTime"
+        />
+      </div>
+    </DocExample> -->
+
     <h2>{{ t('chat.actions') }}</h2>
     <DocExample :code="actionsCode" lang="vue">
       <div class="demo-grid">
@@ -91,46 +168,24 @@
       </div>
     </DocExample>
 
-    <h2>{{ t('chat.streaming') }}</h2>
-    <DocExample :code="streamingCode" lang="vue">
-      <div class="demo-grid">
-        <div class="chat-demo-actions">
-          <scq-button type="primary" size="small" :disabled="streaming" @click="startSseDemo">
-            {{ streaming ? t('chat.streaming.running') : t('chat.streaming.start') }}
-          </scq-button>
-          <scq-button size="small" @click="resetSseDemo">
-            {{ t('chat.streaming.reset') }}
-          </scq-button>
-        </div>
-        <scq-chat-message
-          :message="streamMessage || t('chat.streaming.placeholder')"
-          role="ai"
-          content-type="markdown"
-          :streaming="streaming"
-          :timestamp="messageTime"
-          :time-formatter="formatTime"
-        />
-      </div>
-    </DocExample>
-
     <h2>{{ t('chat.status') }}</h2>
     <DocExample :code="statusCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
-          message="我正在整理上下文，稍后给出完整回答。"
+          message=""
           role="ai"
           :status="{ type: 'thinking', text: '正在思考中' }"
           :timestamp="messageTime"
           :time-formatter="formatTime"
         />
         <scq-chat-message
-          message="已读取项目依赖和构建脚本，准备执行验证。"
+          message=""
           role="ai"
           :status="{ type: 'tool', text: '正在调用 pnpm run build' }"
           :show-time="false"
         />
         <scq-chat-message
-          message="正在生成类型声明和样式产物。"
+          message=""
           role="ai"
           :status="{ type: 'loading', text: '正在处理中' }"
           :show-time="false"
@@ -138,17 +193,15 @@
         <scq-chat-message
           message="检查完成，当前变更可以进入下一步。"
           role="ai"
-          :status="{ type: 'success', text: '处理完成', loading: false }"
           :show-time="false"
         />
         <scq-chat-message
           message="检测到还有未提交的 Select 相关改动，请确认是否属于本次发布。"
           role="ai"
-          :status="{ type: 'warning', text: '需要注意', loading: false }"
           :show-time="false"
         />
         <scq-chat-message
-          message="工具执行失败，请检查命令输出后重试。"
+          message=""
           role="ai"
           :status="{ type: 'error', text: '处理失败', loading: false }"
           :show-time="false"
@@ -223,13 +276,13 @@
         <tr><td>message</td><td>{{ t('chat.message.desc') }}</td><td>unknown</td><td>-</td></tr>
         <tr><td>role</td><td>{{ t('chat.role.desc') }}</td><td>ai | user</td><td>ai</td></tr>
         <tr><td>contentType</td><td>{{ t('chat.contentType.desc') }}</td><td>auto | text | markdown | json | image | video</td><td>auto</td></tr>
+        <tr><td>markdownBreaks</td><td>{{ t('chat.markdownBreaks.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>avatar</td><td>{{ t('chat.avatar.desc') }}</td><td>string</td><td>-</td></tr>
         <tr><td>avatarText</td><td>{{ t('chat.avatarText.desc') }}</td><td>string</td><td>-</td></tr>
         <tr><td>avatarAlt</td><td>{{ t('chat.avatarAlt.desc') }}</td><td>string</td><td>-</td></tr>
         <tr><td>name</td><td>{{ t('chat.name.desc') }}</td><td>string</td><td>-</td></tr>
         <tr><td>showAvatar</td><td>{{ t('chat.showAvatar.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>showName</td><td>{{ t('chat.showName.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>streaming</td><td>{{ t('chat.streaming.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>status</td><td>{{ t('chat.status.desc') }}</td><td>{ type, text, loading, visible }</td><td>null</td></tr>
         <tr><td>linkTarget</td><td>{{ t('chat.linkTarget.desc') }}</td><td>string</td><td>_blank</td></tr>
         <tr><td>linkRel</td><td>{{ t('chat.linkRel.desc') }}</td><td>string</td><td>noopener noreferrer</td></tr>
@@ -264,7 +317,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue'
+import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
 import { t } from '../i18n'
 import { Message } from 'scq-vue'
@@ -341,7 +394,7 @@ const markdownCode = `<template>
 </template>
 
 <script setup lang="ts">
-const markdownPayload = '# 接口返回 Markdown\\n\\n- 第一项\\n- 第二项\\n- [访问文档](https://example.com)'
+const markdownPayload = '# 接口返回 Markdown\\n\\n第一行\\n第二行\\n\\n- 第一项\\n- 第二项\\n- [访问文档](https://example.com)'
 const messageTime = Date.now()
 
 const formatTime = (value: string | number | Date | null | undefined): string => {
@@ -395,82 +448,179 @@ const formatTime = (value: string | number | Date | null | undefined): string =>
 }
 <\/script>`
 
-const streamingCode = `<template>
-  <scq-button type="primary" :disabled="streaming" @click="startSseDemo">
-    {{ streaming ? '输出中' : '模拟 SSE 输出' }}
-  </scq-button>
-  <scq-button @click="resetSseDemo">重置</scq-button>
+/* const streamingMarkdownCode = `<template>
+  <textarea v-model="streamQuestion" />
+  <input v-model="aichatosUserId" placeholder="Chatos8 user_id" />
+  <input v-model="aichatosAuthorization" type="password" placeholder="Chatos8 Authorization Token" />
+  <button :disabled="streamLoading" @click="runStreamDebug">调用真实流式接口</button>
+  <button :disabled="streamLoading" @click="runAichatosFreeStreamDebug">调用 Chatos8 free SSE</button>
+  <button :disabled="streamLoading || !aichatosUserId.trim() || !aichatosAuthorization.trim()" @click="runAichatosHomeStreamDebug">
+    调用 Chatos8 /home 链路
+  </button>
 
+  <!-- SSE 在请求层解析成 markdown 后再交给组件。 -->
   <scq-chat-message
-    :message="streamMessage || '等待 SSE 消息...'"
+    :message="streamMarkdownContent"
     role="ai"
     content-type="markdown"
-    :streaming="streaming"
-    :timestamp="messageTime"
+    :status="streamStatus"
   />
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, ref } from 'vue'
+import { computed, ref } from 'vue'
 
-const streamMessage = ref('')
-const streaming = ref(false)
-const messageTime = Date.now()
-const chunks = [
-  '正在读取 SSE 数据源...\\n\\n',
-  '### 分析结果\\n',
-  '- 文本会随着 message 更新逐步渲染\\n',
-  '- Markdown、代码块和 JSON 也可以同步刷新\\n',
-  '- streaming 会标记消息处于持续更新状态\\n\\n',
-  '~~~ts\\nconst source = new EventSource(url)\\n',
-  'source.onmessage = (event) => {\\n  streamMessage.value += event.data\\n}\\n',
-  '~~~',
-]
+const streamQuestion = ref('给我一个 react 的 input 组件代码')
+const streamTableQuestion = '请只返回一个 markdown 表格，表头为 功能 和 说明，至少 3 行，不要代码块，不要额外解释'
+const streamMarkdownContent = ref('')
+const streamLoading = ref(false)
+const streamError = ref('')
+const streamController = ref<AbortController | null>(null)
+const streamLineBuffer = ref('')
+const streamEventLines = ref<string[]>([])
+const streamRecentFrameSamples = ref<string[]>([])
+const aichatosUserId = ref('')
+const aichatosAuthorization = ref('')
 
-let timer: ReturnType<typeof window.setInterval> | null = null
+// Chatos8 /home 抓包链路：
+// 1. POST /go/api/group/add 创建会话，响应 AES-CBC 解密后取 data.group_id。
+// 2. POST /go/api/steam/see 创建问题，响应 AES-CBC 解密后取 data.question_id。
+// 3. GET /go/api/event/see?question_id=...&group_id=...&user_id=...&token=...&server_id=1。
+// 4. SSE 帧形如 event:message + data:{"Data":"...","Status":"","QuestionId":"...","GroupId":"...","Type":"question"}，结束帧 Status/Type 为 stop。
 
-const stopSseDemo = () => {
-  if (timer) window.clearInterval(timer)
-  timer = null
-  streaming.value = false
+const streamStatus = computed(() => ({
+  type: streamError.value ? 'error' : 'loading',
+  text: streamError.value || (streamLoading.value ? '正在读取流式接口' : ''),
+  loading: streamLoading.value,
+  visible: streamLoading.value || Boolean(streamError.value),
+}))
+
+const getStreamPayloadText = (payload: string): string => {
+  if (!payload || payload === '[DONE]') return ''
+  const text = payload.trim()
+  if (!/^[{[]/.test(text)) return payload
+
+  try {
+    const json = JSON.parse(text)
+    return json?.choices?.[0]?.delta?.content ?? json?.choices?.[0]?.message?.content ?? json?.content ?? json?.text ?? ''
+  } catch {
+    return payload
+  }
 }
 
-const startSseDemo = () => {
-  if (streaming.value) return
-  streamMessage.value = ''
-  streaming.value = true
-  let index = 0
+const flushStreamEvent = () => {
+  if (!streamEventLines.value.length) return
+  const dataLines = streamEventLines.value
+    .map((line) => line.match(/^data:[ \t]?(.*)$/)?.[1])
+    .filter((line): line is string => line !== undefined)
+  const rawLines = streamEventLines.value.filter((line) => !line.startsWith(':') && !/^(event|id|retry|data):/.test(line))
 
-  timer = window.setInterval(() => {
-    streamMessage.value += chunks[index] ?? ''
-    index += 1
-    if (index >= chunks.length) stopSseDemo()
-  }, 220)
+  if (dataLines.length) {
+    let content = dataLines.length === 1 && dataLines[0] === '' ? '\n' : getStreamPayloadText(dataLines.join('\n'))
+    rawLines.forEach((line) => {
+      const separator = content.endsWith('|') && line.trim().startsWith('|') ? '\n' : ''
+      content += separator + line
+    })
+    streamMarkdownContent.value += content
+  } else if (rawLines.length) {
+    streamMarkdownContent.value += rawLines.join('\n') + '\n'
+  }
+
+  streamEventLines.value = []
 }
 
-const resetSseDemo = () => {
-  stopSseDemo()
-  streamMessage.value = ''
+const appendStreamLine = (line: string) => {
+  if (!line.trim()) {
+    if (!streamEventLines.value.length) {
+      streamMarkdownContent.value += '\n'
+      return
+    }
+
+    flushStreamEvent()
+    return
+  }
+
+  if (!line.startsWith(':') && !/^(event|id|retry):/.test(line)) {
+    streamEventLines.value.push(line)
+  }
 }
 
-onBeforeUnmount(stopSseDemo)
-<\/script>`
+const appendStreamChunk = (chunk: string) => {
+  const lines = (streamLineBuffer.value + chunk.replace(/\r\n?/g, '\n')).split('\n')
+  streamLineBuffer.value = lines.pop() ?? ''
+  lines.forEach(appendStreamLine)
+}
+
+const flushStreamChunk = () => {
+  if (streamLineBuffer.value) {
+    appendStreamLine(streamLineBuffer.value)
+    streamLineBuffer.value = ''
+  }
+
+  flushStreamEvent()
+}
+
+const runStreamDebug = async () => {
+  streamController.value?.abort()
+  streamMarkdownContent.value = ''
+  streamLineBuffer.value = ''
+  streamEventLines.value = []
+  streamError.value = ''
+  streamLoading.value = true
+
+  const controller = new AbortController()
+  streamController.value = controller
+
+  try {
+    const url = '/api/AI/GetChatGptAnswerStream?' + new URLSearchParams({ question: streamQuestion.value, aiModel: 'qwen-max', temperatureNumber: '0.7' })
+    const response = await fetch(url, { signal: controller.signal })
+    if (!response.ok) throw new Error('HTTP ' + response.status)
+    if (!response.body) throw new Error('当前浏览器不支持 ReadableStream')
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder('utf-8')
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      appendStreamChunk(decoder.decode(value, { stream: true }))
+    }
+
+    appendStreamChunk(decoder.decode())
+    flushStreamChunk()
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') return
+    streamError.value = error instanceof Error ? error.message : String(error)
+  } finally {
+    streamLoading.value = false
+    streamController.value = null
+  }
+}
+
+const runAichatosFreeStreamDebug = async () => {
+  // POST /chatos8/go/api/event/free，data JSON 的 Data 字段直接拼成 markdown。
+}
+
+const runAichatosHomeStreamDebug = async () => {
+  // 使用上面的三步链路拿到 /event/see 的真实 SSE，再复用同一套 data.Data 解析。
+}
+<\/script>` */
 
 const statusCode = `<template>
   <scq-chat-message
-    message="我正在整理上下文，稍后给出完整回答。"
+    message=""
     role="ai"
     :status="{ type: 'thinking', text: '正在思考中' }"
   />
 
   <scq-chat-message
-    message="已读取项目依赖和构建脚本，准备执行验证。"
+    message=""
     role="ai"
     :status="{ type: 'tool', text: '正在调用 pnpm run build' }"
   />
 
   <scq-chat-message
-    message="正在生成类型声明和样式产物。"
+    message=""
     role="ai"
     :status="{ type: 'loading', text: '正在处理中' }"
   />
@@ -478,17 +628,15 @@ const statusCode = `<template>
   <scq-chat-message
     message="检查完成，当前变更可以进入下一步。"
     role="ai"
-    :status="{ type: 'success', text: '处理完成', loading: false }"
   />
 
   <scq-chat-message
     message="检测到还有未提交的 Select 相关改动，请确认是否属于本次发布。"
     role="ai"
-    :status="{ type: 'warning', text: '需要注意', loading: false }"
   />
 
   <scq-chat-message
-    message="工具执行失败，请检查命令输出后重试。"
+    message=""
     role="ai"
     :status="{ type: 'error', text: '处理失败', loading: false }"
   />
@@ -668,6 +816,183 @@ const apiData = {
 const currentTime = ref(Date.now())
 const assistantAvatar = 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=120&q=80'
 const attachmentMessage = ref('下面展示 5 类主要文档附件，点击可下载，也可以在 attachmentClick 中接管。')
+/* const streamQuestion = ref('给我一个 react 的 input 组件代码')
+const streamTableQuestion = '请只返回一个 markdown 表格，表头为 功能 和 说明，至少 3 行，不要代码块，不要额外解释'
+const streamMarkdownContent = ref('')
+const streamLoading = ref(false)
+const streamError = ref('')
+const streamController = ref<AbortController | null>(null)
+const streamLineBuffer = ref('')
+const streamEventLines = ref<string[]>([])
+const streamSourceMeta = ref('')
+const streamFrameCount = ref(0)
+const streamStopFrameCount = ref(0)
+const streamLastFrameSample = ref('')
+const streamRecentFrameSamples = ref<string[]>([])
+const aichatosUserId = ref('')
+const aichatosAuthorization = ref('') */
+/* const aichatosProxyBase = '/chatos8/go'
+const aichatosCryptoIv = 'hj6cdzrhj72x8ht1'
+const aichatosFreeAuthKey = 'qMwNebrbtGskdJfh'
+const aichatosServerId = '1'
+const aichatosDebugUserId = `scq-vue-${Date.now()}-${Math.random().toString(36).slice(2)}`
+
+type AichatosApiResponse<Data> = {
+  code?: number
+  data?: Data
+  retMsg?: string
+}
+
+type AichatosGroupAddData = {
+  group_id?: string | number
+}
+
+type AichatosSteamData = {
+  question_id?: string | number
+}
+
+const streamStatus = computed(() => ({
+  type: streamError.value ? 'error' : 'loading',
+  text: streamError.value || (streamLoading.value ? '正在读取流式接口' : ''),
+  loading: streamLoading.value,
+  visible: streamLoading.value || Boolean(streamError.value),
+}))
+
+const getUtf8Bytes = (text: string): Uint8Array => {
+  const encoded = encodeURIComponent(text)
+  const bytes: number[] = []
+
+  for (let index = 0; index < encoded.length; index += 1) {
+    if (encoded[index] === '%') {
+      bytes.push(Number.parseInt(encoded.slice(index + 1, index + 3), 16))
+      index += 2
+    } else {
+      bytes.push(encoded.charCodeAt(index))
+    }
+  }
+
+  return new Uint8Array(bytes)
+}
+
+const bytesToBase64 = (bytes: Uint8Array): string => {
+  let binary = ''
+  bytes.forEach((byte) => {
+    binary += String.fromCharCode(byte)
+  })
+  return btoa(binary)
+}
+
+const base64ToBytes = (base64: string): Uint8Array => {
+  return Uint8Array.from(atob(base64), (char) => char.charCodeAt(0))
+}
+
+const getAesSubtleCrypto = (): SubtleCrypto => {
+  const subtleCrypto = globalThis.crypto?.subtle
+  if (!subtleCrypto) {
+    throw new Error('当前浏览器不支持 Web Crypto AES-CBC')
+  }
+
+  return subtleCrypto
+}
+
+const encryptAichatosAesBase64 = async (plainText: string, keyText: string): Promise<string> => {
+  const subtleCrypto = getAesSubtleCrypto()
+  const cryptoKey = await subtleCrypto.importKey('raw', getUtf8Bytes(keyText), { name: 'AES-CBC' }, false, ['encrypt'])
+  const encrypted = await subtleCrypto.encrypt(
+    { name: 'AES-CBC', iv: getUtf8Bytes(aichatosCryptoIv) },
+    cryptoKey,
+    getUtf8Bytes(plainText),
+  )
+
+  return bytesToBase64(new Uint8Array(encrypted))
+}
+
+const decryptAichatosAesText = async (encryptedBase64: string, keyText: string): Promise<string> => {
+  const subtleCrypto = getAesSubtleCrypto()
+  const cryptoKey = await subtleCrypto.importKey('raw', getUtf8Bytes(keyText), { name: 'AES-CBC' }, false, ['decrypt'])
+  const decrypted = await subtleCrypto.decrypt(
+    { name: 'AES-CBC', iv: getUtf8Bytes(aichatosCryptoIv) },
+    cryptoKey,
+    base64ToBytes(encryptedBase64),
+  )
+
+  return new TextDecoder('utf-8').decode(decrypted)
+}
+
+const parseAichatosEncryptedText = (payload: string): string => {
+  try {
+    const parsed = JSON.parse(payload)
+    return typeof parsed === 'string' ? parsed : payload
+  } catch {
+    return payload
+  }
+}
+
+const decryptAichatosResponse = async <Data,>(payload: string): Promise<AichatosApiResponse<Data>> => {
+  const encryptedText = parseAichatosEncryptedText(payload).trim()
+  const keyText = encryptedText.slice(0, 16)
+  const encryptedBase64 = encryptedText.slice(16)
+  const decryptedText = await decryptAichatosAesText(encryptedBase64, keyText)
+  return JSON.parse(decryptedText) as AichatosApiResponse<Data>
+}
+
+const getAichatosFreeAuthorization = async (): Promise<string> => {
+  const encrypted = await encryptAichatosAesBase64(JSON.stringify({ id: `${Date.now()}-${Math.random().toString(36).slice(2)}` }), aichatosFreeAuthKey)
+  return `${aichatosFreeAuthKey}${encrypted}`
+}
+
+const getAichatosWrappedPayload = (pars: Record<string, unknown>, os = 'pc') => {
+  return JSON.stringify({
+    version: '1.1.1',
+    os,
+    channel: 'chatos',
+    language: 'zh',
+    pars,
+  })
+}
+
+const postAichatosEncrypted = async <Data,>(path: string, pars: Record<string, unknown>, authorization: string, signal: AbortSignal): Promise<AichatosApiResponse<Data>> => {
+  const response = await fetch(`${aichatosProxyBase}${path}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: authorization,
+    },
+    body: getAichatosWrappedPayload(pars),
+    signal,
+  })
+
+  if (!response.ok) {
+    throw new Error(`Chatos8 ${path} HTTP ${response.status}`)
+  }
+
+  const apiResponse = await decryptAichatosResponse<Data>(await response.text())
+  if (apiResponse.code !== 200) {
+    throw new Error(`Chatos8 ${path} ${apiResponse.retMsg || apiResponse.code || '请求失败'}`)
+  }
+
+  return apiResponse
+}
+
+const getAichatosUserId = (): string => {
+  return aichatosUserId.value.trim() || aichatosDebugUserId
+}
+
+const normalizeAichatosAuthorization = (value: string): string => {
+  let token = value.trim()
+  const tokenMatch = token.match(/(?:^|[?&])token=([^&]+)/i)
+  if (tokenMatch?.[1]) {
+    token = tokenMatch[1]
+  }
+
+  token = token.replace(/^Bearer\s+/i, '')
+
+  try {
+    return decodeURIComponent(token)
+  } catch {
+    return token
+  }
+} */
 
 const fileAttachments = [
   {
@@ -718,55 +1043,374 @@ const handleAttachmentClick = (payload: { name: string; url: string; type: strin
   })
 }
 
-const streamMessage = ref('')
-const streaming = ref(false)
-const streamChunks = [
-  '正在读取 SSE 数据源...\n\n',
-  '### 分析结果\n',
-  '- 文本会随着 message 更新逐步渲染\n',
-  '- Markdown、代码块和 JSON 也可以同步刷新\n',
-  '- streaming 会标记消息处于持续更新状态\n\n',
-  '~~~ts\nconst source = new EventSource(url)\n',
-  'source.onmessage = (event) => {\n  streamMessage.value += event.data\n}\n',
-  '~~~',
-]
-
-let streamTimer: ReturnType<typeof window.setInterval> | null = null
-
-const stopSseDemo = () => {
-  if (streamTimer) {
-    window.clearInterval(streamTimer)
+/* const findStreamPayloadText = (payload: unknown): string => {
+  if (typeof payload === 'string') {
+    return repairLikelyMojibake(payload)
   }
 
-  streamTimer = null
-  streaming.value = false
+  if (Array.isArray(payload)) {
+    return payload.map(findStreamPayloadText).join('')
+  }
+
+  if (!payload || typeof payload !== 'object') {
+    return ''
+  }
+
+  const record = payload as Record<string, unknown>
+  const direct = record.content ?? record.text ?? record.answer ?? record.Data
+  if (typeof direct === 'string') {
+    return direct
+  }
+
+  if (Array.isArray(record.choices)) {
+    return record.choices.map((choice) => {
+      if (!choice || typeof choice !== 'object') {
+        return ''
+      }
+
+      const choiceRecord = choice as Record<string, unknown>
+      return findStreamPayloadText(choiceRecord.delta ?? choiceRecord.message ?? choiceRecord)
+    }).join('')
+  }
+
+  return findStreamPayloadText(record.delta ?? record.message ?? record.data)
 }
 
-const startSseDemo = () => {
-  if (streaming.value) {
+const getMojibakeScore = (value: string): number => {
+  return (value.match(/[ÃÂ�]|â[\u0080-\u00bf]|ï¼/g) ?? []).length
+}
+
+const repairLikelyMojibake = (value: string): string => {
+  if (!/[ÃÂ�]|â[\u0080-\u00bf]|ï¼/.test(value)) {
+    return value
+  }
+
+  try {
+    const bytes = Uint8Array.from(value, (char) => char.charCodeAt(0) & 0xff)
+    const decoded = new TextDecoder('utf-8').decode(bytes)
+    return getMojibakeScore(decoded) < getMojibakeScore(value) ? decoded : value
+  } catch {
+    return value
+  }
+}
+
+const isStopStreamPayload = (payload: unknown): boolean => {
+  if (!payload || typeof payload !== 'object') {
+    return false
+  }
+
+  const record = payload as Record<string, unknown>
+  return record.Status === 'stop' || record.Type === 'stop'
+}
+
+const trackStreamPayload = (payload: string) => {
+  streamFrameCount.value += 1
+  const sample = repairLikelyMojibake(payload).slice(0, 500)
+  streamLastFrameSample.value = sample
+  streamRecentFrameSamples.value = [...streamRecentFrameSamples.value.slice(-7), sample]
+
+  try {
+    if (isStopStreamPayload(JSON.parse(payload.trim()))) {
+      streamStopFrameCount.value += 1
+    }
+  } catch {
+    if (payload === '[DONE]') {
+      streamStopFrameCount.value += 1
+    }
+  }
+}
+
+const getStreamPayloadText = (payload: string): string => {
+  if (!payload || payload === '[DONE]') {
+    return ''
+  }
+
+  const text = payload.trim()
+  if (!text || !/^[{[]/.test(text)) {
+    return payload
+  }
+
+  try {
+    return findStreamPayloadText(JSON.parse(text))
+  } catch {
+    return payload
+  }
+}
+
+const appendStreamPayload = (payload: string) => {
+  trackStreamPayload(payload)
+  streamMarkdownContent.value += getStreamPayloadText(payload)
+}
+
+const appendStreamDataLines = (dataLines: string[]) => {
+  if (dataLines.length === 1 && dataLines[0] === '') {
+    streamMarkdownContent.value += '\n'
     return
   }
 
-  streamMessage.value = ''
-  streaming.value = true
-  let index = 0
+  appendStreamPayload(dataLines.join('\n'))
+}
 
-  streamTimer = window.setInterval(() => {
-    streamMessage.value += streamChunks[index] ?? ''
-    index += 1
+const flushStreamEvent = () => {
+  if (!streamEventLines.value.length) {
+    return
+  }
 
-    if (index >= streamChunks.length) {
-      stopSseDemo()
+  const dataLines: string[] = []
+  const rawLines: string[] = []
+
+  streamEventLines.value.forEach((line) => {
+    if (!line || line.startsWith(':') || /^(?:event|id|retry):/.test(line)) {
+      return
     }
-  }, 220)
+
+    const dataMatch = line.match(/^data:[ \t]?(.*)$/)
+    if (dataMatch) {
+      dataLines.push(dataMatch[1] ?? '')
+      return
+    }
+
+    rawLines.push(line)
+  })
+
+  if (dataLines.length) {
+    appendStreamDataLines(dataLines)
+    rawLines.forEach((line) => {
+      const separator = streamMarkdownContent.value.endsWith('|') && line.trim().startsWith('|') ? '\n' : ''
+      streamMarkdownContent.value += `${separator}${line}`
+    })
+  } else if (rawLines.length) {
+    streamMarkdownContent.value += `${rawLines.join('\n')}\n`
+  }
+
+  streamEventLines.value = []
 }
 
-const resetSseDemo = () => {
-  stopSseDemo()
-  streamMessage.value = ''
+const appendStreamLine = (line: string) => {
+  if (!line.trim()) {
+    if (!streamEventLines.value.length) {
+      streamMarkdownContent.value += '\n'
+      return
+    }
+
+    flushStreamEvent()
+    return
+  }
+
+  streamEventLines.value.push(line)
 }
 
-onBeforeUnmount(stopSseDemo)
+const appendStreamChunk = (chunk: string) => {
+  const lines = `${streamLineBuffer.value}${chunk.replace(/\r\n?/g, '\n')}`.split('\n')
+  streamLineBuffer.value = lines.pop() ?? ''
+  lines.forEach(appendStreamLine)
+}
+
+const flushStreamChunk = () => {
+  if (streamLineBuffer.value) {
+    appendStreamLine(streamLineBuffer.value)
+    streamLineBuffer.value = ''
+  }
+
+  flushStreamEvent()
+}
+
+const resetStreamDebugState = (sourceMeta = '') => {
+  streamController.value?.abort()
+  streamController.value = null
+  streamMarkdownContent.value = ''
+  streamLineBuffer.value = ''
+  streamEventLines.value = []
+  streamError.value = ''
+  streamSourceMeta.value = sourceMeta
+  streamFrameCount.value = 0
+  streamStopFrameCount.value = 0
+  streamLastFrameSample.value = ''
+  streamRecentFrameSamples.value = []
+}
+
+const readStreamResponse = async (response: Response) => {
+  const contentType = response.headers.get('content-type') ?? ''
+
+  if (!response.ok && !/text\/event-stream/i.test(contentType)) {
+    const errorText = await response.text().catch(() => '')
+    throw new Error(`HTTP ${response.status}${errorText ? `: ${errorText.slice(0, 240)}` : ''}`)
+  }
+
+  if (!response.body) {
+    throw new Error('当前浏览器不支持 ReadableStream')
+  }
+
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder('utf-8')
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) {
+      break
+    }
+    appendStreamChunk(decoder.decode(value, { stream: true }))
+  }
+
+  appendStreamChunk(decoder.decode())
+  flushStreamChunk()
+
+  if (!response.ok) {
+    streamError.value = `HTTP ${response.status}，已解析响应中的 SSE data 帧`
+  }
+}
+
+const runStreamDebug = async () => {
+  resetStreamDebugState('/api/AI/GetChatGptAnswerStream；原样发送 question；展示最近原始 data payload')
+  streamLoading.value = true
+
+  const controller = new AbortController()
+  streamController.value = controller
+
+  try {
+    const url = `/api/AI/GetChatGptAnswerStream?${new URLSearchParams({ question: streamQuestion.value, aiModel: 'qwen-max', temperatureNumber: '0.7' })}`
+    const response = await fetch(url, { signal: controller.signal })
+    await readStreamResponse(response)
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return
+    }
+
+    streamError.value = error instanceof Error ? error.message : String(error)
+    Message.error({ message: '流式接口请求失败', description: streamError.value })
+  } finally {
+    streamLoading.value = false
+    streamController.value = null
+  }
+}
+
+const runAichatosFreeStreamDebug = async () => {
+  resetStreamDebugState('Chatos8 free：POST /go/api/event/free；SSE data 为 { Data, Status, Type }')
+  streamLoading.value = true
+
+  const controller = new AbortController()
+  streamController.value = controller
+
+  try {
+    const response = await fetch(`${aichatosProxyBase}/api/event/free`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: await getAichatosFreeAuthorization(),
+      },
+      body: JSON.stringify({
+        version: '1.1.1',
+        os: 'h5',
+        language: 'zh',
+        pars: {
+          user_id: getAichatosUserId(),
+          question: streamQuestion.value,
+          group_id: '1',
+          server_id: aichatosServerId,
+          message: null,
+        },
+      }),
+      signal: controller.signal,
+    })
+
+    await readStreamResponse(response)
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return
+    }
+
+    streamError.value = error instanceof Error ? error.message : String(error)
+    Message.error({ message: 'Chatos8 free SSE 请求失败', description: streamError.value })
+  } finally {
+    streamLoading.value = false
+    streamController.value = null
+  }
+}
+
+const runAichatosHomeStreamDebug = async () => {
+  const authorization = normalizeAichatosAuthorization(aichatosAuthorization.value)
+  const userId = aichatosUserId.value.trim()
+  if (!authorization || !userId) {
+    streamError.value = 'Chatos8 /home 链路需要填写 user_id 和 Authorization Token'
+    return
+  }
+
+  resetStreamDebugState('Chatos8 /home：POST /go/api/group/add -> POST /go/api/steam/see -> GET /go/api/event/see；SSE data 为 { Data, Status, QuestionId, GroupId, Type }')
+  streamLoading.value = true
+
+  const controller = new AbortController()
+  streamController.value = controller
+
+  try {
+    const groupResponse = await postAichatosEncrypted<AichatosGroupAddData>('/api/group/add', {
+      type: '1',
+      user_id: userId,
+      examples_id: '',
+      examples_describe: streamQuestion.value,
+      server_id: aichatosServerId,
+    }, authorization, controller.signal)
+    const groupId = String(groupResponse.data?.group_id ?? '')
+    if (!groupId) {
+      throw new Error('Chatos8 group/add 未返回 group_id')
+    }
+
+    const steamResponse = await postAichatosEncrypted<AichatosSteamData>('/api/steam/see', {
+      user_id: userId,
+      question: streamQuestion.value,
+      group_id: groupId,
+      question_id: '',
+      server_id: aichatosServerId,
+    }, authorization, controller.signal)
+    const questionId = String(steamResponse.data?.question_id ?? '')
+    if (!questionId) {
+      throw new Error('Chatos8 steam/see 未返回 question_id')
+    }
+
+    streamSourceMeta.value = `Chatos8 /home：group_id=${groupId}；question_id=${questionId}；GET /go/api/event/see；Data 字段直接拼接成 Markdown`
+    const params = new URLSearchParams({
+      question_id: questionId,
+      group_id: groupId,
+      user_id: userId,
+      token: authorization,
+      server_id: aichatosServerId,
+    })
+    const response = await fetch(`${aichatosProxyBase}/api/event/see?${params}`, { signal: controller.signal })
+    await readStreamResponse(response)
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      return
+    }
+
+    streamError.value = error instanceof Error ? error.message : String(error)
+    Message.error({ message: 'Chatos8 /home 链路请求失败', description: streamError.value })
+  } finally {
+    streamLoading.value = false
+    streamController.value = null
+  }
+}
+
+const runStreamTableDebug = () => {
+  streamQuestion.value = streamTableQuestion
+  return runStreamDebug()
+}
+
+const abortStreamDebug = () => {
+  streamController.value?.abort()
+  streamLoading.value = false
+  streamController.value = null
+}
+
+const loadStreamFixture = () => {
+  resetStreamDebugState('本地 Markdown fixture')
+  streamLoading.value = false
+  streamMarkdownContent.value = '```vue\n<template>\n  <div class="pfa-journey">PFA术者学习之旅</div>\n</template>\n<' + 'script setup>\nconst title = "PFA术者学习之旅"\n</' + 'script>\n<style scoped>\n.pfa-journey { font-size: 14px; color: #333; }\n</style>'
+}
+
+const loadStreamTableFixture = () => {
+  resetStreamDebugState('本地 Markdown 表格 fixture')
+  streamLoading.value = false
+  streamMarkdownContent.value = '| 功能 | 说明 |\n|---|---|\n| 术者列表 | 展示辖区内管理的计划开台和已开台术者 |\n| 学习详情 | 包含学习之旅、毕业详情、互动之旅等模块 |\n| 报表 | 提供术者开发漏斗和手术经验值分布 |'
+} */
 
 const jsonPayload = {
   id: 'msg_001',
@@ -777,7 +1421,7 @@ const jsonPayload = {
   },
 }
 
-const markdownPayload = `# 接口返回 Markdown\n\n这是一个带代码块的消息：\n\n\`\`\`ts\ninterface User {\n  id: number\n  name: string\n}\n\nconst user: User = { id: 1, name: 'SCQ' }\nconsole.log(user)\n\`\`\``
+const markdownPayload = `# 接口返回 Markdown\n\n第一行\n第二行\n\n- 第一项\n- 第二项\n\n这是一个带代码块的消息：\n\n\`\`\`ts\ninterface User {\n  id: number\n  name: string\n}\n\nconst user: User = { id: 1, name: 'SCQ' }\nconsole.log(user)\n\`\`\``
 
 const vueComparePayload = `以下是 Vue 2 与 Vue 3 的核心特性对比表格（基于官方文档、RFC 及主流实践，截至 2024 年）：
 
@@ -842,3 +1486,118 @@ const formatTime = (value: string | number | Date | null | undefined): string =>
   return `消息时间: ${date.toLocaleString('zh-CN', { hour12: false })}`
 }
 </script>
+
+<style scoped>
+.stream-debug-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.stream-debug-panel__label,
+.stream-debug-panel__meta {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.stream-debug-panel__meta,
+.stream-debug-panel__error {
+  margin: 0;
+}
+
+.stream-debug-panel__error {
+  color: #dc2626;
+  font-size: 12px;
+}
+
+.stream-debug-panel__textarea {
+  width: 100%;
+  min-width: 0;
+  resize: vertical;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #1f2937;
+  background: #ffffff;
+  font: inherit;
+  line-height: 1.5;
+}
+
+.stream-debug-panel__textarea:focus {
+  border-color: #409eff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.14);
+}
+
+.stream-debug-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.stream-debug-panel__fields {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.stream-debug-panel__field {
+  display: grid;
+  gap: 4px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.stream-debug-panel__input {
+  min-width: 0;
+  border: 1px solid #dbe4ee;
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #1f2937;
+  background: #ffffff;
+  font: inherit;
+}
+
+.stream-debug-panel__input:focus {
+  border-color: #409eff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(64, 158, 255, 0.14);
+}
+
+.stream-debug-panel__frame {
+  overflow: auto;
+  max-height: 120px;
+  margin: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #334155;
+  background: #f8fafc;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.stream-debug-panel__button {
+  border: 1px solid #2b6ef2;
+  border-radius: 8px;
+  background: #2b6ef2;
+  color: #ffffff;
+  padding: 8px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.stream-debug-panel__button.is-secondary {
+  border-color: #dbe4ee;
+  background: #ffffff;
+  color: #334155;
+}
+
+.stream-debug-panel__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+</style>
