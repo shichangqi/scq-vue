@@ -3,6 +3,7 @@ import Button from './components/Button'
 import Input from './components/Input'
 import Icon, { iconNames, iconPaths, solidIconNames, solidIconPaths } from './components/Icon'
 import ChatMessage from './components/ChatMessage'
+import ChatChoice from './components/ChatChoice'
 import Dialog from './components/Dialog'
 import Modal from './components/Modal'
 import Message from './components/Message'
@@ -18,6 +19,7 @@ const components = [
   Input,
   Icon,
   ChatMessage,
+  ChatChoice,
   Dialog,
   Modal,
   Message,
@@ -51,6 +53,7 @@ const ScqButton = Button
 const ScqInput = Input
 const ScqIcon = Icon
 const ScqChatMessage = ChatMessage
+const ScqChatChoice = ChatChoice
 const ScqDialog = Dialog
 const ScqModal = Modal
 const ScqMessage = Message
@@ -69,6 +72,7 @@ export default {
   Input,
   Icon,
   ChatMessage,
+  ChatChoice,
   Dialog,
   Modal,
   Message,
@@ -87,6 +91,7 @@ export default {
   ScqInput,
   ScqIcon,
   ScqChatMessage,
+  ScqChatChoice,
   ScqDialog,
   ScqModal,
   ScqMessage,
@@ -105,6 +110,7 @@ export {
   Input,
   Icon,
   ChatMessage,
+  ChatChoice,
   Dialog,
   Modal,
   Message,
@@ -118,6 +124,7 @@ export {
   ScqInput,
   ScqIcon,
   ScqChatMessage,
+  ScqChatChoice,
   ScqDialog,
   ScqModal,
   ScqMessage,

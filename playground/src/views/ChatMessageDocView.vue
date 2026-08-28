@@ -155,6 +155,85 @@
       </div>
     </DocExample>
 
+    <h2>{{ t('chat.choice') }}</h2>
+    <DocExample :code="choiceCode" lang="vue" :default-expanded="true">
+      <div class="demo-grid">
+        <h3 class="chat-choice-demo__title">单选</h3>
+        <scq-chat-message
+          message="请选择你希望回答采用的详细程度。"
+          role="ai"
+          name="SCQ Assistant"
+          :show-time="false"
+        >
+          <template #interaction>
+            <scq-chat-choice
+              v-model="singleAnswer"
+              name="answer-detail"
+              :options="singleOptions"
+              @change="singleSubmitted = null"
+              @submit="handleSingleSubmit"
+            >
+              <template #option="{ option, index, selected }">
+                <span class="chat-choice-demo__option" :class="{ 'is-selected': selected }">
+                  <span class="chat-choice-demo__index">0{{ index + 1 }}</span>
+                  <span>
+                    <strong>{{ option.label }}</strong>
+                    <small>{{ option.description }}</small>
+                  </span>
+                </span>
+              </template>
+            </scq-chat-choice>
+            <pre v-if="singleSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(singleSubmitted, null, 2) }}</pre>
+          </template>
+        </scq-chat-message>
+
+        <h3 class="chat-choice-demo__title">多选</h3>
+        <scq-chat-message
+          message="请选择要包含的输出内容，最多选择两项。"
+          role="ai"
+          name="SCQ Assistant"
+          :show-time="false"
+        >
+          <template #interaction>
+            <scq-chat-choice
+              v-model="multipleAnswer"
+              mode="multiple"
+              name="output-sections"
+              :options="multipleOptions"
+              :max="2"
+              @change="multipleSubmitted = null"
+              @submit="handleMultipleSubmit"
+            />
+            <pre v-if="multipleSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(multipleSubmitted, null, 2) }}</pre>
+          </template>
+        </scq-chat-message>
+
+        <h3 class="chat-choice-demo__title">包含其他输入</h3>
+        <scq-chat-message
+          message="请选择消息发送渠道；没有合适选项时可以填写其他渠道。"
+          role="ai"
+          name="SCQ Assistant"
+          :show-time="false"
+        >
+          <template #interaction>
+            <scq-chat-choice
+              v-model="otherAnswer"
+              mode="multiple"
+              name="delivery-channel"
+              :options="channelOptions"
+              allow-other
+              other-label="其他渠道"
+              other-placeholder="请输入渠道名称"
+              :other-maxlength="40"
+              @change="otherSubmitted = null"
+              @submit="handleOtherSubmit"
+            />
+            <pre v-if="otherSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(otherSubmitted, null, 2) }}</pre>
+          </template>
+        </scq-chat-message>
+      </div>
+    </DocExample>
+
     <h2>{{ t('chat.markdown.table') }}</h2>
     <DocExample :code="complexMarkdownCode" lang="vue">
       <div class="demo-grid">
@@ -320,7 +399,7 @@
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
 import { t } from '../i18n'
-import { Message } from 'scq-vue'
+import { Message, type ChatChoiceAnswer, type ChatChoiceOption } from 'scq-vue'
 
 const plainText = '这是普通字符串消息，适合展示接口直接返回的文本。'
 
@@ -425,6 +504,188 @@ const actionsCode = `<template>
     </template>
   </scq-chat-message>
 </template>`
+
+const choiceCode = `<template>
+  <h3 class="chat-choice-demo__title">单选</h3>
+  <scq-chat-message
+    message="请选择你希望回答采用的详细程度。"
+    role="ai"
+    name="SCQ Assistant"
+    :show-time="false"
+  >
+    <template #interaction>
+      <scq-chat-choice
+        v-model="singleAnswer"
+        name="answer-detail"
+        :options="singleOptions"
+        @change="singleSubmitted = null"
+        @submit="handleSingleSubmit"
+      >
+        <template #option="{ option, index, selected }">
+          <span class="chat-choice-demo__option" :class="{ 'is-selected': selected }">
+            <span class="chat-choice-demo__index">0{{ index + 1 }}</span>
+            <span>
+              <strong>{{ option.label }}</strong>
+              <small>{{ option.description }}</small>
+            </span>
+          </span>
+        </template>
+      </scq-chat-choice>
+      <pre v-if="singleSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(singleSubmitted, null, 2) }}</pre>
+    </template>
+  </scq-chat-message>
+
+  <h3 class="chat-choice-demo__title">多选</h3>
+  <scq-chat-message
+    message="请选择要包含的输出内容，最多选择两项。"
+    role="ai"
+    name="SCQ Assistant"
+    :show-time="false"
+  >
+    <template #interaction>
+      <scq-chat-choice
+        v-model="multipleAnswer"
+        mode="multiple"
+        name="output-sections"
+        :options="multipleOptions"
+        :max="2"
+        @change="multipleSubmitted = null"
+        @submit="handleMultipleSubmit"
+      />
+      <pre v-if="multipleSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(multipleSubmitted, null, 2) }}</pre>
+    </template>
+  </scq-chat-message>
+
+  <h3 class="chat-choice-demo__title">包含其他输入</h3>
+  <scq-chat-message
+    message="请选择消息发送渠道；没有合适选项时可以填写其他渠道。"
+    role="ai"
+    name="SCQ Assistant"
+    :show-time="false"
+  >
+    <template #interaction>
+      <scq-chat-choice
+        v-model="otherAnswer"
+        mode="multiple"
+        name="delivery-channel"
+        :options="channelOptions"
+        allow-other
+        other-label="其他渠道"
+        other-placeholder="请输入渠道名称"
+        :other-maxlength="40"
+        @change="otherSubmitted = null"
+        @submit="handleOtherSubmit"
+      />
+      <pre v-if="otherSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(otherSubmitted, null, 2) }}</pre>
+    </template>
+  </scq-chat-message>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import type { ChatChoiceAnswer, ChatChoiceOption } from 'scq-vue'
+
+const createChoiceAnswer = (): ChatChoiceAnswer => ({
+  values: [],
+})
+
+const singleAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
+const multipleAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
+const otherAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
+const singleSubmitted = ref<ChatChoiceAnswer | null>(null)
+const multipleSubmitted = ref<ChatChoiceAnswer | null>(null)
+const otherSubmitted = ref<ChatChoiceAnswer | null>(null)
+
+const singleOptions: ChatChoiceOption[] = [
+  { value: 'concise', label: '简洁', description: '只保留结论和关键步骤' },
+  { value: 'standard', label: '标准', description: '给出结论、步骤和必要说明' },
+  { value: 'detailed', label: '详细', description: '补充原理、边界和完整示例' },
+]
+
+const multipleOptions: ChatChoiceOption[] = [
+  { value: 'summary', label: '结论摘要' },
+  { value: 'code', label: '代码示例' },
+  { value: 'tests', label: '测试建议' },
+]
+
+const channelOptions: ChatChoiceOption[] = [
+  { value: 'email', label: '邮件' },
+  { value: 'sms', label: '短信' },
+]
+
+const handleSingleSubmit = (answer: ChatChoiceAnswer) => {
+  singleSubmitted.value = answer
+}
+
+const handleMultipleSubmit = (answer: ChatChoiceAnswer) => {
+  multipleSubmitted.value = answer
+}
+
+const handleOtherSubmit = (answer: ChatChoiceAnswer) => {
+  otherSubmitted.value = answer
+}
+<\/script>
+
+<style scoped>
+.chat-choice-demo__title {
+  margin: 8px 0 0;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.chat-choice-demo__title:first-child {
+  margin-top: 0;
+}
+
+.chat-choice-demo__option {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.chat-choice-demo__index {
+  color: #94a3b8;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chat-choice-demo__option strong,
+.chat-choice-demo__option small {
+  display: block;
+}
+
+.chat-choice-demo__option strong {
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.chat-choice-demo__option small {
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.chat-choice-demo__option.is-selected .chat-choice-demo__index,
+.chat-choice-demo__option.is-selected strong {
+  color: #2563eb;
+}
+
+.chat-choice-demo__result {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  overflow: auto;
+  border-left: 3px solid #16a34a;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+<\/style>`
 
 const complexMarkdownCode = `<template>
   <scq-chat-message
@@ -1025,6 +1286,46 @@ const fileAttachments = [
   },
 ]
 
+const createChoiceAnswer = (): ChatChoiceAnswer => ({
+  values: [],
+})
+
+const singleAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
+const multipleAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
+const otherAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
+const singleSubmitted = ref<ChatChoiceAnswer | null>(null)
+const multipleSubmitted = ref<ChatChoiceAnswer | null>(null)
+const otherSubmitted = ref<ChatChoiceAnswer | null>(null)
+
+const singleOptions: ChatChoiceOption[] = [
+  { value: 'concise', label: '简洁', description: '只保留结论和关键步骤' },
+  { value: 'standard', label: '标准', description: '给出结论、步骤和必要说明' },
+  { value: 'detailed', label: '详细', description: '补充原理、边界和完整示例' },
+]
+
+const multipleOptions: ChatChoiceOption[] = [
+  { value: 'summary', label: '结论摘要' },
+  { value: 'code', label: '代码示例' },
+  { value: 'tests', label: '测试建议' },
+]
+
+const channelOptions: ChatChoiceOption[] = [
+  { value: 'email', label: '邮件' },
+  { value: 'sms', label: '短信' },
+]
+
+const handleSingleSubmit = (answer: ChatChoiceAnswer) => {
+  singleSubmitted.value = answer
+}
+
+const handleMultipleSubmit = (answer: ChatChoiceAnswer) => {
+  multipleSubmitted.value = answer
+}
+
+const handleOtherSubmit = (answer: ChatChoiceAnswer) => {
+  otherSubmitted.value = answer
+}
+
 const handleAttachmentClick = (payload: { name: string; url: string; type: string; label: string; sizeText: string; status: string }, event: MouseEvent) => {
   if (payload.type === 'ppt') {
     event.preventDefault()
@@ -1488,6 +1789,65 @@ const formatTime = (value: string | number | Date | null | undefined): string =>
 </script>
 
 <style scoped>
+.chat-choice-demo__title {
+  margin: 8px 0 0;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.chat-choice-demo__title:first-child {
+  margin-top: 0;
+}
+
+.chat-choice-demo__option {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.chat-choice-demo__index {
+  color: #94a3b8;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chat-choice-demo__option strong,
+.chat-choice-demo__option small {
+  display: block;
+}
+
+.chat-choice-demo__option strong {
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.chat-choice-demo__option small {
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.chat-choice-demo__option.is-selected .chat-choice-demo__index,
+.chat-choice-demo__option.is-selected strong {
+  color: #2563eb;
+}
+
+.chat-choice-demo__result {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  overflow: auto;
+  border-left: 3px solid #16a34a;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
 .stream-debug-panel {
   display: grid;
   gap: 10px;

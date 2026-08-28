@@ -462,6 +462,9 @@ body {
 
   .docs-sidebar {
     width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex: none;
     height: auto;
     position: static;
     border-right: none;
@@ -469,6 +472,8 @@ body {
   }
 
   .docs-main {
+    min-width: 0;
+    max-width: 100%;
     padding: 16px;
   }
 
@@ -479,6 +484,12 @@ body {
 
   .doc-block {
     padding: 16px;
+  }
+
+  .prop-table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
   }
 
   .brand {

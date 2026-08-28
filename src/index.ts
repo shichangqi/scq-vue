@@ -4,6 +4,7 @@ import Button from './components/Button'
 import Input from './components/Input'
 import Icon from './components/Icon'
 import ChatMessage from './components/ChatMessage'
+import ChatChoice from './components/ChatChoice'
 import Dialog from './components/Dialog/index'
 import Modal from './components/Modal/index'
 import Message from './components/Message/index'
@@ -13,7 +14,7 @@ import Checkbox, { CheckboxGroup } from './components/Checkbox'
 import Watermark from './components/Watermark'
 import Select from './components/Select'
 
-const components = [Button, Input, Icon, ChatMessage, Dialog, Modal, Message, Popup, Radio, RadioGroup, Checkbox, CheckboxGroup, Watermark, Select]
+const components = [Button, Input, Icon, ChatMessage, ChatChoice, Dialog, Modal, Message, Popup, Radio, RadioGroup, Checkbox, CheckboxGroup, Watermark, Select]
 
 const getPrefixedName = (name: string): string => {
   return `scq-${name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()}`
@@ -36,6 +37,7 @@ const ScqButton = Button
 const ScqInput = Input
 const ScqIcon = Icon
 const ScqChatMessage = ChatMessage
+const ScqChatChoice = ChatChoice
 const ScqDialog = Dialog
 const ScqModal = Modal
 const ScqMessage = Message
@@ -54,6 +56,7 @@ export {
   Input,
   Icon,
   ChatMessage,
+  ChatChoice,
   Dialog,
   Modal,
   Message,
@@ -68,6 +71,7 @@ export {
   ScqInput,
   ScqIcon,
   ScqChatMessage,
+  ScqChatChoice,
   ScqDialog,
   ScqModal,
   ScqMessage,
@@ -88,3 +92,4 @@ export type { PopupPosition, PopupOverlayTheme, PopupCloseReason } from './compo
 export type { RadioDirection, RadioSize, RadioValue } from './components/Radio'
 export type { CheckboxDirection, CheckboxSize, CheckboxValue } from './components/Checkbox'
 export type { ChatAttachment, ChatAttachmentClickPayload, ChatAttachmentStatus, ChatAttachmentType, ChatContentType, ChatMediaMessage, ChatMediaType, ChatMessageStatus, ChatRole, ChatStatusType, ChatVideoPreload } from './components/ChatMessage'
+export type { ChatChoiceAnswer, ChatChoiceMode, ChatChoiceOption, ChatChoiceValidationError, ChatChoiceValidationErrorType, ChatChoiceValue } from './components/ChatChoice'

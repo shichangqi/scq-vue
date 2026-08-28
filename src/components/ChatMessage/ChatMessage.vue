@@ -73,6 +73,10 @@
           <div v-else class="scq-chat-message__text">{{ renderedText }}</div>
         </div>
 
+        <div v-if="$slots.interaction" class="scq-chat-message__interaction">
+          <slot name="interaction" />
+        </div>
+
         <div v-if="normalizedAttachments.length" class="scq-chat-message__attachments">
           <a
             v-for="attachment in normalizedAttachments"
@@ -2813,6 +2817,12 @@ watch(
   min-width: 220px;
 }
 
+.scq-chat-message__interaction {
+  width: min(100%, 560px);
+  min-width: 0;
+  margin-top: 8px;
+}
+
 .scq-chat-message__actions {
   display: inline-flex;
   flex-wrap: wrap;
@@ -3255,6 +3265,17 @@ watch(
 
 .scq-chat-message__code-block::-webkit-scrollbar-track {
   background: transparent;
+}
+
+@media (max-width: 640px) {
+  .scq-chat-message__body {
+    width: 100%;
+  }
+
+  .scq-chat-message__content {
+    flex: 1;
+    max-width: 100%;
+  }
 }
 
 @media (hover: hover) {

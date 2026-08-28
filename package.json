@@ -1,6 +1,6 @@
 {
   "name": "scq-vue",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "description": "A Vue 3 component library made by Chauncy",
   "main": "./dist/scq-vue.umd.js",
   "module": "./dist/scq-vue.es.js",
@@ -21,6 +21,7 @@
     "./styles/input.css": "./styles/input.css",
     "./styles/icon.css": "./styles/icon.css",
     "./styles/chat-message.css": "./styles/chat-message.css",
+    "./styles/chat-choice.css": "./styles/chat-choice.css",
     "./styles/dialog.css": "./styles/dialog.css",
     "./styles/modal.css": "./styles/modal.css",
     "./styles/message.css": "./styles/message.css",

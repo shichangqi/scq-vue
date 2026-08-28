@@ -41,6 +41,7 @@ import {
   ScqInput,
   ScqIcon,
   ScqChatMessage,
+  ScqChatChoice,
   ScqDialog,
   ScqModal,
   ScqMessage,
@@ -59,6 +60,7 @@ app.use(ScqButton)
 app.use(ScqInput)
 app.use(ScqIcon)
 app.use(ScqChatMessage)
+app.use(ScqChatChoice)
 app.use(ScqDialog)
 app.use(ScqModal)
 app.use(ScqMessage)
@@ -76,6 +78,7 @@ const styleCode = `import {
   ScqInput,
   ScqIcon,
   ScqChatMessage,
+  ScqChatChoice,
   ScqDialog,
   ScqModal,
   ScqMessage,
@@ -91,6 +94,7 @@ import 'scq-vue/styles/button.css'
 import 'scq-vue/styles/input.css'
 import 'scq-vue/styles/icon.css'
 import 'scq-vue/styles/chat-message.css'
+import 'scq-vue/styles/chat-choice.css'
 import 'scq-vue/styles/dialog.css'
 import 'scq-vue/styles/modal.css'
 import 'scq-vue/styles/message.css'
