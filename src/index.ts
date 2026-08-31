@@ -91,5 +91,5 @@ export type { MessageApiOptions, MessageInstance, MessagePlacement, MessageType 
 export type { PopupPosition, PopupOverlayTheme, PopupCloseReason } from './components/Popup/index'
 export type { RadioDirection, RadioSize, RadioValue } from './components/Radio'
 export type { CheckboxDirection, CheckboxSize, CheckboxValue } from './components/Checkbox'
-export type { ChatAttachment, ChatAttachmentClickPayload, ChatAttachmentStatus, ChatAttachmentType, ChatContentType, ChatMediaMessage, ChatMediaType, ChatMessageStatus, ChatRole, ChatStatusType, ChatVideoPreload } from './components/ChatMessage'
+export type { ChatAttachment, ChatAttachmentClickPayload, ChatAttachmentStatus, ChatAttachmentType, ChatContentType, ChatMediaMessage, ChatMediaType, ChatMessageStatus, ChatRole, ChatStatusTexts, ChatStatusType, ChatVideoPreload } from './components/ChatMessage'
 export type { ChatChoiceAnswer, ChatChoiceMode, ChatChoiceOption, ChatChoiceValidationError, ChatChoiceValidationErrorType, ChatChoiceValue } from './components/ChatChoice'

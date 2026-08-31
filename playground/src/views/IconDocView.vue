@@ -15,7 +15,7 @@
     </DocExample>
 
     <h2>{{ t('icon.library') }}</h2>
-    <DocExample :code="libraryCode" lang="vue" :default-expanded="true">
+    <DocExample :code="libraryCode" lang="vue">
       <div class="icon-categories">
         <section v-for="category in iconCategories" :key="category.labelKey" class="icon-category">
           <h3>{{ t(category.labelKey) }}</h3>

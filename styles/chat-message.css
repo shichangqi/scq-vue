@@ -342,6 +342,11 @@
   background: rgba(255, 255, 255, 0.22);
 }
 
+.scq-chat-message__preview-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
 .scq-chat-message__attachments {
   display: grid;
   gap: 8px;
@@ -751,6 +756,16 @@
   .scq-chat-message__code-block::-webkit-scrollbar-thumb {
     background: rgba(226, 232, 240, 0.62);
     background-clip: content-box;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scq-chat-message__status-indicator span {
+    animation: none;
+  }
+
+  .scq-chat-message__attachment {
+    transition: none;
   }
 }
 

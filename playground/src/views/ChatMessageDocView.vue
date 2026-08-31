@@ -55,7 +55,7 @@
     </DocExample>
 
     <!-- <h2>真实流式 SSE 调试</h2>
-    <DocExample :code="streamingMarkdownCode" lang="vue" :default-expanded="true">
+    <DocExample :code="streamingMarkdownCode" lang="vue">
       <div class="demo-grid">
         <div class="stream-debug-panel">
           <label class="stream-debug-panel__label" for="chat-stream-question">question</label>
@@ -156,7 +156,7 @@
     </DocExample>
 
     <h2>{{ t('chat.choice') }}</h2>
-    <DocExample :code="choiceCode" lang="vue" :default-expanded="true">
+    <DocExample :code="choiceCode" lang="vue">
       <div class="demo-grid">
         <h3 class="chat-choice-demo__title">单选</h3>
         <scq-chat-message
@@ -289,7 +289,7 @@
     </DocExample>
 
     <h2>{{ t('chat.media') }}</h2>
-    <DocExample :code="mediaCode" lang="vue" :default-expanded="true">
+    <DocExample :code="mediaCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
           :message="imageUrl"
@@ -312,7 +312,7 @@
     </DocExample>
 
     <h2>{{ t('chat.attachments') }}</h2>
-    <DocExample :code="attachmentsCode" lang="vue" :default-expanded="true">
+    <DocExample :code="attachmentsCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
           :message="attachmentMessage"
@@ -328,7 +328,7 @@
     </DocExample>
 
     <h2>{{ t('chat.full') }}</h2>
-    <DocExample :code="fullExampleCode" lang="vue" :default-expanded="true">
+    <DocExample :code="fullExampleCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
           :message="apiData"
@@ -363,10 +363,17 @@
         <tr><td>showAvatar</td><td>{{ t('chat.showAvatar.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>showName</td><td>{{ t('chat.showName.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>status</td><td>{{ t('chat.status.desc') }}</td><td>{ type, text, loading, visible }</td><td>null</td></tr>
+        <tr><td>statusTexts</td><td>{{ t('chat.statusTexts.desc') }}</td><td>Partial&lt;Record&lt;ChatStatusType, string&gt;&gt;</td><td>{}</td></tr>
         <tr><td>linkTarget</td><td>{{ t('chat.linkTarget.desc') }}</td><td>string</td><td>_blank</td></tr>
         <tr><td>linkRel</td><td>{{ t('chat.linkRel.desc') }}</td><td>string</td><td>noopener noreferrer</td></tr>
         <tr><td>previewable</td><td>{{ t('chat.previewable.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>imageFallbackText</td><td>{{ t('chat.imageFallbackText.desc') }}</td><td>string</td><td>图片加载失败</td></tr>
+        <tr><td>videoUnsupportedText</td><td>{{ t('chat.videoUnsupportedText.desc') }}</td><td>string</td><td>当前浏览器不支持视频播放。</td></tr>
+        <tr><td>imagePreviewLabel</td><td>{{ t('chat.imagePreviewLabel.desc') }}</td><td>string</td><td>图片预览</td></tr>
+        <tr><td>previewCloseLabel</td><td>{{ t('chat.previewCloseLabel.desc') }}</td><td>string</td><td>关闭预览</td></tr>
+        <tr><td>codeCopyText</td><td>{{ t('chat.codeCopyText.desc') }}</td><td>string</td><td>复制</td></tr>
+        <tr><td>codeCopiedText</td><td>{{ t('chat.codeCopiedText.desc') }}</td><td>string</td><td>已复制</td></tr>
+        <tr><td>codeCopyFailedText</td><td>{{ t('chat.codeCopyFailedText.desc') }}</td><td>string</td><td>复制失败</td></tr>
         <tr><td>attachments</td><td>{{ t('chat.attachments.desc') }}</td><td>ChatAttachment[]</td><td>[]</td></tr>
         <tr><td>attachmentClick</td><td>{{ t('chat.attachmentClick.desc') }}</td><td>(payload, event) =&gt; boolean | void</td><td>-</td></tr>
         <tr><td>showTime</td><td>{{ t('chat.showTime.desc') }}</td><td>boolean</td><td>true</td></tr>

@@ -1,6 +1,6 @@
 {
   "name": "scq-vue",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "A Vue 3 component library made by Chauncy",
   "main": "./dist/scq-vue.umd.js",
   "module": "./dist/scq-vue.es.js",
@@ -38,7 +38,7 @@
     "dev:play": "vite --config playground/vite.config.mjs",
     "build:play": "vite build --config playground/vite.config.mjs",
     "prepublishOnly": "pnpm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
   "keywords": [
     "vue",
@@ -66,10 +66,13 @@
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
     "@vitejs/plugin-vue": "^6.0.6",
+    "@vue/test-utils": "^2.5.0",
+    "jsdom": "^25.0.1",
     "rimraf": "^6.0.1",
     "sass": "^1.99.0",
     "typescript": "^5.9.3",
     "vite": "^5.4.21",
+    "vitest": "^2.1.9",
     "vue": "^3.5.34",
     "vue-router": "^4.6.4",
     "vue-tsc": "^2.2.12"
