@@ -94,6 +94,133 @@ describe('ChatMessage', () => {
     expect(loading.find('.scq-chat-message__status-indicator').exists()).toBe(true)
   })
 
+  it('submits a data-driven single selection immediately', async () => {
+    const wrapper = mountMessage({
+      selection: {
+        id: 'visit-type',
+        title: '请选择拜访方式',
+        options: [
+          { value: 'online', label: '线上拜访', description: '通过视频会议沟通' },
+          { value: 'offline', label: '线下拜访' },
+        ],
+      },
+    })
+
+    expect(wrapper.find('.scq-chat-message__bubble').exists()).toBe(false)
+    expect(wrapper.get('.scq-chat-message__selection-title').text()).toBe('请选择拜访方式')
+
+    await wrapper.findAll('.scq-chat-message__selection-option')[1].trigger('click')
+
+    expect(wrapper.emitted('update:selectionValues')?.[0]).toEqual([['offline']])
+    expect(wrapper.emitted('selection-change')?.[0]?.[0]).toMatchObject({
+      selectionId: 'visit-type',
+      value: 'offline',
+      values: ['offline'],
+      selectedOptions: [{ value: 'offline', label: '线下拜访' }],
+    })
+    expect(wrapper.emitted('selection-submit')?.[0]?.[0]).toMatchObject({
+      selectionId: 'visit-type',
+      value: 'offline',
+      values: ['offline'],
+    })
+  })
+
+  it('confirms a data-driven multiple selection and respects unavailable states', async () => {
+    const wrapper = mountMessage({
+      selection: {
+        id: 'products',
+        mode: 'multiple',
+        title: '请选择产品',
+        max: 2,
+        options: [
+          { value: 1, label: '产品 A' },
+          { value: 2, label: '产品 B' },
+          { value: 3, label: '产品 C', disabled: true },
+        ],
+      },
+    })
+    const options = wrapper.findAll('.scq-chat-message__selection-option')
+
+    await options[0].trigger('click')
+    await options[1].trigger('click')
+    await options[2].trigger('click')
+
+    expect(wrapper.emitted('selection-change')).toHaveLength(2)
+    expect(wrapper.emitted('selection-submit')).toBeUndefined()
+    expect(wrapper.get('.scq-chat-message__selection-count').text()).toBe('已选 2 项')
+
+    await wrapper.get('.scq-chat-message__selection-confirm').trigger('click')
+
+    expect(wrapper.emitted('selection-submit')?.[0]?.[0]).toMatchObject({
+      selectionId: 'products',
+      value: 1,
+      values: [1, 2],
+    })
+
+    await wrapper.setProps({
+      selection: {
+        id: 'products',
+        mode: 'multiple',
+        title: '请选择产品',
+        status: 'expired',
+        expiredText: '选择已失效',
+        options: [{ value: 1, label: '产品 A' }],
+      },
+    })
+
+    expect(wrapper.get('.scq-chat-message__selection-status').text()).toBe('选择已失效')
+    expect(wrapper.get('.scq-chat-message__selection-option').attributes('disabled')).toBeDefined()
+  })
+
+  it('handles other input through the data-driven selection panel', async () => {
+    const wrapper = mountMessage({
+      selection: {
+        id: 'delivery-channel',
+        mode: 'multiple',
+        title: '请选择消息发送渠道',
+        max: 2,
+        allowOther: true,
+        otherLabel: '其他渠道',
+        otherPlaceholder: '请输入渠道名称',
+        otherMaxlength: 40,
+        options: [
+          { value: 'sms', label: '短信' },
+          { value: 'email', label: '邮件' },
+        ],
+      },
+    })
+
+    const options = wrapper.findAll('.scq-chat-message__selection-option')
+    expect(options).toHaveLength(3)
+    expect(options[2].classes()).toContain('is-other')
+
+    const otherInput = wrapper.get('.scq-chat-message__selection-other-input')
+    expect(otherInput.attributes('placeholder')).toBe('请输入渠道名称')
+    expect(otherInput.attributes('maxlength')).toBe('40')
+
+    await otherInput.trigger('focus')
+    expect(options[2].classes()).toContain('is-selected')
+    expect(wrapper.get('.scq-chat-message__selection-confirm').attributes('disabled')).toBeDefined()
+
+    await otherInput.setValue('email')
+    expect(options[0].classes()).not.toContain('is-selected')
+    expect(wrapper.get('.scq-chat-message__selection-count').text()).toBe('已选 1 项')
+
+    await otherInput.setValue('企业微信')
+    expect(wrapper.emitted('update:selectionValues')?.at(-1)).toEqual([['企业微信']])
+    expect(wrapper.get('.scq-chat-message__selection-count').text()).toBe('已选 1 项')
+
+    await wrapper.get('.scq-chat-message__selection-confirm').trigger('click')
+    const payload = wrapper.emitted('selection-submit')?.[0]?.[0]
+    expect(payload).toMatchObject({
+      selectionId: 'delivery-channel',
+      value: '企业微信',
+      values: ['企业微信'],
+      selectedOptions: [],
+    })
+    expect(payload).not.toHaveProperty('otherValue')
+  })
+
   it('disables unsafe and uploading attachment links without dropping duplicates', () => {
     const wrapper = mountMessage({
       attachments: [

@@ -160,74 +160,48 @@
       <div class="demo-grid">
         <h3 class="chat-choice-demo__title">单选</h3>
         <scq-chat-message
-          message="请选择你希望回答采用的详细程度。"
+          v-model:selection-values="singleSelectionValues"
+          message=""
           role="ai"
           name="SCQ Assistant"
           :show-time="false"
+          :selection="singleSelection"
+          @selection-change="singleSubmitted = null"
+          @selection-submit="handleSingleSubmit"
         >
           <template #interaction>
-            <scq-chat-choice
-              v-model="singleAnswer"
-              name="answer-detail"
-              :options="singleOptions"
-              @change="singleSubmitted = null"
-              @submit="handleSingleSubmit"
-            >
-              <template #option="{ option, index, selected }">
-                <span class="chat-choice-demo__option" :class="{ 'is-selected': selected }">
-                  <span class="chat-choice-demo__index">0{{ index + 1 }}</span>
-                  <span>
-                    <strong>{{ option.label }}</strong>
-                    <small>{{ option.description }}</small>
-                  </span>
-                </span>
-              </template>
-            </scq-chat-choice>
             <pre v-if="singleSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(singleSubmitted, null, 2) }}</pre>
           </template>
         </scq-chat-message>
 
         <h3 class="chat-choice-demo__title">多选</h3>
         <scq-chat-message
-          message="请选择要包含的输出内容，最多选择两项。"
+          v-model:selection-values="multipleSelectionValues"
+          message=""
           role="ai"
           name="SCQ Assistant"
           :show-time="false"
+          :selection="multipleSelection"
+          @selection-change="multipleSubmitted = null"
+          @selection-submit="handleMultipleSubmit"
         >
           <template #interaction>
-            <scq-chat-choice
-              v-model="multipleAnswer"
-              mode="multiple"
-              name="output-sections"
-              :options="multipleOptions"
-              :max="2"
-              @change="multipleSubmitted = null"
-              @submit="handleMultipleSubmit"
-            />
             <pre v-if="multipleSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(multipleSubmitted, null, 2) }}</pre>
           </template>
         </scq-chat-message>
 
         <h3 class="chat-choice-demo__title">包含其他输入</h3>
         <scq-chat-message
-          message="请选择消息发送渠道；没有合适选项时可以填写其他渠道。"
+          v-model:selection-values="otherSelectionValues"
+          message=""
           role="ai"
           name="SCQ Assistant"
           :show-time="false"
+          :selection="otherSelection"
+          @selection-change="otherSubmitted = null"
+          @selection-submit="handleOtherSubmit"
         >
           <template #interaction>
-            <scq-chat-choice
-              v-model="otherAnswer"
-              mode="multiple"
-              name="delivery-channel"
-              :options="channelOptions"
-              allow-other
-              other-label="其他渠道"
-              other-placeholder="请输入渠道名称"
-              :other-maxlength="40"
-              @change="otherSubmitted = null"
-              @submit="handleOtherSubmit"
-            />
             <pre v-if="otherSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(otherSubmitted, null, 2) }}</pre>
           </template>
         </scq-chat-message>
@@ -376,6 +350,9 @@
         <tr><td>codeCopyFailedText</td><td>{{ t('chat.codeCopyFailedText.desc') }}</td><td>string</td><td>复制失败</td></tr>
         <tr><td>attachments</td><td>{{ t('chat.attachments.desc') }}</td><td>ChatAttachment[]</td><td>[]</td></tr>
         <tr><td>attachmentClick</td><td>{{ t('chat.attachmentClick.desc') }}</td><td>(payload, event) =&gt; boolean | void</td><td>-</td></tr>
+        <tr><td>selection</td><td>{{ t('chat.selection.desc') }}</td><td>ChatMessageSelection | null</td><td>null</td></tr>
+        <tr><td>selectionValues</td><td>{{ t('chat.selectionValues.desc') }}</td><td>(string | number)[]</td><td>-</td></tr>
+        <tr><td>selectionDisabled</td><td>{{ t('chat.selectionDisabled.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>showTime</td><td>{{ t('chat.showTime.desc') }}</td><td>boolean</td><td>true</td></tr>
         <tr><td>timestamp</td><td>{{ t('chat.timestamp.desc') }}</td><td>string | number | Date | null</td><td>null</td></tr>
         <tr><td>timeFormatter</td><td>{{ t('chat.timeFormatter.desc') }}</td><td>(value) =&gt; string</td><td>-</td></tr>
@@ -394,6 +371,9 @@
       </thead>
       <tbody>
         <tr><td>@attachment-click</td><td>{{ t('chat.attachmentClickEvent.desc') }}</td><td>(payload, event) =&gt; void</td><td>-</td></tr>
+        <tr><td>@update:selectionValues</td><td>{{ t('chat.selectionValuesUpdate.desc') }}</td><td>(values) =&gt; void</td><td>-</td></tr>
+        <tr><td>@selection-change</td><td>{{ t('chat.selectionChange.desc') }}</td><td>(payload) =&gt; void</td><td>-</td></tr>
+        <tr><td>@selection-submit</td><td>{{ t('chat.selectionSubmit.desc') }}</td><td>(payload) =&gt; void</td><td>-</td></tr>
         <tr><td>@preview-open</td><td>{{ t('chat.previewOpen.desc') }}</td><td>(src) =&gt; void</td><td>-</td></tr>
         <tr><td>@preview-close</td><td>{{ t('chat.previewClose.desc') }}</td><td>(src) =&gt; void</td><td>-</td></tr>
         <tr><td>@image-error</td><td>{{ t('chat.imageError.desc') }}</td><td>(src) =&gt; void</td><td>-</td></tr>
@@ -406,7 +386,12 @@
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
 import { t } from '../i18n'
-import { Message, type ChatChoiceAnswer, type ChatChoiceOption } from 'scq-vue'
+import {
+  Message,
+  type ChatMessageSelection,
+  type ChatMessageSelectionPayload,
+  type ChatMessageSelectionValue,
+} from 'scq-vue'
 
 const plainText = '这是普通字符串消息，适合展示接口直接返回的文本。'
 
@@ -515,74 +500,48 @@ const actionsCode = `<template>
 const choiceCode = `<template>
   <h3 class="chat-choice-demo__title">单选</h3>
   <scq-chat-message
-    message="请选择你希望回答采用的详细程度。"
+    v-model:selection-values="singleSelectionValues"
+    message=""
     role="ai"
     name="SCQ Assistant"
     :show-time="false"
+    :selection="singleSelection"
+    @selection-change="singleSubmitted = null"
+    @selection-submit="handleSingleSubmit"
   >
     <template #interaction>
-      <scq-chat-choice
-        v-model="singleAnswer"
-        name="answer-detail"
-        :options="singleOptions"
-        @change="singleSubmitted = null"
-        @submit="handleSingleSubmit"
-      >
-        <template #option="{ option, index, selected }">
-          <span class="chat-choice-demo__option" :class="{ 'is-selected': selected }">
-            <span class="chat-choice-demo__index">0{{ index + 1 }}</span>
-            <span>
-              <strong>{{ option.label }}</strong>
-              <small>{{ option.description }}</small>
-            </span>
-          </span>
-        </template>
-      </scq-chat-choice>
       <pre v-if="singleSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(singleSubmitted, null, 2) }}</pre>
     </template>
   </scq-chat-message>
 
   <h3 class="chat-choice-demo__title">多选</h3>
   <scq-chat-message
-    message="请选择要包含的输出内容，最多选择两项。"
+    v-model:selection-values="multipleSelectionValues"
+    message=""
     role="ai"
     name="SCQ Assistant"
     :show-time="false"
+    :selection="multipleSelection"
+    @selection-change="multipleSubmitted = null"
+    @selection-submit="handleMultipleSubmit"
   >
     <template #interaction>
-      <scq-chat-choice
-        v-model="multipleAnswer"
-        mode="multiple"
-        name="output-sections"
-        :options="multipleOptions"
-        :max="2"
-        @change="multipleSubmitted = null"
-        @submit="handleMultipleSubmit"
-      />
       <pre v-if="multipleSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(multipleSubmitted, null, 2) }}</pre>
     </template>
   </scq-chat-message>
 
   <h3 class="chat-choice-demo__title">包含其他输入</h3>
   <scq-chat-message
-    message="请选择消息发送渠道；没有合适选项时可以填写其他渠道。"
+    v-model:selection-values="otherSelectionValues"
+    message=""
     role="ai"
     name="SCQ Assistant"
     :show-time="false"
+    :selection="otherSelection"
+    @selection-change="otherSubmitted = null"
+    @selection-submit="handleOtherSubmit"
   >
     <template #interaction>
-      <scq-chat-choice
-        v-model="otherAnswer"
-        mode="multiple"
-        name="delivery-channel"
-        :options="channelOptions"
-        allow-other
-        other-label="其他渠道"
-        other-placeholder="请输入渠道名称"
-        :other-maxlength="40"
-        @change="otherSubmitted = null"
-        @submit="handleOtherSubmit"
-      />
       <pre v-if="otherSubmitted" class="chat-choice-demo__result">{{ JSON.stringify(otherSubmitted, null, 2) }}</pre>
     </template>
   </scq-chat-message>
@@ -590,46 +549,66 @@ const choiceCode = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { ChatChoiceAnswer, ChatChoiceOption } from 'scq-vue'
+import type {
+  ChatMessageSelection,
+  ChatMessageSelectionPayload,
+  ChatMessageSelectionValue,
+} from 'scq-vue'
 
-const createChoiceAnswer = (): ChatChoiceAnswer => ({
-  values: [],
-})
+const singleSelectionValues = ref<ChatMessageSelectionValue[]>([])
+const multipleSelectionValues = ref<ChatMessageSelectionValue[]>([])
+const otherSelectionValues = ref<ChatMessageSelectionValue[]>([])
+const singleSubmitted = ref<ChatMessageSelectionValue | null>(null)
+const multipleSubmitted = ref<ChatMessageSelectionValue[] | null>(null)
+const otherSubmitted = ref<ChatMessageSelectionValue[] | null>(null)
 
-const singleAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
-const multipleAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
-const otherAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
-const singleSubmitted = ref<ChatChoiceAnswer | null>(null)
-const multipleSubmitted = ref<ChatChoiceAnswer | null>(null)
-const otherSubmitted = ref<ChatChoiceAnswer | null>(null)
-
-const singleOptions: ChatChoiceOption[] = [
-  { value: 'concise', label: '简洁', description: '只保留结论和关键步骤' },
-  { value: 'standard', label: '标准', description: '给出结论、步骤和必要说明' },
-  { value: 'detailed', label: '详细', description: '补充原理、边界和完整示例' },
-]
-
-const multipleOptions: ChatChoiceOption[] = [
-  { value: 'summary', label: '结论摘要' },
-  { value: 'code', label: '代码示例' },
-  { value: 'tests', label: '测试建议' },
-]
-
-const channelOptions: ChatChoiceOption[] = [
-  { value: 'email', label: '邮件' },
-  { value: 'sms', label: '短信' },
-]
-
-const handleSingleSubmit = (answer: ChatChoiceAnswer) => {
-  singleSubmitted.value = answer
+const singleSelection: ChatMessageSelection = {
+  id: 'answer-detail',
+  title: '请选择你希望回答采用的详细程度。',
+  options: [
+    { value: 'concise', label: '简洁', description: '只保留结论和关键步骤' },
+    { value: 'standard', label: '标准', description: '给出结论、步骤和必要说明' },
+    { value: 'detailed', label: '详细', description: '补充原理、边界和完整示例' },
+  ],
 }
 
-const handleMultipleSubmit = (answer: ChatChoiceAnswer) => {
-  multipleSubmitted.value = answer
+const multipleSelection: ChatMessageSelection = {
+  id: 'output-sections',
+  mode: 'multiple',
+  title: '请选择要包含的输出内容，最多选择两项。',
+  max: 2,
+  options: [
+    { value: 'summary', label: '结论摘要' },
+    { value: 'code', label: '代码示例' },
+    { value: 'tests', label: '测试建议' },
+  ],
 }
 
-const handleOtherSubmit = (answer: ChatChoiceAnswer) => {
-  otherSubmitted.value = answer
+const otherSelection: ChatMessageSelection = {
+  id: 'delivery-channel',
+  mode: 'multiple',
+  title: '请选择消息发送渠道；没有合适选项时可以填写其他渠道。',
+  max: 2,
+  allowOther: true,
+  otherLabel: '其他渠道',
+  otherPlaceholder: '请输入渠道名称',
+  otherMaxlength: 40,
+  options: [
+    { value: 'email', label: '邮件' },
+    { value: 'sms', label: '短信' },
+  ],
+}
+
+const handleSingleSubmit = (payload: ChatMessageSelectionPayload) => {
+  singleSubmitted.value = payload.value ?? null
+}
+
+const handleMultipleSubmit = (payload: ChatMessageSelectionPayload) => {
+  multipleSubmitted.value = payload.values
+}
+
+const handleOtherSubmit = (payload: ChatMessageSelectionPayload) => {
+  otherSubmitted.value = payload.values
 }
 <\/script>
 
@@ -1293,44 +1272,60 @@ const fileAttachments = [
   },
 ]
 
-const createChoiceAnswer = (): ChatChoiceAnswer => ({
-  values: [],
-})
+const singleSelectionValues = ref<ChatMessageSelectionValue[]>([])
+const multipleSelectionValues = ref<ChatMessageSelectionValue[]>([])
+const otherSelectionValues = ref<ChatMessageSelectionValue[]>([])
+const singleSubmitted = ref<ChatMessageSelectionValue | null>(null)
+const multipleSubmitted = ref<ChatMessageSelectionValue[] | null>(null)
+const otherSubmitted = ref<ChatMessageSelectionValue[] | null>(null)
 
-const singleAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
-const multipleAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
-const otherAnswer = ref<ChatChoiceAnswer>(createChoiceAnswer())
-const singleSubmitted = ref<ChatChoiceAnswer | null>(null)
-const multipleSubmitted = ref<ChatChoiceAnswer | null>(null)
-const otherSubmitted = ref<ChatChoiceAnswer | null>(null)
-
-const singleOptions: ChatChoiceOption[] = [
-  { value: 'concise', label: '简洁', description: '只保留结论和关键步骤' },
-  { value: 'standard', label: '标准', description: '给出结论、步骤和必要说明' },
-  { value: 'detailed', label: '详细', description: '补充原理、边界和完整示例' },
-]
-
-const multipleOptions: ChatChoiceOption[] = [
-  { value: 'summary', label: '结论摘要' },
-  { value: 'code', label: '代码示例' },
-  { value: 'tests', label: '测试建议' },
-]
-
-const channelOptions: ChatChoiceOption[] = [
-  { value: 'email', label: '邮件' },
-  { value: 'sms', label: '短信' },
-]
-
-const handleSingleSubmit = (answer: ChatChoiceAnswer) => {
-  singleSubmitted.value = answer
+const singleSelection: ChatMessageSelection = {
+  id: 'answer-detail',
+  title: '请选择你希望回答采用的详细程度。',
+  options: [
+    { value: 'concise', label: '简洁', description: '只保留结论和关键步骤' },
+    { value: 'standard', label: '标准', description: '给出结论、步骤和必要说明' },
+    { value: 'detailed', label: '详细', description: '补充原理、边界和完整示例' },
+  ],
 }
 
-const handleMultipleSubmit = (answer: ChatChoiceAnswer) => {
-  multipleSubmitted.value = answer
+const multipleSelection: ChatMessageSelection = {
+  id: 'output-sections',
+  mode: 'multiple',
+  title: '请选择要包含的输出内容，最多选择两项。',
+  max: 2,
+  options: [
+    { value: 'summary', label: '结论摘要' },
+    { value: 'code', label: '代码示例' },
+    { value: 'tests', label: '测试建议' },
+  ],
 }
 
-const handleOtherSubmit = (answer: ChatChoiceAnswer) => {
-  otherSubmitted.value = answer
+const otherSelection: ChatMessageSelection = {
+  id: 'delivery-channel',
+  mode: 'multiple',
+  title: '请选择消息发送渠道；没有合适选项时可以填写其他渠道。',
+  max: 2,
+  allowOther: true,
+  otherLabel: '其他渠道',
+  otherPlaceholder: '请输入渠道名称',
+  otherMaxlength: 40,
+  options: [
+    { value: 'email', label: '邮件' },
+    { value: 'sms', label: '短信' },
+  ],
+}
+
+const handleSingleSubmit = (payload: ChatMessageSelectionPayload) => {
+  singleSubmitted.value = payload.value ?? null
+}
+
+const handleMultipleSubmit = (payload: ChatMessageSelectionPayload) => {
+  multipleSubmitted.value = payload.values
+}
+
+const handleOtherSubmit = (payload: ChatMessageSelectionPayload) => {
+  otherSubmitted.value = payload.values
 }
 
 const handleAttachmentClick = (payload: { name: string; url: string; type: string; label: string; sizeText: string; status: string }, event: MouseEvent) => {

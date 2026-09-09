@@ -1,5 +1,5 @@
 <template>
-  <div class="scq-chat-message" :class="`is-${role}`" @click="handleCodeCopyClick">
+  <div class="scq-chat-message" :class="[`is-${role}`, { 'has-selection': selection }]" @click="handleCodeCopyClick">
     <div v-if="shouldShowTime" class="scq-chat-message__time">
       {{ formattedTime }}
     </div>
@@ -10,7 +10,7 @@
         <span v-else>{{ avatarInitial }}</span>
       </div>
 
-      <div class="scq-chat-message__content">
+      <div class="scq-chat-message__content" :class="{ 'has-selection': selection }">
         <div v-if="shouldShowName" class="scq-chat-message__name">{{ name }}</div>
 
         <div v-if="shouldShowStatus" class="scq-chat-message__status" :class="`is-${resolvedStatusType}`" role="status">
@@ -72,6 +72,103 @@
 
           <div v-else class="scq-chat-message__text">{{ renderedText }}</div>
         </div>
+
+        <section
+          v-if="selection"
+          class="scq-chat-message__selection"
+          :class="[`is-${selectionMode}`, `is-${selectionStatus}`]"
+          :aria-label="selectionAriaLabel"
+        >
+          <slot name="selection-title" :selection="selection">
+            <strong v-if="selection.title" class="scq-chat-message__selection-title">
+              {{ selection.title }}
+            </strong>
+          </slot>
+
+          <div
+            class="scq-chat-message__selection-options"
+            role="group"
+          >
+            <button
+              v-for="(option, index) in selectionOptions"
+              :key="getSelectionOptionKey(option, index)"
+              type="button"
+              class="scq-chat-message__selection-option"
+              :class="{ 'is-selected': isSelectionOptionSelected(option) }"
+              :disabled="isSelectionOptionDisabled(option)"
+              :aria-pressed="isSelectionOptionSelected(option)"
+              @click="handleSelectionOptionClick(option)"
+            >
+              <slot
+                name="selection-option"
+                :option="option"
+                :index="index"
+                :selected="isSelectionOptionSelected(option)"
+                :disabled="isSelectionOptionDisabled(option)"
+              >
+                <span class="scq-chat-message__selection-copy">
+                  <b>{{ option.label }}</b>
+                  <small v-if="option.description">{{ option.description }}</small>
+                </span>
+                <Icon :name="isSelectionOptionSelected(option) ? 'check' : 'chevronRight'" :size="15" />
+              </slot>
+            </button>
+
+            <div
+              v-if="selectionAllowsOther"
+              class="scq-chat-message__selection-option is-other"
+              :class="{ 'is-selected': otherSelectionSelected, 'is-disabled': isOtherSelectionDisabled }"
+            >
+              <button
+                type="button"
+                class="scq-chat-message__selection-other-toggle"
+                :disabled="isOtherSelectionDisabled"
+                :aria-pressed="otherSelectionSelected"
+                @click="toggleOtherSelection"
+              >
+                <span class="scq-chat-message__selection-copy">
+                  <b>{{ selection?.otherLabel || '其他' }}</b>
+                </span>
+                <Icon :name="otherSelectionSelected ? 'check' : 'chevronRight'" :size="15" />
+              </button>
+              <input
+                class="scq-chat-message__selection-other-input"
+                type="text"
+                :value="otherSelectionText"
+                :placeholder="selection?.otherPlaceholder || '请输入其他内容'"
+                :maxlength="selectionOtherMaxlength"
+                :disabled="isOtherSelectionDisabled"
+                :aria-label="selection?.otherLabel || '其他'"
+                @focus="handleOtherSelectionFocus"
+                @input="handleOtherSelectionInput"
+              />
+            </div>
+          </div>
+
+          <div v-if="shouldShowSelectionActions" class="scq-chat-message__selection-actions">
+            <slot
+              name="selection-actions"
+              :selection="selection"
+              :values="currentSelectionValues"
+              :disabled="isSelectionConfirmDisabled"
+              :confirm="confirmSelection"
+            >
+              <span class="scq-chat-message__selection-count">{{ selectedCountText }}</span>
+              <button
+                type="button"
+                class="scq-chat-message__selection-confirm"
+                :disabled="isSelectionConfirmDisabled"
+                @click="confirmSelection"
+              >
+                {{ selection.confirmText || '确认选择' }}
+              </button>
+            </slot>
+          </div>
+
+          <small v-if="selectionStatus === 'expired'" class="scq-chat-message__selection-status">
+            {{ selection.expiredText || '候选项已过期，请重新选择' }}
+          </small>
+        </section>
 
         <div v-if="$slots.interaction" class="scq-chat-message__interaction">
           <slot name="interaction" />
@@ -155,6 +252,7 @@ import sqlLang from 'highlight.js/lib/languages/sql'
 import yamlLang from 'highlight.js/lib/languages/yaml'
 import markdownLang from 'highlight.js/lib/languages/markdown'
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import Icon from '../Icon/Icon.vue'
 
 defineOptions({
   name: 'ChatMessage',
@@ -189,6 +287,45 @@ export type ChatStatusTexts = Partial<Record<ChatStatusType, string>>
 export type ChatVideoPreload = 'auto' | 'metadata' | 'none'
 export type ChatAttachmentType = 'pdf' | 'word' | 'excel' | 'ppt' | 'zip' | 'code' | 'text' | 'image' | 'video' | 'audio' | 'file'
 export type ChatAttachmentStatus = 'default' | 'uploading' | 'success' | 'error'
+export type ChatMessageSelectionMode = 'single' | 'multiple'
+export type ChatMessageSelectionStatus = 'pending' | 'submitted' | 'expired'
+export type ChatMessageSelectionValue = string | number
+
+export interface ChatMessageSelectionOption {
+  value: ChatMessageSelectionValue
+  label: string
+  description?: string
+  disabled?: boolean
+}
+
+export interface ChatMessageSelection {
+  id?: string | number
+  mode?: ChatMessageSelectionMode
+  title?: string
+  ariaLabel?: string
+  options: ChatMessageSelectionOption[]
+  selectedValues?: ChatMessageSelectionValue[]
+  status?: ChatMessageSelectionStatus
+  disabled?: boolean
+  min?: number
+  max?: number
+  confirmText?: string
+  selectedCountText?: string
+  expiredText?: string
+  allowOther?: boolean
+  otherLabel?: string
+  otherPlaceholder?: string
+  otherMaxlength?: number
+  otherRequired?: boolean
+}
+
+export interface ChatMessageSelectionPayload {
+  selection: ChatMessageSelection
+  selectionId: string | number | undefined
+  value: ChatMessageSelectionValue | undefined
+  values: ChatMessageSelectionValue[]
+  selectedOptions: ChatMessageSelectionOption[]
+}
 
 export interface ChatMessageStatus {
   type?: ChatStatusType
@@ -299,6 +436,9 @@ const props = withDefaults(
     codeCopyFailedText?: string
     attachments?: ChatAttachment[]
     attachmentClick?: (payload: ChatAttachmentClickPayload, event: MouseEvent) => boolean | void
+    selection?: ChatMessageSelection | null
+    selectionValues?: ChatMessageSelectionValue[]
+    selectionDisabled?: boolean
     timestamp?: string | number | Date | null
     timeFormatter?: (value: string | number | Date | null | undefined) => string
   }>(),
@@ -327,6 +467,9 @@ const props = withDefaults(
     codeCopyFailedText: '复制失败',
     attachments: () => [],
     attachmentClick: undefined,
+    selection: null,
+    selectionValues: undefined,
+    selectionDisabled: false,
     timestamp: null,
     timeFormatter: undefined,
   },
@@ -337,6 +480,9 @@ const emit = defineEmits<{
   (event: 'preview-open', src: string): void
   (event: 'preview-close', src: string): void
   (event: 'image-error', src: string): void
+  (event: 'update:selectionValues', values: ChatMessageSelectionValue[]): void
+  (event: 'selection-change', payload: ChatMessageSelectionPayload): void
+  (event: 'selection-submit', payload: ChatMessageSelectionPayload): void
 }>()
 
 const statusTextDefaults: Record<ChatStatusType, string> = {
@@ -525,6 +671,10 @@ const previewCloseRef = ref<HTMLButtonElement | null>(null)
 const previewTriggerRef = ref<HTMLElement | null>(null)
 const previewScrollLocked = ref(false)
 const codeCopyResetTimers = new Map<HTMLButtonElement, number>()
+const currentSelectionValues = ref<ChatMessageSelectionValue[]>([])
+const pendingSelectionValues = ref<ChatMessageSelectionValue[] | null>(null)
+const otherSelectionSelected = ref(false)
+const otherSelectionText = ref('')
 
 const maybeJsonString = (raw: string): boolean => {
   const text = raw.trim()
@@ -861,8 +1011,256 @@ const shouldShowStatus = computed(() => {
   return Boolean(props.status && resolvedStatusText.value)
 })
 
-const shouldShowBubble = computed(() => hasMessageContent.value || !shouldShowStatus.value)
+const shouldShowBubble = computed(() => hasMessageContent.value || (!shouldShowStatus.value && !props.selection))
 const bubbleClasses = computed(() => `is-${resolvedContentType.value}`)
+
+const selectionMode = computed<ChatMessageSelectionMode>(() => {
+  return props.selection?.mode === 'multiple' ? 'multiple' : 'single'
+})
+
+const selectionStatus = computed<ChatMessageSelectionStatus>(() => {
+  const status = props.selection?.status
+  return status === 'submitted' || status === 'expired' ? status : 'pending'
+})
+
+const selectionOptions = computed<ChatMessageSelectionOption[]>(() => {
+  return Array.isArray(props.selection?.options) ? props.selection.options : []
+})
+
+const selectionAllowsOther = computed(() => props.selection?.allowOther === true)
+
+const selectionOtherMaxlength = computed(() => {
+  const maxlength = props.selection?.otherMaxlength
+  return typeof maxlength === 'number' && Number.isFinite(maxlength) && maxlength >= 0
+    ? Math.floor(maxlength)
+    : undefined
+})
+
+const selectionAriaLabel = computed(() => {
+  return props.selection?.ariaLabel || props.selection?.title || '请选择候选项'
+})
+
+const selectionMinimum = computed(() => {
+  const minimum = props.selection?.min
+  return typeof minimum === 'number' && Number.isFinite(minimum) ? Math.max(0, Math.floor(minimum)) : 1
+})
+
+const selectionMaximum = computed<number | null>(() => {
+  const maximum = props.selection?.max
+  return typeof maximum === 'number' && Number.isFinite(maximum) ? Math.max(0, Math.floor(maximum)) : null
+})
+
+const isSelectionInteractionDisabled = computed(() => {
+  return props.selectionDisabled || props.selection?.disabled === true || selectionStatus.value !== 'pending'
+})
+
+const selectedOptionValues = computed(() => {
+  return currentSelectionValues.value.filter((value) => {
+    return selectionOptions.value.some((option) => option.value === value)
+  })
+})
+
+const selectedItemCount = computed(() => {
+  return selectedOptionValues.value.length + (otherSelectionSelected.value ? 1 : 0)
+})
+
+const hasReachedSelectionMaximum = computed(() => {
+  return selectionMaximum.value !== null && selectedItemCount.value >= selectionMaximum.value
+})
+
+const isOtherSelectionDisabled = computed(() => {
+  return isSelectionInteractionDisabled.value
+    || (hasReachedSelectionMaximum.value && !otherSelectionSelected.value)
+})
+
+const isSelectionConfirmDisabled = computed(() => {
+  const isOtherInputMissing = otherSelectionSelected.value
+    && props.selection?.otherRequired !== false
+    && !otherSelectionText.value.trim()
+  return isSelectionInteractionDisabled.value
+    || selectedItemCount.value < selectionMinimum.value
+    || isOtherInputMissing
+})
+
+const shouldShowSelectionActions = computed(() => {
+  return selectionMode.value === 'multiple' || (selectionAllowsOther.value && otherSelectionSelected.value)
+})
+
+const selectedCountText = computed(() => {
+  const count = selectedItemCount.value
+  return props.selection?.selectedCountText?.replace('{count}', String(count)) || `已选 ${count} 项`
+})
+
+const getSelectionOptionKey = (option: ChatMessageSelectionOption, index: number): string => {
+  return `${typeof option.value}-${String(option.value)}-${index}`
+}
+
+const isSelectionOptionSelected = (option: ChatMessageSelectionOption): boolean => {
+  return currentSelectionValues.value.includes(option.value)
+}
+
+const isSelectionOptionDisabled = (option: ChatMessageSelectionOption): boolean => {
+  if (option.disabled || isSelectionInteractionDisabled.value) {
+    return true
+  }
+
+  return selectionMode.value === 'multiple'
+    && hasReachedSelectionMaximum.value
+    && !isSelectionOptionSelected(option)
+}
+
+const getSelectionValues = (trimOther = false): ChatMessageSelectionValue[] => {
+  const values: ChatMessageSelectionValue[] = [...selectedOptionValues.value]
+  const otherValue = trimOther ? otherSelectionText.value.trim() : otherSelectionText.value
+  if (otherSelectionSelected.value && otherValue) {
+    values.push(otherValue)
+  }
+  return values
+}
+
+const createSelectionPayload = (trimOther = false): ChatMessageSelectionPayload | null => {
+  if (!props.selection) {
+    return null
+  }
+
+  const values = getSelectionValues(trimOther)
+  const selectedOptions = values
+    .map((value) => selectionOptions.value.find((option) => option.value === value))
+    .filter((option): option is ChatMessageSelectionOption => Boolean(option))
+
+  return {
+    selection: props.selection,
+    selectionId: props.selection.id,
+    value: values[0],
+    values,
+    selectedOptions,
+  }
+}
+
+const emitSelectionChange = () => {
+  const values = getSelectionValues()
+  pendingSelectionValues.value = values
+  emit('update:selectionValues', values)
+
+  const payload = createSelectionPayload()
+  if (payload) {
+    emit('selection-change', payload)
+  }
+}
+
+const confirmSelection = () => {
+  if (isSelectionConfirmDisabled.value) {
+    return
+  }
+
+  const payload = createSelectionPayload(true)
+  if (payload) {
+    emit('selection-submit', payload)
+  }
+}
+
+const handleSelectionOptionClick = (option: ChatMessageSelectionOption) => {
+  if (isSelectionOptionDisabled(option)) {
+    return
+  }
+
+  if (selectionMode.value === 'single') {
+    otherSelectionSelected.value = false
+    currentSelectionValues.value = [option.value]
+    emitSelectionChange()
+    confirmSelection()
+    return
+  }
+
+  currentSelectionValues.value = isSelectionOptionSelected(option)
+    ? currentSelectionValues.value.filter((value) => value !== option.value)
+    : [...currentSelectionValues.value, option.value]
+  emitSelectionChange()
+}
+
+const toggleOtherSelection = () => {
+  if (isOtherSelectionDisabled.value) {
+    return
+  }
+
+  if (selectionMode.value === 'single') {
+    currentSelectionValues.value = []
+    otherSelectionSelected.value = true
+  } else {
+    otherSelectionSelected.value = !otherSelectionSelected.value
+  }
+  emitSelectionChange()
+}
+
+const handleOtherSelectionFocus = () => {
+  if (isOtherSelectionDisabled.value || otherSelectionSelected.value) {
+    return
+  }
+
+  if (selectionMode.value === 'single') {
+    currentSelectionValues.value = []
+  }
+  otherSelectionSelected.value = true
+  emitSelectionChange()
+}
+
+const handleOtherSelectionInput = (event: Event) => {
+  if (isOtherSelectionDisabled.value || !(event.target instanceof HTMLInputElement)) {
+    return
+  }
+
+  if (selectionMode.value === 'single') {
+    currentSelectionValues.value = []
+  }
+  otherSelectionSelected.value = true
+  otherSelectionText.value = event.target.value
+  emitSelectionChange()
+}
+
+const selectionValuesEqual = (left: ChatMessageSelectionValue[], right: ChatMessageSelectionValue[]): boolean => {
+  return left.length === right.length && left.every((value, index) => value === right[index])
+}
+
+const syncSelectionValues = () => {
+  const selection = props.selection
+  if (!selection) {
+    currentSelectionValues.value = []
+    pendingSelectionValues.value = null
+    otherSelectionSelected.value = false
+    otherSelectionText.value = ''
+    return
+  }
+
+  const incomingValues = Array.isArray(props.selectionValues)
+    ? props.selectionValues
+    : Array.isArray(selection.selectedValues)
+      ? selection.selectedValues
+      : []
+  const optionValues = incomingValues.filter((value) => {
+    return selectionOptions.value.some((option) => option.value === value)
+  })
+  const otherValues = selectionAllowsOther.value
+    ? incomingValues.filter((value) => !selectionOptions.value.some((option) => option.value === value))
+    : []
+  const otherValue = otherValues.length ? String(otherValues[otherValues.length - 1]) : ''
+  const normalizedOptionValues = selectionMode.value === 'single' && otherValue
+    ? []
+    : selectionMode.value === 'single'
+      ? optionValues.slice(0, 1)
+      : optionValues
+  const normalizedValues = otherValue
+    ? [...normalizedOptionValues, otherValue]
+    : normalizedOptionValues
+
+  if (pendingSelectionValues.value && selectionValuesEqual(normalizedValues, pendingSelectionValues.value)) {
+    pendingSelectionValues.value = null
+    return
+  }
+
+  currentSelectionValues.value = normalizedOptionValues
+  otherSelectionSelected.value = Boolean(otherValue)
+  otherSelectionText.value = otherValue
+}
 
 const openImagePreview = (event?: Event) => {
   if (!props.previewable || !resolvedMedia.value.src || imageLoadFailed.value || showImagePreview.value) {
@@ -994,6 +1392,19 @@ watch(
     }
     imageLoadFailed.value = false
   },
+)
+
+watch(
+  [
+    () => props.selection?.id,
+    () => props.selection?.mode,
+    () => props.selection?.allowOther,
+    () => selectionOptions.value,
+    () => props.selection?.selectedValues,
+    () => props.selectionValues,
+  ],
+  syncSelectionValues,
+  { deep: true, immediate: true },
 )
 
 onBeforeUnmount(() => {
