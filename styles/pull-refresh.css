@@ -1,0 +1,7 @@
+.scq-pull-refresh { position: relative; overflow: hidden; min-width: 0; }
+.scq-pull-refresh__track { position: relative; transition: transform .2s ease; }
+.scq-pull-refresh.is-dragging .scq-pull-refresh__track { transition: none; user-select: none; }
+.scq-pull-refresh__head { position: absolute; left: 0; right: 0; display: flex; align-items: center; justify-content: center; padding: 0 12px; color: var(--scq-muted); font-size: 14px; }
+.scq-pull-refresh__keyboard { position: absolute; z-index: 1; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.scq-pull-refresh__keyboard:focus-visible { clip-path: none; width: auto; height: auto; min-height: 44px; inset: 0 0 auto; background: var(--scq-surface); color: var(--scq-primary); border: 2px solid var(--scq-primary); }
+@media (prefers-reduced-motion: reduce) { .scq-pull-refresh__track { transition: none; } }

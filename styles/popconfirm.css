@@ -1,0 +1,13 @@
+@import './popover.css';
+@import './icon.css';
+@import './loading.css';
+.scq-popconfirm { display: inline-block; }
+.scq-popconfirm__body { display: flex; align-items: flex-start; gap: 9px; color: var(--scq-text); font-size: 14px; overflow-wrap: anywhere; }
+.scq-popconfirm__body > .scq-icon { flex-shrink: 0; color: var(--scq-warning); }
+.scq-popconfirm__body > div { min-width: 0; }
+.scq-popconfirm__message { margin-top: 4px; color: var(--scq-muted); line-height: 1.6; }
+.scq-popconfirm__actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.scq-popconfirm__actions button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 30px; padding: 5px 10px; border: 1px solid var(--scq-border); border-radius: var(--scq-radius); background: var(--scq-surface); color: var(--scq-text); font: inherit; font-size: 12px; cursor: pointer; }
+.scq-popconfirm__actions .scq-popconfirm__confirm { background: var(--scq-primary); border-color: var(--scq-primary); color: white; }
+.scq-popconfirm__actions button:disabled { opacity: .5; cursor: not-allowed; }
+.scq-popconfirm__actions button:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: 2px; }

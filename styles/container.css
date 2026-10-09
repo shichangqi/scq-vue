@@ -1,0 +1,7 @@
+.scq-container { display: flex; flex-direction: column; box-sizing: border-box; width: 100%; min-width: 0; margin-inline: auto; }
+.scq-container__body { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+.scq-container.has-aside .scq-container__body { grid-template-columns: minmax(0, var(--scq-container-aside)) minmax(0, 1fr); }
+.scq-container__main, .scq-container__aside { min-width: 0; }
+.scq-container.is-aside-right .scq-container__body { grid-template-columns: minmax(0, 1fr) minmax(0, var(--scq-container-aside)); }
+.scq-container.is-aside-right .scq-container__aside { order: 2; }
+@media (max-width: 767px) { .scq-container.has-aside .scq-container__body { grid-template-columns: minmax(0, 1fr); } .scq-container.is-aside-right .scq-container__aside { order: 0; } }

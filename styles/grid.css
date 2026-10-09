@@ -1,0 +1,6 @@
+.scq-grid { display: grid; grid-template-columns: repeat(var(--scq-grid-xs, 1), minmax(0, 1fr)); min-width: 0; margin: 0; padding: 0; list-style: none; }
+.scq-grid > * { min-width: 0; }
+@media (min-width: 640px) { .scq-grid { grid-template-columns: repeat(var(--scq-grid-sm, 1), minmax(0, 1fr)); } }
+@media (min-width: 768px) { .scq-grid { grid-template-columns: repeat(var(--scq-grid-md, 1), minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .scq-grid { grid-template-columns: repeat(var(--scq-grid-lg, 1), minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .scq-grid { grid-template-columns: repeat(var(--scq-grid-xl, 1), minmax(0, 1fr)); } }

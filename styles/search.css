@@ -1,0 +1,19 @@
+@import './icon.css';
+
+.scq-search { display: flex; align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-width: 0; padding: 10px 12px; color: var(--scq-text, #303133); background: var(--scq-surface, #fff); font-size: 14px; }
+.scq-search__form { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; margin: 0; }
+.scq-search__label { flex-shrink: 0; max-width: 35%; overflow-wrap: anywhere; }
+.scq-search__field { display: flex; align-items: center; flex: 1; gap: 8px; min-width: 0; min-height: 40px; padding: 0 12px; box-sizing: border-box; border: 1px solid transparent; border-radius: var(--scq-radius, 4px); background: var(--scq-fill, #f5f7fa); }
+.scq-search--round .scq-search__field { border-radius: 999px; }
+.scq-search__field:focus-within { border-color: var(--scq-primary, #409eff); box-shadow: 0 0 0 2px color-mix(in srgb, var(--scq-primary, #409eff) 10%, transparent); }
+.scq-search__icon { flex-shrink: 0; color: var(--scq-muted, #73767a); }
+.scq-search__input { flex: 1; min-width: 0; width: 100%; padding: 8px 0; border: 0; outline: 0; background: transparent; color: inherit; font: inherit; font-size: 16px; line-height: 22px; }
+.scq-search__input::-webkit-search-cancel-button { appearance: none; }
+.scq-search__input::placeholder { color: var(--scq-muted, #73767a); }
+.scq-search__clear { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 36px; margin-right: -8px; border: 0; background: transparent; color: var(--scq-muted, #73767a); cursor: pointer; }
+.scq-search__action { flex-shrink: 0; max-width: 30%; }
+.scq-search__action button { min-width: 44px; min-height: 44px; padding: 4px; border: 0; background: transparent; color: inherit; font: inherit; overflow-wrap: anywhere; cursor: pointer; }
+.scq-search__clear:focus-visible, .scq-search__action button:focus-visible { outline: 2px solid var(--scq-primary, #409eff); outline-offset: -2px; }
+.scq-search.is-disabled { opacity: 0.5; }
+.scq-search input:disabled, .scq-search button:disabled { cursor: not-allowed; }
+@media (pointer: coarse) { .scq-search__clear { flex-basis: 44px; width: 44px; height: 44px; } }

@@ -1,0 +1,20 @@
+@import './icon.css';
+@import './progress.css';
+.scq-upload { color: var(--scq-text); min-width: 0; }
+.scq-upload__input { display: none; }
+.scq-upload__trigger { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 16px; min-height: 36px; border: 1px solid var(--scq-border); border-radius: var(--scq-radius); color: var(--scq-primary); background: var(--scq-surface); font: inherit; font-size: 14px; cursor: pointer; }
+.scq-upload__trigger.is-dropzone { flex-direction: column; width: 100%; min-height: 140px; border-style: dashed; gap: 12px; }
+.scq-upload.is-dragging .scq-upload__trigger { background: var(--scq-fill); border-color: var(--scq-primary); }
+.scq-upload__tip { margin-top: 8px; font-size: 12px; color: var(--scq-muted); }
+.scq-upload__list { list-style: none; margin: 12px 0 0; padding: 0; }
+.scq-upload__list li { display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 8px; border-bottom: 1px solid var(--scq-border); }
+.scq-upload__thumbnail { width: 48px; height: 48px; object-fit: cover; border-radius: var(--scq-radius); }
+.scq-upload__file { min-width: 0; flex: 1; }
+.scq-upload__name { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border: 0; padding: 0; color: var(--scq-text); background: transparent; font: inherit; font-size: 14px; text-align: left; cursor: pointer; }
+.scq-upload__meta { display: block; margin-top: 4px; color: var(--scq-muted); font-size: 12px; }
+.scq-upload__meta [role="alert"] { color: var(--scq-danger); margin-left: 8px; }
+.scq-upload__success { color: var(--scq-success); }
+.scq-upload__action { flex-shrink: 0; display: grid; place-items: center; width: 32px; height: 32px; border: 0; border-radius: var(--scq-radius); background: transparent; color: var(--scq-muted); cursor: pointer; }
+.scq-upload__action:hover { background: var(--scq-fill); color: var(--scq-primary); }
+.scq-upload button:disabled { opacity: .5; cursor: not-allowed; }
+.scq-upload button:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: 2px; }

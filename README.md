@@ -1,9 +1,11 @@
+<p align="center">
+  <img src="./logo.svg" width="96" height="96" alt="SCQ VUE Logo" />
+</p>
+
 # scq-vue
 
-A lightweight Vue 3 component library
+**English** | [简体中文](./README.zh-CN.md)
 
-### Online Demo
+A Vue 3 component library for desktop and mobile.
 
-See full usage examples, props, and interaction demos here:
-
-[🔗 View Online Demo](https://shichangqi.github.io/scq-vue/)
+[Documentation and examples](https://shichangqi.github.io/scq-vue/)

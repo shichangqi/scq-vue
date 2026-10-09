@@ -1,0 +1,10 @@
+@import './icon.css';
+.scq-link { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: transparent; color: var(--scq-text); font: inherit; font-size: 14px; text-decoration: none; vertical-align: baseline; cursor: pointer; overflow-wrap: anywhere; }
+.scq-link--primary { color: var(--scq-primary); }
+.scq-link--success { color: var(--scq-success); }
+.scq-link--warning { color: var(--scq-warning); }
+.scq-link--danger { color: var(--scq-danger); }
+.scq-link.has-underline:hover { text-decoration: underline; text-underline-offset: 3px; }
+.scq-link:not(.is-disabled):hover { color: var(--scq-primary); }
+.scq-link.is-disabled { opacity: .45; cursor: not-allowed; }
+.scq-link:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: 3px; }

@@ -76,7 +76,10 @@ const pickedTags = ref<Array<string | number | boolean>>(['frontend'])
 const pickedPlans = ref<Array<string | number | boolean>>(['pro'])
 
 const basicCode = `<template>
-  <scq-checkbox v-model="singleChecked">启用消息通知</scq-checkbox>
+  <div class="demo-grid">
+    <scq-checkbox v-model="singleChecked">启用消息通知</scq-checkbox>
+    <div>当前值：{{ singleChecked ? 'true' : 'false' }}</div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -86,11 +89,14 @@ const singleChecked = ref(true)
 <\/script>`
 
 const groupCode = `<template>
-  <scq-checkbox-group v-model="pickedTags" name="tags">
-    <scq-checkbox value="design">Design</scq-checkbox>
-    <scq-checkbox value="frontend">Frontend</scq-checkbox>
-    <scq-checkbox value="ai">AI</scq-checkbox>
-  </scq-checkbox-group>
+  <div class="demo-grid">
+    <scq-checkbox-group v-model="pickedTags" name="tags">
+      <scq-checkbox value="design">Design</scq-checkbox>
+      <scq-checkbox value="frontend">Frontend</scq-checkbox>
+      <scq-checkbox value="ai">AI</scq-checkbox>
+    </scq-checkbox-group>
+    <div>当前列表：{{ pickedTags.join(', ') || '-' }}</div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -100,11 +106,14 @@ const pickedTags = ref(['frontend'])
 <\/script>`
 
 const verticalCode = `<template>
-  <scq-checkbox-group v-model="pickedPlans" direction="vertical" size="large">
-    <scq-checkbox value="starter">Starter</scq-checkbox>
-    <scq-checkbox value="pro">Pro</scq-checkbox>
-    <scq-checkbox value="enterprise" disabled>Enterprise</scq-checkbox>
-  </scq-checkbox-group>
+  <div class="demo-grid">
+    <scq-checkbox-group v-model="pickedPlans" direction="vertical" size="large">
+      <scq-checkbox value="starter">Starter</scq-checkbox>
+      <scq-checkbox value="pro">Pro</scq-checkbox>
+      <scq-checkbox value="enterprise" disabled>Enterprise</scq-checkbox>
+    </scq-checkbox-group>
+    <div>当前列表：{{ pickedPlans.join(', ') || '-' }}</div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -114,7 +123,9 @@ const pickedPlans = ref(['pro'])
 <\/script>`
 
 const indeterminateCode = `<template>
-  <scq-checkbox :indeterminate="true">部分选择</scq-checkbox>
+  <div class="demo-grid">
+    <scq-checkbox :indeterminate="true">部分选择</scq-checkbox>
+  </div>
 </template>
 
 <script setup lang="ts">

@@ -1,3 +1,5 @@
+@import './icon.css';
+
 .scq-chat-message {
   display: flex;
   flex-direction: column;

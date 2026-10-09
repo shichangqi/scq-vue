@@ -1,0 +1,18 @@
+@import './icon.css';
+.scq-transfer { display: grid; grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr); gap: 12px; max-width: 640px; color: var(--scq-text); font-size: 14px; }
+.scq-transfer__panel { min-width: 0; border: 1px solid var(--scq-border); border-radius: var(--scq-radius); background: var(--scq-surface); overflow: hidden; }
+.scq-transfer__panel header { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px; background: var(--scq-fill); border-bottom: 1px solid var(--scq-border); }
+.scq-transfer label { display: flex; align-items: center; gap: 8px; min-width: 0; overflow-wrap: anywhere; cursor: pointer; }
+.scq-transfer input[type="checkbox"] { accent-color: var(--scq-primary); flex-shrink: 0; width: 16px; height: 16px; margin: 0; }
+.scq-transfer__count { font-size: 12px; white-space: nowrap; color: var(--scq-muted); }
+.scq-transfer__search { width: calc(100% - 20px); margin: 10px; padding: 8px; box-sizing: border-box; border: 1px solid var(--scq-border); border-radius: var(--scq-radius); font: inherit; color: inherit; background: var(--scq-surface); }
+.scq-transfer__panel ul { list-style: none; padding: 4px 0; margin: 0; height: 224px; overflow-y: auto; }
+.scq-transfer__panel li label { padding: 9px 10px; min-height: 36px; box-sizing: border-box; }
+.scq-transfer__panel li label:hover { background: var(--scq-fill); }
+.scq-transfer .is-disabled { opacity: .5; cursor: not-allowed; }
+.scq-transfer__panel footer { border-top: 1px solid var(--scq-border); padding: 8px 10px; }
+.scq-transfer__empty { color: var(--scq-muted); text-align: center; padding: 24px 8px; }
+.scq-transfer__actions { align-self: center; display: grid; gap: 12px; }
+.scq-transfer__actions button { display: grid; place-items: center; width: 44px; height: 36px; border: 0; border-radius: var(--scq-radius); background: var(--scq-primary); color: white; cursor: pointer; }
+.scq-transfer__actions button:disabled { opacity: .4; cursor: not-allowed; }
+@media (max-width: 480px) { .scq-transfer { grid-template-columns: minmax(0, 1fr); } .scq-transfer__actions { display: flex; justify-content: center; } .scq-transfer__actions .scq-icon { transform: rotate(90deg); } .scq-transfer__panel ul { height: 160px; } }

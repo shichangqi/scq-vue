@@ -1,0 +1,8 @@
+.scq-badge { position: relative; display: inline-flex; align-items: center; vertical-align: middle; }
+.scq-badge__value { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; box-sizing: border-box; border: 1px solid var(--scq-surface, #fff); border-radius: 10px; font-size: 11px; line-height: 16px; font-weight: 500; background: var(--scq-danger, #f56c6c); color: #fff; white-space: nowrap; }
+.scq-badge.has-content .scq-badge__value { position: absolute; top: 0; right: 0; transform: translate(50%, -50%); }
+.scq-badge__value.is-dot { min-width: 8px; width: 8px; height: 8px; padding: 0; }
+.scq-badge--primary { background: var(--scq-primary, #409eff); }
+.scq-badge--success { background: var(--scq-success, #67c23a); }
+.scq-badge--warning { background: var(--scq-warning, #e6a23c); }
+.scq-badge--info { background: var(--scq-muted, #73767a); }

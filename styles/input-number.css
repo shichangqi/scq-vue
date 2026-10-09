@@ -1,0 +1,13 @@
+@import './icon.css';
+
+.scq-input-number { --scq-number-height: 34px; display: inline-flex; height: var(--scq-number-height); width: 160px; max-width: 100%; border: 1px solid var(--scq-border, #dcdfe6); border-radius: var(--scq-radius, 4px); overflow: hidden; background: var(--scq-surface, #fff); color: var(--scq-text, #303133); vertical-align: middle; }
+.scq-input-number--small { --scq-number-height: 28px; width: 130px; }
+.scq-input-number--large { --scq-number-height: 40px; width: 180px; }
+.scq-input-number:focus-within { outline: 2px solid var(--scq-primary, #409eff); outline-offset: 2px; }
+.scq-input-number__input { width: 100%; min-width: 0; border: 0; outline: 0; padding: 0 6px; color: inherit; font: inherit; font-size: 14px; text-align: center; background: transparent; appearance: textfield; -moz-appearance: textfield; }
+.scq-input-number__input::-webkit-inner-spin-button, .scq-input-number__input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+.scq-input-number__control { display: grid; place-items: center; flex: 0 0 var(--scq-number-height); border: 0; background: var(--scq-fill, #f5f7fa); color: inherit; cursor: pointer; }
+.scq-input-number__control:enabled:hover { color: var(--scq-primary, #409eff); }
+.scq-input-number__control:focus-visible { outline: 2px solid var(--scq-primary, #409eff); outline-offset: -3px; }
+.scq-input-number__control:disabled, .scq-input-number.is-disabled { opacity: 0.5; cursor: not-allowed; }
+@media (pointer: coarse) { .scq-input-number { --scq-number-height: 44px; min-width: 150px; } }

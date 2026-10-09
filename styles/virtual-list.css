@@ -1,0 +1,5 @@
+.scq-virtual-list { position: relative; overflow: auto; min-width: 0; overscroll-behavior: contain; contain: strict; color: var(--scq-text); background: var(--scq-surface); }
+.scq-virtual-list__content { position: relative; width: 100%; }
+.scq-virtual-list__item { position: absolute; top: 0; left: 0; width: 100%; box-sizing: border-box; }
+.scq-virtual-list__empty { position: absolute; inset: 0; display: grid; place-items: center; color: var(--scq-muted); padding: 24px; }
+.scq-virtual-list:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: -2px; }

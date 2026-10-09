@@ -1,5 +1,5 @@
 import Checkbox from './Checkbox.vue'
-import CheckboxGroup from './CheckboxGroup.vue'
+import CheckboxGroup from '../CheckboxGroup'
 
 const getPrefixedName = (name) => {
   return `scq-${name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()}`

@@ -1,0 +1,18 @@
+@import './icon.css';
+.scq-image { position: relative; display: inline-block; overflow: hidden; max-width: 100%; vertical-align: middle; background: var(--scq-fill); }
+.scq-image > img { display: block; width: 100%; height: 100%; }
+.scq-image__placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--scq-muted); font-size: 13px; }
+.scq-image__preview-trigger { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: transparent; cursor: zoom-in; }
+.scq-image__preview-trigger:focus-visible { outline: 3px solid var(--scq-primary); outline-offset: -3px; }
+.scq-image-viewer { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #101214ed; color: white; }
+.scq-image-viewer__stage { position: absolute; inset: 64px 0 80px; display: flex; align-items: center; justify-content: center; overflow: hidden; touch-action: none; }
+.scq-image-viewer__stage img { max-width: 90%; max-height: 100%; object-fit: contain; user-select: none; }
+.scq-image-viewer button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 4px; background: #3339; color: white; cursor: pointer; }
+.scq-image-viewer button:disabled { opacity: .35; cursor: not-allowed; }
+.scq-image-viewer button:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+.scq-image-viewer__close { position: absolute; top: 16px; right: 16px; }
+.scq-image-viewer__previous, .scq-image-viewer__next { position: absolute; top: 50%; transform: translateY(-50%); }
+.scq-image-viewer__previous { left: 12px; }
+.scq-image-viewer__next { right: 12px; }
+.scq-image-viewer__toolbar { position: absolute; bottom: max(20px, env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 8px; padding: 4px 10px; max-width: calc(100% - 24px); box-sizing: border-box; border-radius: 6px; background: #252729; font-size: 13px; font-variant-numeric: tabular-nums; }
+.scq-image-viewer__toolbar output { width: 44px; text-align: center; }

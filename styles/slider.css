@@ -1,0 +1,19 @@
+.scq-slider { display: flex; align-items: center; gap: 16px; min-width: 0; min-height: 36px; color: var(--scq-text); }
+.scq-slider__track { position: relative; flex: 1; height: 6px; border-radius: 3px; background: var(--scq-border); cursor: pointer; margin: 12px 8px; }
+.scq-slider__fill { position: absolute; left: var(--scq-slider-start); right: calc(100% - var(--scq-slider-end)); height: 100%; background: var(--scq-primary); border-radius: inherit; }
+.scq-slider input { appearance: none; position: absolute; inset: -10px -8px; width: calc(100% + 16px); height: 26px; margin: 0; pointer-events: none; background: transparent; outline: none; }
+.scq-slider input::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--scq-primary); background: var(--scq-surface); pointer-events: auto; cursor: grab; }
+.scq-slider input::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--scq-primary); background: var(--scq-surface); pointer-events: auto; cursor: grab; }
+.scq-slider input:focus-visible::-webkit-slider-thumb { outline: 3px solid color-mix(in srgb, var(--scq-primary) 30%, transparent); outline-offset: 2px; }
+.scq-slider input:focus-visible::-moz-range-thumb { outline: 3px solid color-mix(in srgb, var(--scq-primary) 30%, transparent); outline-offset: 2px; }
+.scq-slider__value { min-width: 48px; font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }
+.scq-slider__marks { position: absolute; inset: 0; pointer-events: none; }
+.scq-slider__marks span { position: absolute; top: 16px; transform: translateX(-50%); color: var(--scq-muted); font-size: 12px; white-space: nowrap; }
+.scq-slider:has(.scq-slider__marks) { padding-bottom: 22px; }
+.scq-slider.is-disabled { opacity: .5; }
+.scq-slider.is-disabled .scq-slider__track { cursor: not-allowed; }
+.scq-slider.is-vertical { display: inline-flex; flex-direction: column; height: var(--scq-slider-height); min-width: 48px; }
+.scq-slider.is-vertical .scq-slider__track { width: 6px; height: auto; margin: 8px 12px; }
+.scq-slider.is-vertical .scq-slider__fill { left: 0; right: 0; top: calc(100% - var(--scq-slider-end)); bottom: var(--scq-slider-start); height: auto; }
+.scq-slider.is-vertical input { writing-mode: vertical-lr; direction: rtl; inset: -8px -10px; width: 26px; height: calc(100% + 16px); }
+.scq-slider.is-vertical .scq-slider__marks span { top: auto; left: 20px; transform: translateY(50%); }

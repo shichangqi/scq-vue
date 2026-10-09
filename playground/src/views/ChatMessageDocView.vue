@@ -1328,6 +1328,10 @@ const handleOtherSubmit = (payload: ChatMessageSelectionPayload) => {
   otherSubmitted.value = payload.values
 }
 
+const trackAttachmentClick = (payload: { name: string; type: string }) => {
+  console.log('附件点击事件', payload.name, payload.type)
+}
+
 const handleAttachmentClick = (payload: { name: string; url: string; type: string; label: string; sizeText: string; status: string }, event: MouseEvent) => {
   if (payload.type === 'ppt') {
     event.preventDefault()

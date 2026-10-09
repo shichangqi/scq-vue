@@ -1,0 +1,10 @@
+@import './skeleton.css';
+.scq-card { min-width: 0; overflow: hidden; box-sizing: border-box; border-radius: min(var(--scq-radius, 4px), 8px); background: var(--scq-surface); color: var(--scq-text); transition: box-shadow .2s; }
+.scq-card.is-bordered { border: 1px solid var(--scq-border); }
+.scq-card__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--scq-border); font-size: 16px; font-weight: 600; overflow-wrap: anywhere; }
+.scq-card__extra { flex-shrink: 0; font-size: 14px; font-weight: 400; }
+.scq-card__body { min-width: 0; overflow-wrap: anywhere; font-size: 14px; }
+.scq-card__footer { padding: 12px 20px; border-top: 1px solid var(--scq-border); }
+.scq-card__media > img, .scq-card__media > .scq-image { display: block; width: 100%; }
+.scq-card--always, .scq-card--hover:hover { box-shadow: 0 6px 20px #00000012; }
+@media (prefers-reduced-motion: reduce) { .scq-card { transition: none; } }

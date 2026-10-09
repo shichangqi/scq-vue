@@ -1,0 +1,11 @@
+@import './icon.css';
+.scq-rate { display: inline-flex; align-items: center; gap: 5px; min-height: 32px; color: var(--scq-border); vertical-align: middle; }
+.scq-rate button { position: relative; display: inline-flex; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; }
+.scq-rate__fill { position: absolute; inset: 0 auto 0 0; overflow: hidden; color: var(--scq-rate-color); pointer-events: none; }
+.scq-rate__fill .scq-icon { flex-shrink: 0; }
+.scq-rate__fill svg { fill: currentColor; }
+.scq-rate__text { margin-left: 6px; color: var(--scq-text); font-size: 14px; }
+.scq-rate:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: 4px; border-radius: var(--scq-radius); }
+.scq-rate.is-disabled { opacity: .5; }
+.scq-rate.is-disabled button { cursor: not-allowed; }
+.scq-rate.is-readonly button { cursor: default; }

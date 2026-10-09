@@ -1,0 +1,7 @@
+@import './field.css';
+@import './calendar.css';
+@import './popover.css';
+.scq-date-picker { display: inline-block; width: 260px; max-width: 100%; vertical-align: middle; }
+.scq-date-picker > .scq-floating-reference { display: block; }
+.scq-date-picker__month { display: flex; justify-content: center; padding: 4px 0; border-bottom: 1px solid var(--scq-border); }
+.scq-date-picker__month input { font: inherit; min-height: 32px; max-width: 100%; color: var(--scq-text); background: var(--scq-surface); border: 1px solid var(--scq-border); border-radius: var(--scq-radius); padding: 2px 8px; }

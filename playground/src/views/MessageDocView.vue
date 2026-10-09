@@ -116,38 +116,78 @@ import { ref } from 'vue'
 const visible = ref(false)
 <\/script>`
 
-const apiCode = `<script setup lang="ts">
+const apiCode = `<template>
+  <div class="chat-demo-actions">
+    <scq-button size="small" @click="openInfo">Message.info</scq-button>
+    <scq-button size="small" type="success" @click="openSuccess">Message.success</scq-button>
+    <scq-button size="small" type="warning" @click="openWarning">Message.warning</scq-button>
+    <scq-button size="small" type="danger" @click="openError">Message.error</scq-button>
+  </div>
+</template>
+
+<script setup lang="ts">
 import { Message } from 'scq-vue'
 
-Message.info('这是一条普通提示')
+const openInfo = () => {
+  Message.info('这是一条普通提示')
+}
 
-Message.success({
-  message: '保存成功',
-  description: 'API 调用会自动挂载到页面顶部。',
-})
+const openSuccess = () => {
+  Message.success({
+    message: '保存成功',
+    description: 'API 调用会自动挂载到页面顶部。',
+  })
+}
 
-Message.error({
-  message: '提交失败',
-  description: '可以传入 description 展示更多上下文。',
-  closable: true,
-  duration: 0,
-})
+const openWarning = () => {
+  Message.warning({
+    message: '请检查配置',
+    duration: 4000,
+  })
+}
+
+const openError = () => {
+  Message.error({
+    message: '提交失败',
+    description: '可以传入 description 展示更多上下文。',
+    closable: true,
+    duration: 0,
+  })
+}
 <\/script>`
 
-const placementCode = `<script setup lang="ts">
-import { Message } from 'scq-vue'
+const placementCode = `<template>
+  <div class="chat-demo-actions">
+    <scq-button
+      v-for="placement in placements"
+      :key="placement"
+      size="small"
+      @click="openPlacement(placement)"
+    >
+      {{ placement }}
+    </scq-button>
+  </div>
+</template>
 
-Message.info({
-  message: '右上角提示',
-  description: 'placement 支持 top、top-left、top-right、bottom、bottom-left、bottom-right。',
-  placement: 'top-right',
-})
+<script setup lang="ts">
+import { Message, type MessagePlacement } from 'scq-vue'
 
-Message.success({
-  message: '底部居中提示',
-  placement: 'bottom',
-  offset: 32,
-})
+const placements: MessagePlacement[] = [
+  'top',
+  'top-left',
+  'top-right',
+  'bottom',
+  'bottom-left',
+  'bottom-right',
+]
+
+const openPlacement = (placement: MessagePlacement) => {
+  Message.info({
+    message: '当前位置：' + placement,
+    description: 'placement 可用于控制全局提示出现的位置。',
+    placement,
+  })
+}
 <\/script>`
 </script>
 

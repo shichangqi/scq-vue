@@ -1,0 +1,4 @@
+.scq-space { display: inline-flex; min-width: 0; max-width: 100%; }
+.scq-space > * { max-width: 100%; }
+.scq-space.is-vertical { flex-direction: column; }
+.scq-space.is-fill { display: flex; width: 100%; }

@@ -158,10 +158,17 @@ const solidIconCategories: IconCategory[] = [
 ]
 
 const basicCode = `<template>
-  <scq-icon name="copy" :size="22" />
-  <scq-icon name="refresh" variant="solid" :size="22" color="#2563eb" />
-  <scq-icon name="success" :size="22" color="#16a34a" />
-</template>`
+  <div class="demo-panel">
+    <scq-icon name="copy" :size="22" />
+    <scq-icon name="refresh" variant="solid" :size="22" color="#2563eb" />
+    <scq-icon name="success" :size="22" color="#16a34a" />
+    <scq-icon name="warning" variant="solid" :size="22" color="#d97706" />
+    <scq-icon name="error" variant="solid" :size="22" color="#dc2626" />
+  </div>
+</template>
+
+<script setup lang="ts">
+<\/script>`
 
 const solidCode = `<template>
   <scq-icon name="copy" variant="solid" />

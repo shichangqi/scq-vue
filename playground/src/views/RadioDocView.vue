@@ -68,7 +68,10 @@ const pickedChannel = ref('web')
 const pickedPlan = ref('pro')
 
 const basicCode = `<template>
-  <scq-radio v-model="singleValue" value="ready">立即发布</scq-radio>
+  <div class="demo-grid">
+    <scq-radio v-model="singleValue" value="ready">立即发布</scq-radio>
+    <div>当前值：{{ singleValue }}</div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -78,11 +81,14 @@ const singleValue = ref('ready')
 <\/script>`
 
 const groupCode = `<template>
-  <scq-radio-group v-model="pickedChannel" name="channel">
-    <scq-radio value="web">Web</scq-radio>
-    <scq-radio value="mini-app">Mini App</scq-radio>
-    <scq-radio value="ios">iOS</scq-radio>
-  </scq-radio-group>
+  <div class="demo-grid">
+    <scq-radio-group v-model="pickedChannel" name="channel">
+      <scq-radio value="web">Web</scq-radio>
+      <scq-radio value="mini-app">Mini App</scq-radio>
+      <scq-radio value="ios">iOS</scq-radio>
+    </scq-radio-group>
+    <div>当前值：{{ pickedChannel }}</div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -92,11 +98,14 @@ const pickedChannel = ref('web')
 <\/script>`
 
 const verticalCode = `<template>
-  <scq-radio-group v-model="pickedPlan" direction="vertical" name="plan" size="large">
-    <scq-radio value="starter">Starter</scq-radio>
-    <scq-radio value="pro">Pro</scq-radio>
-    <scq-radio value="enterprise" disabled>Enterprise</scq-radio>
-  </scq-radio-group>
+  <div class="demo-grid">
+    <scq-radio-group v-model="pickedPlan" direction="vertical" name="plan" size="large">
+      <scq-radio value="starter">Starter</scq-radio>
+      <scq-radio value="pro">Pro</scq-radio>
+      <scq-radio value="enterprise" disabled>Enterprise</scq-radio>
+    </scq-radio-group>
+    <div>当前值：{{ pickedPlan }}</div>
+  </div>
 </template>
 
 <script setup lang="ts">

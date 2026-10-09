@@ -1,0 +1,20 @@
+@import './loading.css';
+@import './empty.css';
+@import './icon.css';
+.scq-table-loading { width: 100%; min-width: 0; }
+.scq-table-wrapper { width: 100%; max-width: 100%; overflow: auto; border-block: 1px solid var(--scq-border, #ebeef5); color: var(--scq-text, #303133); background: var(--scq-surface, #fff); scrollbar-width: thin; }
+.scq-table-wrapper:focus-visible { outline: 2px solid var(--scq-primary, #409eff); outline-offset: 2px; }
+.scq-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 14px; line-height: 1.5; }
+.scq-table th, .scq-table td { padding: 12px 16px; border-bottom: 1px solid var(--scq-border, #ebeef5); vertical-align: middle; overflow-wrap: anywhere; }
+.scq-table th { position: sticky; top: 0; z-index: 1; background: var(--scq-fill, #f5f7fa); font-weight: 600; }
+.scq-table tbody tr:last-child td { border-bottom: 0; }
+.scq-table .scq-table__selection { width: 44px; text-align: center; }
+.scq-table__selection input { width: 16px; height: 16px; margin: 0; accent-color: var(--scq-primary, #409eff); cursor: pointer; }
+.scq-table-wrapper.is-striped tbody tr:nth-child(even) { background: var(--scq-fill, #f5f7fa); }
+.scq-table-wrapper.is-bordered { border-inline: 1px solid var(--scq-border, #ebeef5); }
+.scq-table-wrapper.is-bordered th:not(:last-child), .scq-table-wrapper.is-bordered td:not(:last-child) { border-right: 1px solid var(--scq-border, #ebeef5); }
+.scq-table tbody tr.is-selected, .scq-table tbody tr:hover { background: color-mix(in srgb, var(--scq-primary, #409eff) 7%, var(--scq-surface, #fff)); }
+.scq-table__sort { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.scq-table__sort .is-inactive { opacity: 0.35; }
+.scq-table__sort:focus-visible { outline: 2px solid var(--scq-primary, #409eff); outline-offset: 3px; }
+@media (pointer: coarse) { .scq-table__sort { min-height: 44px; } .scq-table__selection { padding-block: 14px; } .scq-table__selection input { width: 20px; height: 20px; } }

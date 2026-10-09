@@ -1,0 +1,10 @@
+.scq-progress { --scq-progress-color: var(--scq-primary, #409eff); display: flex; align-items: center; gap: 12px; width: 100%; min-width: 0; color: var(--scq-text, #303133); font-size: 13px; }
+.scq-progress--success { --scq-progress-color: var(--scq-success, #67c23a); }
+.scq-progress--warning { --scq-progress-color: var(--scq-warning, #e6a23c); }
+.scq-progress--exception { --scq-progress-color: var(--scq-danger, #f56c6c); }
+.scq-progress__track { flex: 1; min-width: 0; height: var(--scq-progress-height, 8px); border-radius: 999px; overflow: hidden; background: var(--scq-fill, #f5f7fa); }
+.scq-progress__fill { height: 100%; border-radius: inherit; background: var(--scq-progress-color); transition: width 0.25s ease; }
+.scq-progress__text { min-width: 42px; max-width: 50%; font-variant-numeric: tabular-nums; text-align: right; line-height: 1.5; overflow-wrap: anywhere; }
+.scq-progress.is-indeterminate .scq-progress__fill { animation: scq-progress-move 1.5s ease-in-out infinite; }
+@keyframes scq-progress-move { from { transform: translateX(-100%); } to { transform: translateX(280%); } }
+@media (prefers-reduced-motion: reduce) { .scq-progress__fill { transition: none; } .scq-progress.is-indeterminate .scq-progress__fill { animation: none; } }

@@ -1,0 +1,11 @@
+@import './icon.css';
+.scq-result { min-width: 0; padding: 32px 16px; color: var(--scq-text); text-align: center; }
+.scq-result__icon { display: inline-flex; align-items: center; justify-content: center; min-width: 64px; min-height: 64px; color: var(--scq-primary); }
+.scq-result--success .scq-result__icon { color: var(--scq-success); }
+.scq-result--warning .scq-result__icon { color: var(--scq-warning); }
+.scq-result--error .scq-result__icon { color: var(--scq-danger); }
+.scq-result__code { font-size: 48px; line-height: 1; letter-spacing: 0; }
+.scq-result__title { margin: 16px 0 8px; font-size: 20px; line-height: 1.4; font-weight: 600; overflow-wrap: anywhere; }
+.scq-result__subtitle { margin: 0; color: var(--scq-muted); font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; }
+.scq-result__content { margin-top: 20px; text-align: left; }
+.scq-result__extra { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }

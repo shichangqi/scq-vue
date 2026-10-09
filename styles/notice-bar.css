@@ -1,0 +1,18 @@
+@import './icon.css';
+
+.scq-notice-bar { --scq-notice-color: var(--scq-warning, #e6a23c); display: flex; align-items: center; gap: 10px; box-sizing: border-box; width: 100%; min-width: 0; min-height: 44px; padding: 10px 14px; background: color-mix(in srgb, var(--scq-notice-color) 10%, var(--scq-surface, #fff)); color: color-mix(in srgb, var(--scq-notice-color) 70%, var(--scq-text, #303133)); font-size: 13px; line-height: 1.7; }
+.scq-notice-bar--info { --scq-notice-color: var(--scq-primary, #409eff); }
+.scq-notice-bar--success { --scq-notice-color: var(--scq-success, #67c23a); }
+.scq-notice-bar--danger { --scq-notice-color: var(--scq-danger, #f56c6c); }
+.scq-notice-bar__icon { flex-shrink: 0; }
+.scq-notice-bar__viewport { flex: 1; min-width: 0; overflow: hidden; }
+.scq-notice-bar__content { white-space: nowrap; }
+.scq-notice-bar:not(.is-scrolling):not(.is-wrap) .scq-notice-bar__content { overflow: hidden; text-overflow: ellipsis; }
+.scq-notice-bar.is-wrap .scq-notice-bar__content { white-space: normal; overflow-wrap: anywhere; }
+.scq-notice-bar.is-scrolling .scq-notice-bar__content { width: max-content; animation: scq-notice-scroll var(--scq-notice-duration) linear var(--scq-notice-delay) infinite alternate; }
+.scq-notice-bar:hover .scq-notice-bar__content, .scq-notice-bar:focus-within .scq-notice-bar__content { animation-play-state: paused; }
+.scq-notice-bar__close { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; margin: -4px -8px -4px 0; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; }
+.scq-notice-bar__close:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }
+@keyframes scq-notice-scroll { 0%, 15% { transform: translateX(0); } 85%, 100% { transform: translateX(var(--scq-notice-distance)); } }
+@media (pointer: coarse) { .scq-notice-bar__close { width: 44px; height: 44px; flex-basis: 44px; margin-block: -10px; } }
+@media (prefers-reduced-motion: reduce) { .scq-notice-bar.is-scrollable .scq-notice-bar__content { animation: none; white-space: normal; width: auto; overflow-wrap: anywhere; } }

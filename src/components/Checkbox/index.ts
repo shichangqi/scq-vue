@@ -1,6 +1,6 @@
 import type { App, Plugin } from 'vue'
 import Checkbox from './Checkbox.vue'
-import CheckboxGroup from './CheckboxGroup.vue'
+import CheckboxGroup from '../CheckboxGroup'
 import type { CheckboxDirection, CheckboxSize, CheckboxValue } from './context'
 
 type SFCWithInstall<T> = T & Plugin

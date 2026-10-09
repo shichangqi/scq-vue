@@ -1,0 +1,71 @@
+@import './badge.css';
+@import './icon.css';
+.scq-tabbar-wrapper { --scq-tabbar-safe-bottom: 0px; min-width: 0; }
+.scq-tabbar-wrapper.has-safe-area { --scq-tabbar-safe-bottom: env(safe-area-inset-bottom); }
+.scq-tabbar-wrapper.is-fixed { min-height: calc(56px + var(--scq-tabbar-safe-bottom)); }
+
+.scq-tabbar {
+  display: grid;
+  padding: 0 6px var(--scq-tabbar-safe-bottom);
+  box-sizing: border-box;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  user-select: none;
+}
+
+.scq-tabbar.is-fixed {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 100;
+}
+
+.scq-tabbar__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  min-height: 56px;
+  padding: 6px 2px;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font: inherit;
+  transition: color 0.18s ease, transform 0.12s ease;
+}
+
+.scq-tabbar__item:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.scq-tabbar__item.is-active {
+  color: var(--scq-primary, #409eff);
+}
+
+.scq-tabbar__item.is-active .scq-tabbar__label {
+  font-weight: 600;
+}
+
+.scq-tabbar__item:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.scq-tabbar__item:focus-visible {
+  outline: 2px solid var(--scq-primary, #409eff);
+  outline-offset: -2px;
+}
+
+.scq-tabbar__label {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+  letter-spacing: -0.01em;
+}

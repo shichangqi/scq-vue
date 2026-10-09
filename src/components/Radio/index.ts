@@ -1,6 +1,6 @@
 import type { App, Plugin } from 'vue'
 import Radio from './Radio.vue'
-import RadioGroup from './RadioGroup.vue'
+import RadioGroup from '../RadioGroup'
 import type { RadioDirection, RadioSize, RadioValue } from './context'
 
 type SFCWithInstall<T> = T & Plugin

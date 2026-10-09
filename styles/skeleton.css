@@ -1,0 +1,10 @@
+.scq-skeleton { display: flex; width: 100%; gap: 16px; }
+.scq-skeleton__lines { flex: 1; min-width: 0; }
+.scq-skeleton__row, .scq-skeleton__avatar { background: var(--scq-fill, #f2f3f5); border-radius: var(--scq-radius, 4px); }
+.scq-skeleton__row { height: 16px; margin-bottom: 12px; }
+.scq-skeleton__row:first-child { width: 35%; }
+.scq-skeleton__row:last-child { width: 65%; margin-bottom: 0; }
+.scq-skeleton__avatar { flex: 0 0 44px; height: 44px; border-radius: 50%; }
+.scq-skeleton.is-animated .scq-skeleton__row, .scq-skeleton.is-animated .scq-skeleton__avatar { background: linear-gradient(90deg, var(--scq-fill, #f2f3f5) 25%, var(--scq-border, #e4e7ed) 50%, var(--scq-fill, #f2f3f5) 75%); background-size: 400% 100%; animation: scq-skeleton-wave 1.8s ease infinite; }
+@keyframes scq-skeleton-wave { from { background-position: 100% 50%; } to { background-position: 0 50%; } }
+@media (prefers-reduced-motion: reduce) { .scq-skeleton.is-animated .scq-skeleton__row, .scq-skeleton.is-animated .scq-skeleton__avatar { animation: none; } }

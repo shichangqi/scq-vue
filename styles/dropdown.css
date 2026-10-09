@@ -1,0 +1,5 @@
+@import './menu.css';
+.scq-dropdown { display: inline-block; vertical-align: middle; }
+.scq-dropdown__trigger { display: inline-flex; }
+.scq-dropdown__trigger > button { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 8px 12px; border: 1px solid var(--scq-border); border-radius: var(--scq-radius); background: var(--scq-surface); color: var(--scq-text); font: inherit; font-size: 14px; cursor: pointer; }
+.scq-dropdown__trigger > button:disabled { opacity: .5; cursor: not-allowed; }

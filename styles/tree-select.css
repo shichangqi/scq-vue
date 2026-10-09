@@ -1,0 +1,7 @@
+@import './field.css';
+@import './tree.css';
+@import './popover.css';
+.scq-tree-select { display: inline-block; width: 280px; max-width: 100%; vertical-align: middle; }
+.scq-tree-select > .scq-floating-reference { display: block; }
+.scq-tree-select__filter { width: 100%; box-sizing: border-box; margin-bottom: 8px; padding: 8px; border: 1px solid var(--scq-border); border-radius: var(--scq-radius); color: var(--scq-text); background: var(--scq-surface); font: inherit; }
+.scq-tree-select__options { max-height: 280px; overflow-y: auto; overscroll-behavior: contain; }

@@ -1,0 +1,12 @@
+@import './icon.css';
+@import './loading.css';
+.scq-tree { list-style: none; margin: 0; padding: 0; min-width: 0; color: var(--scq-text); background: var(--scq-surface); font-size: 14px; }
+.scq-tree [role="treeitem"] { display: flex; align-items: center; gap: 6px; min-height: 34px; padding: 3px 8px 3px 4px; box-sizing: border-box; cursor: pointer; border-radius: var(--scq-radius); }
+.scq-tree [role="treeitem"]:hover { background: var(--scq-fill); }
+.scq-tree [role="treeitem"].is-selected { color: var(--scq-primary); background: color-mix(in srgb, var(--scq-primary) 10%, var(--scq-surface)); }
+.scq-tree [role="treeitem"].is-disabled { opacity: .45; cursor: not-allowed; }
+.scq-tree [role="treeitem"]:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: -2px; }
+.scq-tree__toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 24px; width: 24px; height: 24px; border: 0; background: transparent; color: var(--scq-muted); padding: 0; cursor: pointer; }
+.scq-tree__label { min-width: 0; overflow-wrap: anywhere; }
+.scq-tree input { flex-shrink: 0; margin: 0; accent-color: var(--scq-primary); width: 16px; height: 16px; }
+.scq-tree__empty { padding: 24px 12px; text-align: center; color: var(--scq-muted); }

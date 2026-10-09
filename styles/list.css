@@ -1,0 +1,6 @@
+.scq-list { min-width: 0; color: var(--scq-text); }
+.scq-list__sentinel { height: 1px; }
+.scq-list__status { min-height: 48px; display: flex; align-items: center; justify-content: center; color: var(--scq-muted); font-size: 14px; text-align: center; }
+.scq-list__status button { min-height: 44px; padding: 8px 16px; border: 0; background: transparent; color: var(--scq-primary); font: inherit; cursor: pointer; }
+.scq-list__status button:disabled { color: var(--scq-muted); cursor: not-allowed; }
+.scq-list__status button:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: -2px; }

@@ -1,0 +1,7 @@
+.scq-divider--horizontal { display: flex; align-items: center; width: 100%; gap: 16px; margin: 24px 0; color: var(--scq-muted, #73767a); font-size: 14px; }
+.scq-divider--horizontal::before, .scq-divider--horizontal::after { content: ''; flex: 1; border-top: 1px solid var(--scq-border, #dcdfe6); }
+.scq-divider--left::before, .scq-divider--right::after { flex: 0 0 24px; }
+.scq-divider__text { max-width: 75%; overflow-wrap: anywhere; }
+.scq-divider.is-dashed::before, .scq-divider.is-dashed::after { border-top-style: dashed; }
+.scq-divider--vertical { display: inline-block; height: 1em; margin: 0 10px; border-left: 1px solid var(--scq-border, #dcdfe6); vertical-align: middle; }
+.scq-divider--vertical.is-dashed { border-left-style: dashed; }

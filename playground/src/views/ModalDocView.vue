@@ -23,14 +23,7 @@
       </div>
 
       <aside class="modal-lab__right">
-        <div class="phone-demo phone-demo--single">
-          <div class="phone-demo__device">
-            <div class="phone-demo__notch"></div>
-            <div id="modal-preview-phone" class="phone-demo__screen">
-              <div class="phone-demo__status-bar">
-                <span>9:41</span>
-                <span>5G</span>
-              </div>
+        <PhonePreview screen-id="modal-preview-phone">
               <div class="phone-demo__content">
                 <div class="phone-demo__app">
                   <div class="phone-demo__sheet">
@@ -62,10 +55,7 @@
                   </div>
                 </div>
               </div>
-              <div class="phone-demo__home-indicator"></div>
-            </div>
-          </div>
-        </div>
+        </PhonePreview>
       </aside>
     </div>
 
@@ -140,6 +130,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import PhonePreview from '../components/PhonePreview.vue'
 import { t } from '../i18n'
 import { Modal } from 'scq-vue'
 
@@ -319,6 +310,12 @@ const openApiConfirmDemo = () => {
   grid-template-columns: minmax(0, 1fr) 320px;
   gap: 22px;
   align-items: start;
+  min-width: 0;
+}
+
+.modal-lab__left,
+.modal-lab__right {
+  min-width: 0;
 }
 
 .modal-lab__desc {
@@ -328,71 +325,15 @@ const openApiConfirmDemo = () => {
 
 .modal-lab__right {
   position: sticky;
-  top: 20px;
-}
-
-.phone-demo {
-  display: flex;
-  justify-content: center;
-  padding: 6px 0;
-}
-
-.phone-demo--single {
-  padding-top: 0;
-}
-
-.phone-demo__device {
-  position: relative;
-  width: 286px;
-  border-radius: 42px;
-  padding: 12px;
-  border: 1px solid #dbeafe;
-  background: linear-gradient(135deg, #f8fbff 0%, #eef6ff 100%);
-  box-shadow: 0 24px 52px rgba(64, 158, 255, 0.16);
-}
-
-.phone-demo__notch {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 118px;
-  height: 30px;
-  border-radius: 999px;
-  background: #050505;
-  z-index: 3;
-  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.phone-demo__screen {
-  position: relative;
-  height: 560px;
-  overflow: hidden;
-  border-radius: 30px;
-  background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.88), transparent 34%),
-    linear-gradient(180deg, #eef3fb 0%, #e6ebf5 100%);
-  transform: translateZ(0);
-  isolation: isolate;
-}
-
-.phone-demo__status-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 26px 8px;
-  color: #111827;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  top: 92px;
 }
 
 .phone-demo__content {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100% - 64px);
-  padding: 16px 14px 42px;
+  min-height: 100%;
+  padding: 20px 14px;
 }
 
 .phone-demo__app {
@@ -400,49 +341,52 @@ const openApiConfirmDemo = () => {
 }
 
 .phone-demo__sheet {
-  padding: 18px;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.74);
-  border: 1px solid rgba(255, 255, 255, 0.48);
-  box-shadow: 0 14px 36px rgba(148, 163, 184, 0.18);
-  backdrop-filter: blur(10px);
+  padding: 18px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(16px);
 }
 
 .phone-demo__sheet-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #0f172a;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .phone-demo__sheet-desc {
-  margin-top: 6px;
-  margin-bottom: 14px;
-  font-size: 13px;
+  margin-top: 5px;
+  margin-bottom: 16px;
+  font-size: 12.5px;
   line-height: 1.45;
   color: #64748b;
 }
 
 .phone-demo__examples {
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.24);
-  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .phone-demo__example-item {
   width: 100%;
   border: none;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   background: transparent;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 14px;
-  color: #0f172a;
+  padding: 13px 14px;
+  color: #1e293b;
   font-size: 14px;
+  font-weight: 500;
   text-align: left;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
 .phone-demo__example-item:last-child {
@@ -450,24 +394,13 @@ const openApiConfirmDemo = () => {
 }
 
 .phone-demo__example-item:active {
-  background: rgba(59, 130, 246, 0.1);
+  background: #f1f5f9;
 }
 
 .phone-demo__example-arrow {
-  opacity: 0.5;
+  color: #94a3b8;
   font-size: 16px;
-}
-
-.phone-demo__home-indicator {
-  position: absolute;
-  left: 50%;
-  bottom: 10px;
-  transform: translateX(-50%);
-  width: 118px;
-  height: 5px;
-  border-radius: 999px;
-  background: rgba(17, 24, 39, 0.88);
-  z-index: 2;
+  font-weight: 600;
 }
 
 .modal-custom-body {
@@ -494,23 +427,14 @@ const openApiConfirmDemo = () => {
   color: #475569;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .modal-lab {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .modal-lab__right {
     position: static;
-  }
-
-  .phone-demo__device {
-    width: min(100%, 268px);
-    padding: 10px;
-    border-radius: 30px;
-  }
-
-  .phone-demo__screen {
-    height: 510px;
+    order: -1;
   }
 
   .phone-demo__sheet {

@@ -1,0 +1,7 @@
+@import './icon.css';
+
+.scq-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 16px; color: var(--scq-muted, #73767a); text-align: center; font-size: 14px; }
+.scq-empty__image { display: grid; place-items: center; max-width: 100%; color: var(--scq-border, #dcdfe6); }
+.scq-empty__image img { width: 100%; height: 100%; object-fit: contain; }
+.scq-empty__description { max-width: 100%; overflow-wrap: anywhere; }
+.scq-empty__actions { margin-top: 4px; max-width: 100%; }

@@ -1,0 +1,22 @@
+@import './icon.css';
+.scq-steps { display: flex; list-style: none; padding: 0; margin: 0; color: var(--scq-text); font-size: 14px; min-width: 0; }
+.scq-steps__item { flex: 1; min-width: 0; position: relative; }
+.scq-steps__item:not(:last-child)::after { content: ''; position: absolute; left: 36px; top: 15px; right: 8px; height: 1px; background: var(--scq-border); }
+.scq-steps__item.is-finish::after { background: var(--scq-success); }
+.scq-steps__step { display: flex; flex-direction: column; align-items: flex-start; width: 100%; min-width: 0; gap: 10px; padding: 0 16px 0 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; box-sizing: border-box; }
+button.scq-steps__step { cursor: pointer; }
+.scq-steps__number { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; box-sizing: border-box; flex: 0 0 32px; width: 32px; height: 32px; border: 1px solid var(--scq-border); border-radius: 50%; background: var(--scq-surface); color: var(--scq-muted); }
+.scq-steps__content { display: flex; flex-direction: column; min-width: 0; gap: 6px; overflow-wrap: anywhere; }
+.scq-steps__description { color: var(--scq-muted); font-size: 12px; line-height: 1.6; }
+.scq-steps .is-process .scq-steps__number { background: var(--scq-primary); border-color: var(--scq-primary); color: white; }
+.scq-steps .is-finish .scq-steps__number { border-color: var(--scq-success); color: var(--scq-success); }
+.scq-steps .is-error .scq-steps__number { border-color: var(--scq-danger); color: var(--scq-danger); }
+.scq-steps .is-error strong { color: var(--scq-danger); }
+.scq-steps .is-wait strong { color: var(--scq-muted); font-weight: 400; }
+.scq-steps .is-disabled { opacity: .5; }
+.scq-steps button:disabled { cursor: not-allowed; }
+.scq-steps button:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: 4px; }
+.scq-steps--vertical { flex-direction: column; }
+.scq-steps--vertical .scq-steps__step { flex-direction: row; padding-bottom: 28px; }
+.scq-steps--vertical .scq-steps__item:not(:last-child)::after { left: 15px; top: 38px; bottom: 6px; height: auto; width: 1px; }
+@media (max-width: 480px) { .scq-steps--horizontal { flex-direction: column; } .scq-steps--horizontal .scq-steps__step { flex-direction: row; padding-bottom: 24px; } .scq-steps--horizontal .scq-steps__item:not(:last-child)::after { left: 15px; top: 38px; bottom: 6px; height: auto; width: 1px; } }

@@ -1,0 +1,6 @@
+@import './field.css';
+@import './icon.css';
+.scq-time-picker { display: inline-flex; width: 280px; max-width: 100%; vertical-align: middle; padding-left: 10px; }
+.scq-time-picker input { padding-inline: 6px; }
+.scq-time-picker input[aria-invalid="true"] { color: var(--scq-danger); }
+.scq-time-picker__separator { color: var(--scq-muted); }

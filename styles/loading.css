@@ -1,0 +1,7 @@
+.scq-loading { position: relative; color: var(--scq-primary, #409eff); }
+.scq-loading__indicator { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 36px; font-size: 14px; }
+.scq-loading.has-content.is-loading > .scq-loading__indicator { position: absolute; inset: 0; z-index: 1; background: color-mix(in srgb, var(--scq-surface, #fff) 85%, transparent); border-radius: inherit; }
+.scq-loading__spinner { display: inline-block; flex-shrink: 0; box-sizing: border-box; border: 2px solid color-mix(in srgb, currentColor 25%, transparent); border-top-color: currentColor; border-radius: 50%; animation: scq-loading-spin 0.75s linear infinite; }
+.scq-loading__text { overflow-wrap: anywhere; }
+@keyframes scq-loading-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .scq-loading__spinner { animation: none; } }

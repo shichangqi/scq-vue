@@ -1,3 +1,8 @@
+@import './button.css';
+@import './input.css';
+@import './radio.css';
+@import './checkbox.css';
+
 .scq-chat-choice {
   --scq-chat-choice-border: #dbe5f1;
   --scq-chat-choice-surface: #ffffff;

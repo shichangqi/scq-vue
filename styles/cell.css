@@ -1,0 +1,131 @@
+@import './icon.css';
+
+.scq-cell-group {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.scq-cell-group__title {
+  margin: 0;
+  padding: 16px 16px 8px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.scq-cell-group__body {
+  border-block: 1px solid rgba(0, 0, 0, 0.06);
+  background: var(--scq-surface, #ffffff);
+}
+
+.scq-cell-group.is-inset {
+  padding: 0 14px;
+  box-sizing: border-box;
+}
+
+.scq-cell-group.is-inset .scq-cell-group__body {
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.scq-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 50px;
+  box-sizing: border-box;
+  padding: 13px 16px;
+  border: 0;
+  color: var(--scq-text, #1e293b);
+  background: var(--scq-surface, #ffffff);
+  text-align: left;
+  text-decoration: none;
+  font: inherit;
+  font-size: 14.5px;
+  line-height: 1.45;
+  transition: background-color 0.18s ease;
+}
+
+.scq-cell.has-border:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.scq-cell.is-link {
+  cursor: pointer;
+}
+
+.scq-cell.is-link:not(.is-disabled):active {
+  background: #f1f5f9;
+}
+
+.scq-cell:focus-visible {
+  outline: 2px solid var(--scq-primary, #409eff);
+  outline-offset: -3px;
+}
+
+.scq-cell.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.scq-cell__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--scq-primary, #409eff);
+}
+
+.scq-cell__arrow {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: #94a3b8;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.scq-cell.is-link:not(.is-disabled):hover .scq-cell__arrow {
+  color: var(--scq-primary, #409eff);
+  transform: translateX(2px);
+}
+
+.scq-cell__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.scq-cell__title {
+  display: block;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.scq-cell__label {
+  display: block;
+  color: #64748b;
+  font-size: 12.5px;
+  line-height: 1.4;
+  margin-top: 3px;
+}
+
+.scq-cell__value {
+  color: #64748b;
+  text-align: right;
+  max-width: 50%;
+  font-size: 13.5px;
+  overflow-wrap: anywhere;
+}

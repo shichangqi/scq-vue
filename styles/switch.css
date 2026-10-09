@@ -1,0 +1,57 @@
+.scq-switch {
+  --scq-switch-height: 22px;
+  --scq-switch-width: 42px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  color: var(--scq-text, rgba(0, 0, 0, 0.88));
+  font-size: 14px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.scq-switch--small { --scq-switch-height: 18px; --scq-switch-width: 34px; }
+.scq-switch--large { --scq-switch-height: 26px; --scq-switch-width: 50px; }
+.scq-switch__input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.scq-switch__track {
+  position: relative;
+  flex: 0 0 var(--scq-switch-width);
+  width: var(--scq-switch-width);
+  height: var(--scq-switch-height);
+  border-radius: 999px;
+  background: var(--scq-border, #bfbfbf);
+  transition: background-color 0.2s;
+}
+.scq-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(var(--scq-switch-height) - 4px);
+  height: calc(var(--scq-switch-height) - 4px);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px #0002;
+  transition: transform 0.2s;
+}
+.scq-switch.is-checked .scq-switch__track { background: var(--scq-primary, #1677ff); }
+.scq-switch.is-checked .scq-switch__thumb { transform: translateX(calc(var(--scq-switch-width) - var(--scq-switch-height))); }
+.scq-switch__input:focus-visible + .scq-switch__track { outline: 2px solid var(--scq-primary, #1677ff); outline-offset: 3px; }
+.scq-switch.is-disabled { opacity: 0.5; cursor: not-allowed; }
+.scq-switch__label { overflow-wrap: anywhere; }
+.scq-switch__thumb.is-loading::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 2px solid #1677ff40;
+  border-top-color: var(--scq-primary, #1677ff);
+  border-radius: 50%;
+  animation: scq-switch-spin 0.8s linear infinite;
+}
+@keyframes scq-switch-spin { to { rotate: 360deg; } }
+@media (pointer: coarse) { .scq-switch { min-height: 44px; } }
+@media (prefers-reduced-motion: reduce) {
+  .scq-switch__track, .scq-switch__thumb { transition: none; }
+  .scq-switch__thumb.is-loading::after { animation: none; }
+}
