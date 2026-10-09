@@ -4,8 +4,7 @@
 
 # scq-vue
 
-**English** | [简体中文](./README.zh-CN.md)
-
 A Vue 3 component library for desktop and mobile.
 
 [Documentation and examples](https://shichangqi.github.io/scq-vue/)
+

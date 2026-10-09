@@ -7,6 +7,11 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
   plugins: [vue()],
+  test: {
+    alias: [
+      { find: /^scq-vue$/, replacement: resolve(__dirname, 'src/index.ts') },
+    ],
+  },
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
