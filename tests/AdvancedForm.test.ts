@@ -30,6 +30,19 @@ describe('DatePicker', () => {
     await wrapper.get('.scq-field__clear').trigger('click')
     expect(wrapper.emitted('clear')).toHaveLength(1)
   })
+
+  it('selects today and closes popover when clicking today button', async () => {
+    const wrapper = mount(DatePicker, { props: { teleport: false } })
+    wrappers.push(wrapper)
+    await wrapper.get('.scq-field__trigger').trigger('click')
+    await flushPromises()
+    const todayBtn = wrapper.findAll('.scq-calendar__footer button').find((b) => b.text().includes('今天') || b.text().includes('Today'))
+    expect(todayBtn?.exists()).toBe(true)
+    await todayBtn?.trigger('click')
+    await flushPromises()
+    expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
+    expect(wrapper.find('.scq-calendar').exists()).toBe(false)
+  })
 })
 
 describe('TimePicker', () => {
@@ -44,6 +57,23 @@ describe('TimePicker', () => {
     expect(wrapper.emitted('update:modelValue')).toEqual([[['09:00', '18:00']]])
     await inputs[0].setValue('07:00')
     expect(wrapper.emitted('invalid')).toHaveLength(2)
+  })
+
+  it('opens panel and selects time via custom columns', async () => {
+    const wrapper = mount(TimePicker, { props: { modelValue: '10:00', teleport: false } })
+    wrappers.push(wrapper)
+    expect(wrapper.find('.scq-time-picker__panel').exists()).toBe(false)
+    await wrapper.find('input').trigger('keydown', { key: 'ArrowDown' })
+    await flushPromises()
+    expect(wrapper.find('.scq-time-picker__panel').exists()).toBe(true)
+    const cells = wrapper.findAll('.scq-time-picker__cell')
+    expect(cells.length).toBeGreaterThan(0)
+    const minute30 = cells.find((cell) => cell.text() === '30')
+    expect(minute30).toBeDefined()
+    await minute30!.trigger('click')
+    expect(wrapper.emitted('update:modelValue')).toEqual([['10:30']])
+    await wrapper.find('.scq-field__clear').trigger('click')
+    expect(wrapper.emitted('clear')).toHaveLength(1)
   })
 })
 

@@ -34,16 +34,13 @@
     <h2 id="mobile">{{ label('移动端使用', 'Mobile Usage') }}</h2>
     <DocExample :code="mobileCode" lang="html" :show-demo="false" :default-expanded="true" :collapsible="false" />
     <p class="lead">{{ label('移动端专用组件集中在移动端区域：Toast、Search、NoticeBar、Cell、NavBar、Tabbar、ActionSheet、Modal，以及 Picker、List、PullRefresh、Swipe、SwipeCell、Calendar 和 ActionBar。它们的示例在手机 UI 中展示，通用组件不区分 PC 与窄屏预览模式。', 'Mobile-specific components are grouped in the Mobile section, including Toast, Search, NoticeBar, Cell, NavBar, Tabbar, ActionSheet, Modal, Picker, List, PullRefresh, Swipe, SwipeCell, Calendar and ActionBar. Their examples use phone UI previews; general components do not have separate desktop and narrow preview modes.') }}</p>
-
-    <h2 id="catalog">{{ label('组件目录', 'Component Catalog') }}</h2>
-    <div v-for="group in docGroups" :key="group.key" class="guide-component-group"><h3>{{ locale === 'zh-CN' ? group.zh : group.en }}</h3><div class="guide-component-links"><RouterLink v-for="entry in componentDocs.filter(item => item.group === group.key)" :key="entry.slug" :to="`/components/${entry.slug}`">{{ entry.name }} {{ locale === 'zh-CN' ? entry.title : '' }}</RouterLink></div></div>
   </section>
 </template>
 
 <script setup lang="ts">
 import DocExample from '../components/DocExample.vue'
 import { locale, t } from '../i18n'
-import { componentDocs, docGroups } from '../docs/catalog'
+import { componentDocs } from '../docs/catalog'
 
 const label = (zh: string, en: string) => locale.value === 'zh-CN' ? zh : en
 
@@ -122,8 +119,4 @@ const mobileCode = `<meta name="viewport" content="width=device-width, initial-s
 
 <style scoped>
 .guide-summary { display: flex; flex-wrap: wrap; gap: 10px 24px; padding-block: 12px; border-block: 1px solid #ebeef5; color: #73767a; font-size: 13px; }
-.guide-component-group { padding-block: 8px 16px; border-bottom: 1px solid #ebeef5; }
-.guide-component-links { display: flex; flex-wrap: wrap; gap: 12px 24px; }
-.guide-component-links a { color: #409eff; text-decoration: none; font-size: 14px; }
-.guide-component-links a:hover { text-decoration: underline; }
 </style>

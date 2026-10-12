@@ -44,7 +44,7 @@
 }
 
 .scq-tabbar__item.is-active {
-  color: var(--scq-primary, #409eff);
+  color: var(--scq-primary, #2563eb);
 }
 
 .scq-tabbar__item.is-active .scq-tabbar__label {
@@ -57,7 +57,7 @@
 }
 
 .scq-tabbar__item:focus-visible {
-  outline: 2px solid var(--scq-primary, #409eff);
+  outline: 2px solid var(--scq-primary, #2563eb);
   outline-offset: -2px;
 }
 

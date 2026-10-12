@@ -11,6 +11,7 @@ import TableExamples from '../playground/src/components/examples/TableExamples.v
 import MobileExamples from '../playground/src/components/examples/MobileExamples.vue'
 import ScqVue from '../src/index'
 import ComponentDocView from '../playground/src/views/ComponentDocView.vue'
+import GuideView from '../playground/src/views/GuideView.vue'
 import App from '../playground/src/App.vue'
 import documentationRouter from '../playground/src/router'
 import { createMemoryHistory, createRouter } from 'vue-router'
@@ -25,6 +26,17 @@ afterAll(() => vi.unstubAllGlobals())
 afterEach(() => { wrappers.splice(0).forEach((wrapper) => wrapper.unmount()); vi.restoreAllMocks() })
 
 describe('Playground documentation', () => {
+  it('renders setup guidance without a component catalog', () => {
+    const wrapper = mount(GuideView, { global: { stubs: { DocExample: true, RouterLink: RouterLinkStub } } })
+    wrappers.push(wrapper)
+    expect(wrapper.findAllComponents(DocExample)).toHaveLength(7)
+    expect(wrapper.find('#individual-registration').exists()).toBe(true)
+    expect(wrapper.find('#configuration').exists()).toBe(true)
+    expect(wrapper.find('#mobile').exists()).toBe(true)
+    expect(wrapper.find('#catalog').exists()).toBe(false)
+    expect(wrapper.findAllComponents(RouterLinkStub)).toHaveLength(0)
+  })
+
   it('contains each action sheet inside its own phone preview', async () => {
     const wrapper = mount({ components: { MobileExamples }, template: '<div><MobileExamples kind="action-sheet" /><MobileExamples kind="action-sheet" variant="states" /></div>' }, { global: { plugins: [ScqVue] }, attachTo: document.body })
     wrappers.push(wrapper)

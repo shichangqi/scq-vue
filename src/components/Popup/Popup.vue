@@ -272,16 +272,19 @@ defineExpose({
   display: flex;
   padding: 0;
   overflow: hidden;
+  z-index: 2000;
 }
 
 .scq-popup__overlay.is-overlay-dialog {
-  background: rgba(0, 0, 0, 0.46);
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .scq-popup__overlay.is-overlay-modal {
-  background: rgba(17, 17, 17, 0.3);
-  backdrop-filter: blur(22px) saturate(1.15);
-  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+  background: rgba(15, 23, 42, 0.35);
+  backdrop-filter: blur(24px) saturate(1.2);
+  -webkit-backdrop-filter: blur(24px) saturate(1.2);
 }
 
 .scq-popup__overlay.is-center {
@@ -317,9 +320,10 @@ defineExpose({
 
 .scq-popup {
   position: relative;
-  background: #ffffff;
-  color: #303133;
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.25);
+  background: var(--scq-surface, #ffffff);
+  color: var(--scq-text, #0f172a);
+  border: 1px solid var(--scq-border, #e2e8f0);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
@@ -328,32 +332,24 @@ defineExpose({
 }
 
 .scq-popup::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 .scq-popup::-webkit-scrollbar-thumb {
   border-radius: 999px;
-  border: 2px solid transparent;
-  background: rgba(60, 60, 67, 0.38);
-  background-clip: content-box;
+  background: rgba(148, 163, 184, 0.4);
 }
 
 .scq-popup::-webkit-scrollbar-track {
   background: transparent;
 }
 
-@media (hover: hover) {
-  .scq-popup::-webkit-scrollbar-thumb {
-    background: rgba(60, 60, 67, 0.52);
-    background-clip: content-box;
-  }
-}
-
 .scq-popup.is-center {
   min-width: 280px;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 32px);
+  border-radius: var(--scq-radius-xl, 16px);
 }
 
 .scq-popup.is-left,
@@ -363,12 +359,18 @@ defineExpose({
   max-height: 100vh;
 }
 
+.scq-popup.is-left { border-radius: 0 20px 20px 0; }
+.scq-popup.is-right { border-radius: 20px 0 0 20px; }
+
 .scq-popup.is-top,
 .scq-popup.is-bottom {
   width: 100%;
   max-width: 100vw;
   max-height: 100vh;
 }
+
+.scq-popup.is-bottom { border-radius: 24px 24px 0 0; }
+.scq-popup.is-top { border-radius: 0 0 24px 24px; }
 
 .scq-popup.is-left.has-size,
 .scq-popup.is-right.has-size {
@@ -382,25 +384,25 @@ defineExpose({
 
 .scq-popup__close {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   z-index: 2;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border: 0;
-  border-radius: 999px;
+  border-radius: 50%;
   background: transparent;
-  color: #909399;
+  color: var(--scq-muted, #94a3b8);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all 0.15s ease;
 }
 
 .scq-popup__close:hover {
-  background: #f5f7fa;
-  color: #606266;
+  background: var(--scq-fill, #f8fafc);
+  color: var(--scq-text, #0f172a);
 }
 
 .scq-popup__close-icon {
@@ -409,17 +411,17 @@ defineExpose({
 }
 
 .scq-popup__content {
-  padding: 18px;
+  padding: 20px 24px;
 }
 
 .scq-popup-fade-enter-active,
 .scq-popup-fade-leave-active {
-  transition: opacity 0.24s ease;
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scq-popup-fade-enter-active .scq-popup,
 .scq-popup-fade-leave-active .scq-popup {
-  transition: transform 0.24s ease, opacity 0.24s ease;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scq-popup-fade-enter-from,
@@ -441,7 +443,7 @@ defineExpose({
 .scq-popup-slide-top-leave-active,
 .scq-popup-slide-bottom-enter-active,
 .scq-popup-slide-bottom-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scq-popup-slide-left-enter-active .scq-popup,
@@ -452,7 +454,7 @@ defineExpose({
 .scq-popup-slide-top-leave-active .scq-popup,
 .scq-popup-slide-bottom-enter-active .scq-popup,
 .scq-popup-slide-bottom-leave-active .scq-popup {
-  transition: transform 0.24s ease;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scq-popup-slide-left-enter-from,

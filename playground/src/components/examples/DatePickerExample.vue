@@ -14,7 +14,7 @@ const disabledDate = (date: Date) => date.getDay() === 0
 
 <style scoped>
 .date-picker-example { display: flex; flex-wrap: wrap; align-items: end; gap: 20px; }
-.date-picker-example label { display: flex; flex-direction: column; gap: 8px; max-width: 100%; color: var(--scq-text); font-size: 13px; }
-.date-picker-example .date-picker-example__lock { flex-direction: row; align-items: center; min-height: 36px; }
+.date-picker-example > label { display: flex; flex-direction: column; gap: 8px; max-width: 100%; color: var(--scq-text); font-size: 13px; }
+.date-picker-example .date-picker-example__lock { flex-direction: row; align-items: center; gap: 8px; min-height: 36px; }
 .date-picker-example__output { display: block; margin-top: 20px; color: var(--scq-muted); font-size: 13px; overflow-wrap: anywhere; }
 </style>

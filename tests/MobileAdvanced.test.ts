@@ -2,14 +2,18 @@
 
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { h, nextTick, ref } from 'vue'
+import { h, nextTick, ref, shallowRef, unref } from 'vue'
+import emblaCarouselVue from 'embla-carousel-vue'
 import List from '../src/components/List/List.vue'
 import Picker from '../src/components/Picker/Picker.vue'
 import PullRefresh from '../src/components/PullRefresh/PullRefresh.vue'
+import Swipe from '../src/components/Swipe/Swipe.vue'
 import SwipeCell from '../src/components/SwipeCell/SwipeCell.vue'
 import Calendar from '../src/components/Calendar/Calendar.vue'
 import ActionBar from '../src/components/ActionBar/ActionBar.vue'
 import { parseDate } from '../src/utils/date'
+
+vi.mock('embla-carousel-vue', () => ({ default: vi.fn() }))
 
 const wrappers: VueWrapper[] = []
 afterEach(() => {
@@ -121,6 +125,52 @@ describe('PullRefresh', () => {
   })
 })
 
+describe('Swipe', () => {
+  type SwipeApi = NonNullable<ReturnType<typeof emblaCarouselVue>[1]['value']>
+  const items = [{ title: 'First' }, { title: 'Second' }, { title: 'Third' }]
+
+  it('initializes the selected slide without rebuilding options on controlled updates', async () => {
+    const api = shallowRef<SwipeApi>()
+    const engine = {
+      scrollTo: vi.fn(),
+      selectedScrollSnap: vi.fn().mockReturnValue(1),
+      on: vi.fn().mockReturnThis(),
+      off: vi.fn().mockReturnThis(),
+    }
+    const createCarousel = vi.mocked(emblaCarouselVue).mockReset().mockReturnValue([ref<HTMLElement>(), api])
+    const wrapper = mount(Swipe, { props: { modelValue: 1, items } })
+    wrappers.push(wrapper)
+    const options = createCarousel.mock.calls[0][0]
+    const initialOptions = unref(options)
+
+    api.value = engine as unknown as SwipeApi
+    await nextTick()
+    expect(engine.scrollTo).toHaveBeenCalledWith(1, true)
+    expect(wrapper.findAll('.scq-swipe__slide')[1].attributes('aria-hidden')).toBe('false')
+    expect(wrapper.emitted('change')).toBeUndefined()
+
+    await wrapper.setProps({ modelValue: 2 })
+    expect(unref(options)).toBe(initialOptions)
+    await wrapper.setProps({ modelValue: 0 })
+    expect(unref(options)).toBe(initialOptions)
+    expect(engine.scrollTo.mock.calls).toEqual([[1, true], [2], [0]])
+  })
+
+  it('wraps custom slide content without changing active and inert states', () => {
+    vi.mocked(emblaCarouselVue).mockReset().mockReturnValue([ref<HTMLElement>(), shallowRef<SwipeApi>()])
+    const wrapper = mount(Swipe, {
+      props: { modelValue: 1, items },
+      slots: { default: ({ item, active }: { item: { title: string }; active: boolean }) => h('button', { 'data-active': active }, item.title) },
+    })
+    wrappers.push(wrapper)
+    const content = wrapper.findAll('.scq-swipe__slide > .scq-swipe__content')
+    expect(content.map((entry) => entry.get('button').text())).toEqual(['First', 'Second', 'Third'])
+    expect(content[1].get('button').attributes('data-active')).toBe('true')
+    expect(wrapper.get('.scq-swipe__slide[aria-hidden="false"]').attributes('inert')).toBeUndefined()
+    expect(wrapper.findAll('.scq-swipe__slide[aria-hidden="true"]').every((slide) => slide.attributes('inert') !== undefined)).toBe(true)
+  })
+})
+
 describe('SwipeCell', () => {
   it('supports keyboard opening and asynchronous close cancellation', async () => {
     const beforeClose = vi.fn().mockResolvedValue(false)
@@ -170,6 +220,16 @@ describe('Calendar', () => {
     await nextTick()
     expect(wrapper.emitted('update:month')).toEqual([['2026-11']])
     expect(document.activeElement?.getAttribute('data-date')).toBe('2026-11-01')
+  })
+
+  it('selects today when clicking footer today button and supports goToday navigation', async () => {
+    const wrapper = mount(Calendar, { props: { month: '2025-01' } })
+    wrappers.push(wrapper)
+    const todayBtn = wrapper.find('.scq-calendar__footer button')
+    await todayBtn.trigger('click')
+    expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
+    await wrapper.vm.goToday()
+    expect(wrapper.emitted('update:modelValue')).toHaveLength(1)
   })
 })
 

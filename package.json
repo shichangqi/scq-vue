@@ -1,6 +1,6 @@
 {
   "name": "scq-vue",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A Vue 3 component library made by Chauncy",
   "main": "./dist/scq-vue.umd.js",
   "module": "./dist/scq-vue.es.js",

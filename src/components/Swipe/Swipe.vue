@@ -2,7 +2,7 @@
   <section class="scq-swipe" :style="{ '--scq-swipe-height': typeof height === 'number' ? `${height}px` : height }" :aria-label="ariaLabel || text('carousel')" aria-roledescription="carousel" @mouseenter="hovered = pauseOnHover" @mouseleave="hovered = false" @focusin="focused = true" @focusout="focusOut">
     <div ref="viewportRef" class="scq-swipe__viewport" :tabindex="isDisabled ? -1 : 0" @keydown="keydown">
       <div class="scq-swipe__track">
-        <div v-for="(item, index) in items" :key="item.key ?? index" class="scq-swipe__slide" role="group" aria-roledescription="slide" :aria-label="`${index + 1} / ${items.length}`" :aria-hidden="index !== active" :inert="index !== active ? true : undefined"><slot :item="item" :index="index" :active="index === active"><img v-if="item.src" :src="item.src" :alt="item.alt || ''" :loading="index === 0 ? 'eager' : 'lazy'" draggable="false" /><span v-else>{{ item.title }}</span></slot></div>
+        <div v-for="(item, index) in items" :key="item.key ?? index" class="scq-swipe__slide" role="group" aria-roledescription="slide" :aria-label="`${index + 1} / ${items.length}`" :aria-hidden="index !== active" :inert="index !== active ? true : undefined"><div class="scq-swipe__content"><slot :item="item" :index="index" :active="index === active"><img v-if="item.src" :src="item.src" :alt="item.alt || ''" :loading="index === 0 ? 'eager' : 'lazy'" draggable="false" /><span v-else>{{ item.title }}</span></slot></div></div>
       </div>
     </div>
     <div v-if="showIndicators && items.length > 1" class="scq-swipe__indicators"><button v-for="(_, index) in items" :key="index" type="button" :aria-label="`${text('page')} ${index + 1}`" :aria-current="index === active ? 'true' : undefined" :disabled="isDisabled" @click="swipeTo(index)" /></div>
@@ -29,7 +29,7 @@ const focused = ref(false)
 const dragging = ref(false)
 const reducedMotion = ref(false)
 const hidden = ref(false)
-const [viewportRef, api] = emblaCarouselVue(computed(() => ({ loop: props.loop, startIndex: props.modelValue ?? 0, watchDrag: !isDisabled.value, duration: reducedMotion.value ? 0 : 25 })))
+const [viewportRef, api] = emblaCarouselVue(computed(() => ({ loop: props.loop, watchDrag: !isDisabled.value, duration: reducedMotion.value ? 0 : 25 })))
 let timer: ReturnType<typeof setTimeout> | undefined
 let media: MediaQueryList | undefined
 const clearTimer = () => { if (timer !== undefined) clearTimeout(timer); timer = undefined }
@@ -64,6 +64,7 @@ const visibility = () => { hidden.value = document.hidden }
 const motion = () => { reducedMotion.value = media?.matches ?? false }
 watch(api, (value, previous) => {
   previous?.off('select', sync).off('reInit', sync).off('pointerDown', pause).off('pointerUp', resume)
+  value?.scrollTo(props.modelValue ?? active.value, true)
   value?.on('select', sync).on('reInit', sync).on('pointerDown', pause).on('pointerUp', resume)
   sync()
 })

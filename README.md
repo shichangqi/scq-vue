@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.svg" width="96" height="96" alt="SCQ VUE Logo" />
+  <img src="https://shichangqi.github.io/scq-vue/logo.svg" width="96" height="96" alt="SCQ VUE Logo" />
 </p>
 
 # scq-vue

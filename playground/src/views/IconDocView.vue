@@ -153,7 +153,7 @@ const solidIconCategories: IconCategory[] = [
   },
   {
     labelKey: 'icon.category.brands',
-    names: ['wechat', 'alipay', 'qq', 'douyin', 'bilibili'],
+    names: ['wechat', 'alipay', 'qq', 'weibo', 'douyin', 'bilibili', 'zhihu', 'baidu', 'taobao', 'tmall', 'jd', 'pinduoduo', 'xiaohongshu', 'meituan', 'ctrip', 'amap', 'dingding', 'feishu'],
   },
 ]
 

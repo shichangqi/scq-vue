@@ -159,16 +159,16 @@ onBeforeUnmount(clearCloseTimer)
 .scq-message {
   display: inline-flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
   min-width: 220px;
   max-width: min(520px, calc(100vw - 32px));
-  border: 1px solid #ebeef5;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #303133;
-  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
-  padding: 10px 12px;
-  line-height: 1.45;
+  border: 1px solid var(--scq-border, #e2e8f0);
+  border-radius: var(--scq-radius-lg, 12px);
+  background: var(--scq-surface, #ffffff);
+  color: var(--scq-text, #0f172a);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.04);
+  padding: 12px 16px;
+  line-height: 1.5;
 }
 
 .scq-message.is-standalone {
@@ -185,48 +185,56 @@ onBeforeUnmount(clearCloseTimer)
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   flex: 0 0 auto;
   border-radius: 999px;
   margin-top: 1px;
-  background: #409eff;
+  background: var(--scq-primary, #2563eb);
   color: #ffffff;
   font-size: 12px;
   font-weight: 700;
   line-height: 1;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
 }
 
 .scq-message.is-success .scq-message__icon {
-  background: #67c23a;
+  background: var(--scq-success, #10b981);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
 }
 
 .scq-message.is-warning .scq-message__icon {
-  background: #e6a23c;
+  background: var(--scq-warning, #f59e0b);
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.25);
 }
 
 .scq-message.is-error .scq-message__icon {
-  background: #f56c6c;
+  background: var(--scq-danger, #ef4444);
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
 }
 
 .scq-message.is-loading .scq-message__icon {
-  background: #909399;
+  background: var(--scq-info, #64748b);
+  box-shadow: none;
 }
 
 .scq-message__content {
   display: grid;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
+  flex: 1;
 }
 
 .scq-message__message {
   overflow-wrap: anywhere;
   font-size: 14px;
+  font-weight: 550;
+  color: var(--scq-text, #0f172a);
 }
 
 .scq-message__description {
-  color: #606266;
-  font-size: 12px;
+  color: var(--scq-muted, #64748b);
+  font-size: 13px;
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
@@ -234,18 +242,25 @@ onBeforeUnmount(clearCloseTimer)
 .scq-message__close {
   border: 0;
   background: transparent;
-  color: #909399;
+  color: var(--scq-muted, #94a3b8);
   cursor: pointer;
   font-size: 18px;
   line-height: 1;
-  padding: 0 0 0 4px;
+  padding: 2px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.scq-message__close:hover {
+  color: var(--scq-text, #0f172a);
+  background: var(--scq-fill, #f8fafc);
 }
 
 .scq-message-slide-top-enter-active,
 .scq-message-slide-top-leave-active,
 .scq-message-slide-bottom-enter-active,
 .scq-message-slide-bottom-leave-active {
-  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scq-message-slide-top-move,

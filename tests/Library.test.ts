@@ -20,7 +20,7 @@ const styleDependencies: Record<string, string[]> = {
   swipe: ['icon'],
   'action-bar': ['icon', 'loading', 'badge'],
   'date-picker': ['field', 'calendar', 'popover'],
-  'time-picker': ['field', 'icon'],
+  'time-picker': ['field', 'icon', 'popover'],
   upload: ['icon', 'progress'],
   rate: ['icon'],
   'auto-complete': ['field', 'icon', 'popover'],
@@ -101,6 +101,30 @@ describe('Library integration', () => {
     for (const dependency of dependencies) {
       expect(styles[`../styles/${name}.css`]).toContain(`@import './${dependency}.css';`)
       expect(styles[`../styles/${dependency}.css`], dependency).toBeTruthy()
+    }
+  })
+
+  it('reserves fixed space for Swipe indicators throughout marker transitions', () => {
+    const stylesheet = document.createElement('style')
+    stylesheet.textContent = styles['../styles/swipe.css']
+    document.head.append(stylesheet)
+    try {
+      const rules = Array.from(stylesheet.sheet!.cssRules)
+      const getStyle = (selector: string) => {
+        const rule = rules.find((entry): entry is CSSStyleRule => 'selectorText' in entry && entry.selectorText === selector)
+        expect(rule).toBeDefined()
+        return rule!.style
+      }
+      const button = getStyle('.scq-swipe__indicators button')
+      const marker = getStyle('.scq-swipe__indicators button::after')
+      const activeMarker = getStyle('.scq-swipe__indicators button[aria-current]::after')
+      const maximumMarkerWidth = Math.max(parseFloat(marker.width), parseFloat(activeMarker.width))
+      expect(parseFloat(button.width)).toBeGreaterThanOrEqual(maximumMarkerWidth)
+      expect(button.flex).toBe(`0 0 ${button.width}`)
+      expect(button.display).toBe('grid')
+      expect(button.getPropertyValue('place-items')).toBe('center')
+    } finally {
+      stylesheet.remove()
     }
   })
 

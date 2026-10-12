@@ -5,8 +5,14 @@
       <ul class="scq-menu__list" role="menu" :aria-label="item.label"><MenuNode v-for="child in item.children" :key="child.key" :item="child" :path="[...path, item.key]" :parent-disabled="disabled" /></ul>
     </Popover>
     <template v-else>
-      <component :is="item.href && !branch ? 'a' : 'button'" :type="item.href && !branch ? undefined : 'button'" role="menuitem" class="scq-menu__button" :class="{ 'is-active': menu.state.value.active === item.key }" :style="menu.state.value.mode === 'vertical' ? { paddingLeft: `${12 + path.length * 18}px` } : undefined" :data-menu-key="menu.token(item.key)" :href="!disabled && !branch ? safeHref(item.href) : undefined" :disabled="item.href ? undefined : disabled" :aria-disabled="disabled" :aria-current="menu.state.value.active === item.key ? 'page' : undefined" :aria-haspopup="branch ? 'menu' : undefined" :aria-expanded="branch ? opened : undefined" :tabindex="disabled ? -1 : undefined" @click="activate"><Icon v-if="item.icon" :name="item.icon" :size="18" /><span>{{ item.label }}</span><Icon v-if="branch" :name="opened ? 'chevronUp' : 'chevronDown'" :size="14" /></component>
-      <ul v-if="branch && opened" class="scq-menu__list scq-menu__children" role="menu" :aria-label="item.label"><MenuNode v-for="child in item.children" :key="child.key" :item="child" :path="[...path, item.key]" :parent-disabled="disabled" /></ul>
+      <component :is="item.href && !branch ? 'a' : 'button'" :type="item.href && !branch ? undefined : 'button'" role="menuitem" class="scq-menu__button" :class="{ 'is-active': menu.state.value.active === item.key }" :style="menu.state.value.mode === 'vertical' ? { paddingLeft: `${12 + path.length * 18}px` } : undefined" :data-menu-key="menu.token(item.key)" :href="!disabled && !branch ? safeHref(item.href) : undefined" :disabled="item.href ? undefined : disabled" :aria-disabled="disabled" :aria-current="menu.state.value.active === item.key ? 'page' : undefined" :aria-haspopup="branch ? 'menu' : undefined" :aria-expanded="branch ? opened : undefined" :tabindex="disabled ? -1 : undefined" @click="activate"><Icon v-if="item.icon" :name="item.icon" :size="18" /><span>{{ item.label }}</span><Icon v-if="branch" name="chevronDown" :size="14" class="scq-menu__arrow" /></component>
+      <Transition name="scq-menu-submenu">
+        <div v-if="branch && opened" class="scq-menu__submenu">
+          <div class="scq-menu__submenu-body">
+            <ul class="scq-menu__list scq-menu__children" role="menu" :aria-label="item.label"><MenuNode v-for="child in item.children" :key="child.key" :item="child" :path="[...path, item.key]" :parent-disabled="disabled" /></ul>
+          </div>
+        </div>
+      </Transition>
     </template>
   </li>
 </template>

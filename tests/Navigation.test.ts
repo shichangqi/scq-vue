@@ -13,7 +13,7 @@ import Menu from '../src/components/Menu/Menu.vue'
 import Dropdown from '../src/components/Dropdown/Dropdown.vue'
 import Breadcrumb from '../src/components/Breadcrumb/Breadcrumb.vue'
 import Steps from '../src/components/Steps/Steps.vue'
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, nextTick, ref } from 'vue'
 
 vi.mock('@floating-ui/dom', () => ({ autoUpdate: (_reference: unknown, _panel: unknown, update: () => void) => { update(); return () => {} }, computePosition: async () => ({ x: 0, y: 0, strategy: 'fixed' }), offset: vi.fn(), flip: vi.fn(), shift: vi.fn() }))
 
@@ -66,6 +66,97 @@ describe('Extended navigation', () => {
   })
 })
 
+describe('Menu', () => {
+  const items = [
+    { key: 'first', label: 'First', children: [{ key: 'child', label: 'Child' }] },
+    { key: 'last', label: 'Last', children: [{ key: 'other', label: 'Other' }] },
+  ]
+
+  it('animates submenus on entry and keeps them mounted until exit finishes', async () => {
+    vi.useFakeTimers()
+    try {
+      const wrapper = mount(Menu, { props: { items }, global: { stubs: { transition: false } }, attachTo: document.body })
+      wrappers.push(wrapper)
+      const button = wrapper.get('[data-menu-key="string:first"]')
+      expect(wrapper.find('.scq-menu__submenu').exists()).toBe(false)
+
+      await button.trigger('click')
+      const submenu = wrapper.get<HTMLElement>('.scq-menu__submenu')
+      submenu.element.style.transitionDuration = '0.25s'
+      expect(button.attributes('aria-expanded')).toBe('true')
+      expect(submenu.classes()).toContain('scq-menu-submenu-enter-active')
+      await vi.runAllTimersAsync()
+      expect(submenu.classes()).not.toContain('scq-menu-submenu-enter-active')
+
+      await button.trigger('click')
+      expect(button.attributes('aria-expanded')).toBe('false')
+      expect(submenu.classes()).toContain('scq-menu-submenu-leave-active')
+      await vi.advanceTimersByTimeAsync(100)
+      expect(submenu.element.isConnected).toBe(true)
+      expect(submenu.isVisible()).toBe(true)
+      await vi.runAllTimersAsync()
+      expect(wrapper.find('.scq-menu__submenu').exists()).toBe(false)
+
+      await button.trigger('click')
+      await vi.runAllTimersAsync()
+      expect(wrapper.get('.scq-menu__submenu').isVisible()).toBe(true)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('settles interrupted submenu transitions without leaving duplicate content', async () => {
+    vi.useFakeTimers()
+    try {
+      const wrapper = mount(Menu, { props: { items, defaultOpenKeys: ['first'] }, global: { stubs: { transition: false } }, attachTo: document.body })
+      wrappers.push(wrapper)
+      const button = wrapper.get('[data-menu-key="string:first"]')
+      const submenu = wrapper.get<HTMLElement>('.scq-menu__submenu')
+      submenu.element.style.transitionDuration = '0.25s'
+      expect(submenu.classes()).not.toContain('scq-menu-submenu-enter-active')
+
+      for (const expectedOpen of [false, true, false, true]) {
+        await button.trigger('click')
+        await vi.advanceTimersByTimeAsync(50)
+        await button.trigger('click')
+        await vi.advanceTimersByTimeAsync(50)
+        await button.trigger('click')
+        await vi.runAllTimersAsync()
+        expect(button.attributes('aria-expanded')).toBe(String(expectedOpen))
+        expect(wrapper.findAll('.scq-menu__submenu')).toHaveLength(expectedOpen ? 1 : 0)
+        expect(wrapper.find('[class*="scq-menu-submenu-"]').exists()).toBe(false)
+        if (expectedOpen) wrapper.get<HTMLElement>('.scq-menu__submenu').element.style.transitionDuration = '0.25s'
+      }
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('animates accordion submenus only when controlled open keys change', async () => {
+    vi.useFakeTimers()
+    try {
+      const wrapper = mount(Menu, { props: { items, openKeys: ['first'], uniqueOpened: true }, global: { stubs: { transition: false } }, attachTo: document.body })
+      wrappers.push(wrapper)
+      const previous = wrapper.get<HTMLElement>('.scq-menu__submenu')
+      previous.element.style.transitionDuration = '0.25s'
+      await wrapper.get('[data-menu-key="string:last"]').trigger('click')
+      expect(wrapper.emitted('update:openKeys')).toEqual([[['last']]])
+      expect(wrapper.findAll('.scq-menu__submenu')).toHaveLength(1)
+      expect(previous.classes()).not.toContain('scq-menu-submenu-leave-active')
+
+      await wrapper.setProps({ openKeys: ['last'] })
+      expect(previous.classes()).toContain('scq-menu-submenu-leave-active')
+      expect(wrapper.findAll('.scq-menu__submenu')).toHaveLength(2)
+      expect(wrapper.get('.scq-menu-submenu-enter-active').text()).toBe('Other')
+      await vi.runAllTimersAsync()
+      expect(wrapper.findAll('.scq-menu__submenu')).toHaveLength(1)
+      expect(wrapper.get('.scq-menu__submenu').text()).toBe('Other')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})
+
 describe('Collapse', () => {
   const DraftInput = defineComponent({
     setup() {
@@ -91,6 +182,71 @@ describe('Collapse', () => {
     await buttons[0].trigger('click')
     expect(wrapper.get('input').element.value).toBe('edited')
     expect(buttons[0].attributes('aria-expanded')).toBe('false')
+  })
+
+  it('keeps panels visible until the leave transition finishes', async () => {
+    vi.useFakeTimers()
+    try {
+      const wrapper = mount(CollapseItem, { props: { title: 'Animated', lazy: true }, slots: { default: () => h(DraftInput) }, global: { stubs: { transition: false } }, attachTo: document.body })
+      wrappers.push(wrapper)
+      const panel = wrapper.get<HTMLElement>('.scq-collapse-item__panel')
+      panel.element.style.transitionDuration = '0.25s'
+      expect(panel.isVisible()).toBe(false)
+      expect(wrapper.find('input').exists()).toBe(false)
+
+      await wrapper.get('button').trigger('click')
+      expect(panel.classes()).toContain('scq-collapse-item-enter-active')
+      expect(panel.isVisible()).toBe(true)
+      await vi.runAllTimersAsync()
+      expect(panel.classes()).not.toContain('scq-collapse-item-enter-active')
+      await wrapper.get('input').setValue('edited')
+
+      await wrapper.get('button').trigger('click')
+      expect(panel.classes()).toContain('scq-collapse-item-leave-active')
+      expect(panel.isVisible()).toBe(true)
+      await vi.advanceTimersByTimeAsync(100)
+      expect(panel.isVisible()).toBe(true)
+      await vi.runAllTimersAsync()
+      expect(panel.isVisible()).toBe(false)
+      expect(panel.classes()).not.toContain('scq-collapse-item-leave-active')
+
+      await wrapper.get('button').trigger('click')
+      await vi.runAllTimersAsync()
+      expect(panel.isVisible()).toBe(true)
+      expect(wrapper.get('input').element.value).toBe('edited')
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('settles correctly when the transition is interrupted by rapid toggles', async () => {
+    vi.useFakeTimers()
+    try {
+      const wrapper = mount(CollapseItem, { props: { title: 'Animated' }, slots: { default: 'Details' }, global: { stubs: { transition: false } }, attachTo: document.body })
+      wrappers.push(wrapper)
+      const button = wrapper.get('button')
+      const panel = wrapper.get<HTMLElement>('.scq-collapse-item__panel')
+      panel.element.style.transitionDuration = '0.25s'
+      await button.trigger('click')
+      await button.trigger('click')
+      await button.trigger('click')
+      await vi.runAllTimersAsync()
+      expect(button.attributes('aria-expanded')).toBe('true')
+      expect(panel.isVisible()).toBe(true)
+      expect(panel.classes()).not.toContain('scq-collapse-item-enter-active')
+      expect(panel.classes()).not.toContain('scq-collapse-item-leave-active')
+
+      await button.trigger('click')
+      await button.trigger('click')
+      await button.trigger('click')
+      await vi.runAllTimersAsync()
+      expect(button.attributes('aria-expanded')).toBe('false')
+      expect(panel.isVisible()).toBe(false)
+      expect(panel.classes()).not.toContain('scq-collapse-item-enter-active')
+      expect(panel.classes()).not.toContain('scq-collapse-item-leave-active')
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('uses scalar values in accordion mode and respects controlled state', async () => {
@@ -133,14 +289,102 @@ describe('Tabs', () => {
   })
 
   it('lazily mounts panels and preserves previously visited content', async () => {
-    const wrapper = mount(Tabs, { props: { items, lazy: true }, slots: { first: '<input value="keep" />', last: 'Last panel' } })
+    const wrapper = mount(Tabs, { props: { items, lazy: true }, slots: { first: '<input />', last: 'Last panel' } })
     wrappers.push(wrapper)
     expect(wrapper.findAll('[role="tabpanel"]')).toHaveLength(1)
+    const input = wrapper.get('input').element
+    await wrapper.get('input').setValue('edited')
     await wrapper.findAll('[role="tab"]')[2].trigger('click')
     expect(wrapper.findAll('[role="tabpanel"]')).toHaveLength(2)
-    expect(wrapper.get('input').element.value).toBe('keep')
+    expect(wrapper.get('input').element.value).toBe('edited')
     const active = wrapper.findAll('[role="tab"]')[2]
     expect(wrapper.get(`#${active.attributes('aria-controls')}`).attributes('aria-labelledby')).toBe(active.attributes('id'))
+    await wrapper.findAll('[role="tab"]')[0].trigger('click')
+    expect(wrapper.get('input').element).toBe(input)
+    expect(wrapper.get('input').element.value).toBe('edited')
+    expect(wrapper.get('.scq-tabs__panel.is-active').find('input').exists()).toBe(true)
+  })
+
+  it('only animates the current panel during repeated switches', async () => {
+    const wrapper = mount(Tabs, { props: { items }, attachTo: document.body })
+    wrappers.push(wrapper)
+    const panels = wrapper.findAll('[role="tabpanel"]')
+    const tabs = wrapper.findAll('[role="tab"]')
+    for (const index of [2, 0, 2, 0]) {
+      await tabs[index].trigger('click')
+      expect(wrapper.findAll('.scq-tabs__panel.is-active')).toHaveLength(1)
+      expect(panels[index].classes()).toContain('is-active')
+      expect(panels.filter((panel) => panel.isVisible()).map((panel) => panel.element)).toEqual([panels[index].element])
+    }
+    await tabs[1].trigger('click')
+    expect(panels[0].classes()).toContain('is-active')
+    expect(wrapper.emitted('change')).toHaveLength(4)
+  })
+
+  it('updates the animated panel only when the controlled value changes', async () => {
+    const wrapper = mount(Tabs, { props: { items, modelValue: 'first' } })
+    wrappers.push(wrapper)
+    const panels = wrapper.findAll('[role="tabpanel"]')
+    await wrapper.findAll('[role="tab"]')[2].trigger('click')
+    expect(panels[0].classes()).toContain('is-active')
+    expect(panels[2].classes()).not.toContain('is-active')
+    await wrapper.setProps({ modelValue: 'last' })
+    expect(panels[0].classes()).not.toContain('is-active')
+    expect(panels[2].classes()).toContain('is-active')
+  })
+
+  it.each(['horizontal', 'vertical'] as const)('keeps the %s indicator aligned through selection, resizing and item changes', async (direction) => {
+    let notifyResize = () => {}
+    const observe = vi.fn()
+    const disconnect = vi.fn()
+    vi.stubGlobal('ResizeObserver', class {
+      constructor(callback: () => void) { notifyResize = callback }
+      observe = observe
+      disconnect = disconnect
+    })
+    try {
+      const wrapper = mount(Tabs, { props: { items, direction } })
+      wrappers.push(wrapper)
+      const tabs = wrapper.findAll<HTMLElement>('[role="tab"]')
+      const widths = [72, 80, 96]
+      const positions = [0, 100, 200]
+      tabs.forEach((tab, index) => {
+        Object.defineProperties(tab.element, {
+          offsetWidth: { configurable: true, get: () => widths[index] },
+          offsetHeight: { configurable: true, get: () => 44 },
+          offsetLeft: { configurable: true, get: () => direction === 'horizontal' ? positions[index] : 0 },
+          offsetTop: { configurable: true, get: () => direction === 'vertical' ? positions[index] : 0 },
+        })
+      })
+      notifyResize()
+      await nextTick()
+      const indicator = wrapper.get<HTMLElement>('.scq-tabs__indicator')
+      expect(indicator.attributes('aria-hidden')).toBe('true')
+      expect(indicator.element.style.width).toBe('72px')
+      expect(indicator.element.style.height).toBe(direction === 'vertical' ? '44px' : '2px')
+      expect(indicator.element.style.transform).toBe('translate3d(0px, 0px, 0)')
+
+      await tabs[2].trigger('click')
+      expect(indicator.element.style.width).toBe('96px')
+      expect(indicator.element.style.transform).toBe(direction === 'vertical' ? 'translate3d(0px, 200px, 0)' : 'translate3d(200px, 0px, 0)')
+
+      widths[2] = 128
+      positions[2] = 240
+      notifyResize()
+      await nextTick()
+      expect(indicator.element.style.width).toBe('128px')
+      expect(indicator.element.style.transform).toBe(direction === 'vertical' ? 'translate3d(0px, 240px, 0)' : 'translate3d(240px, 0px, 0)')
+
+      await wrapper.setProps({ items: [...items, { name: 'added', label: 'Added' }] })
+      expect(observe).toHaveBeenCalledWith(wrapper.findAll('[role="tab"]')[3].element)
+      await wrapper.setProps({ items: items.slice(0, 1) })
+      expect(indicator.element.style.transform).toBe('translate3d(0px, 0px, 0)')
+      await wrapper.setProps({ items: [] })
+      expect(wrapper.find('.scq-tabs__indicator').exists()).toBe(false)
+      expect(wrapper.get('.scq-tabs__nav').classes()).not.toContain('has-indicator')
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 })
 

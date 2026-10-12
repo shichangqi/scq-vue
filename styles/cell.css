@@ -28,9 +28,9 @@
 
 .scq-cell-group.is-inset .scq-cell-group__body {
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--scq-border, #e2e8f0);
+  border-radius: var(--scq-radius-xl, 16px);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
 }
 
 .scq-cell {
@@ -39,39 +39,43 @@
   align-items: center;
   gap: 12px;
   width: 100%;
-  min-height: 50px;
+  min-height: 52px;
   box-sizing: border-box;
-  padding: 13px 16px;
+  padding: 14px 18px;
   border: 0;
-  color: var(--scq-text, #1e293b);
+  color: var(--scq-text, #0f172a);
   background: var(--scq-surface, #ffffff);
   text-align: left;
   text-decoration: none;
   font: inherit;
   font-size: 14.5px;
   line-height: 1.45;
-  transition: background-color 0.18s ease;
+  transition: background-color 0.15s ease;
 }
 
 .scq-cell.has-border:not(:last-child)::after {
   content: '';
   position: absolute;
-  left: 16px;
-  right: 16px;
+  left: 18px;
+  right: 18px;
   bottom: 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--scq-border, #f1f5f9);
 }
 
 .scq-cell.is-link {
   cursor: pointer;
 }
 
+.scq-cell.is-link:not(.is-disabled):hover {
+  background: var(--scq-fill, #f8fafc);
+}
+
 .scq-cell.is-link:not(.is-disabled):active {
-  background: #f1f5f9;
+  background: var(--scq-fill-hover, #f1f5f9);
 }
 
 .scq-cell:focus-visible {
-  outline: 2px solid var(--scq-primary, #409eff);
+  outline: 2px solid var(--scq-primary, #2563eb);
   outline-offset: -3px;
 }
 

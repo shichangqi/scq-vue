@@ -5,7 +5,11 @@
       <span class="scq-collapse-item__extra"><slot name="extra" :expanded="expanded" /></span>
       <Icon name="chevronDown" :size="18" class="scq-collapse-item__arrow" />
     </button>
-    <div v-show="expanded" :id="panelId" class="scq-collapse-item__panel" role="region" :aria-labelledby="headerId"><div v-if="!lazy || rendered" class="scq-collapse-item__content"><slot /></div></div>
+    <Transition name="scq-collapse-item">
+      <div v-show="expanded" :id="panelId" class="scq-collapse-item__panel" role="region" :aria-labelledby="headerId">
+        <div class="scq-collapse-item__body"><div v-if="!lazy || rendered" class="scq-collapse-item__content"><slot /></div></div>
+      </div>
+    </Transition>
   </div>
 </template>
 

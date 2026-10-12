@@ -1,15 +1,86 @@
-.scq-field { display: flex; align-items: center; min-width: 0; min-height: 36px; width: 100%; border: 1px solid var(--scq-border); border-radius: var(--scq-radius); background: var(--scq-surface); color: var(--scq-text); box-sizing: border-box; font-size: 14px; transition: border-color .15s; }
-.scq-field:focus-within { border-color: var(--scq-primary); outline: 2px solid color-mix(in srgb, var(--scq-primary) 16%, transparent); }
-.scq-field.is-disabled { background: var(--scq-fill); opacity: .6; cursor: not-allowed; }
-.scq-field__trigger { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 34px; padding: 6px 10px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+.scq-field {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 36px;
+  width: 100%;
+  border: 1px solid var(--scq-border, #e2e8f0);
+  border-radius: var(--scq-radius-md, 8px);
+  background: var(--scq-surface, #ffffff);
+  color: var(--scq-text, #0f172a);
+  box-sizing: border-box;
+  font-size: 14px;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scq-field:hover:not(.is-disabled) {
+  border-color: var(--scq-border-hover, #cbd5e1);
+}
+.scq-field:focus-within {
+  border-color: var(--scq-primary, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+  outline: none;
+}
+.scq-field.is-disabled {
+  background: var(--scq-fill, #f8fafc);
+  border-color: var(--scq-border, #e2e8f0);
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.scq-field__trigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 34px;
+  padding: 6px 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
 .scq-field__trigger:disabled { cursor: not-allowed; }
 .scq-field__value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.scq-field__placeholder { color: var(--scq-muted); }
-.scq-field input { flex: 1; min-width: 0; width: 100%; min-height: 34px; padding: 6px 10px; box-sizing: border-box; border: 0; background: transparent; color: inherit; font: inherit; outline: none; }
-.scq-field__clear { flex: 0 0 32px; display: grid; place-items: center; width: 32px; min-height: 32px; padding: 0; border: 0; background: transparent; color: var(--scq-muted); cursor: pointer; }
-.scq-field__clear:focus-visible, .scq-field__trigger:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: -2px; }
-.scq-field--small { min-height: 28px; font-size: 12px; }
-.scq-field--small input, .scq-field--small .scq-field__trigger { min-height: 26px; }
-.scq-field--large { min-height: 44px; font-size: 16px; }
-.scq-field--large input, .scq-field--large .scq-field__trigger { min-height: 42px; }
+.scq-field__placeholder { color: var(--scq-muted, #94a3b8); }
+.scq-field input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 12px;
+  box-sizing: border-box;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+.scq-field input::placeholder { color: var(--scq-muted, #94a3b8); }
+.scq-field__clear {
+  flex: 0 0 32px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--scq-muted, #64748b);
+  cursor: pointer;
+  border-radius: var(--scq-radius-sm, 6px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scq-field__clear:hover {
+  color: var(--scq-primary, #2563eb);
+  background: rgba(37, 99, 235, 0.08);
+}
+.scq-field__clear:focus-visible, .scq-field__trigger:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: -2px; }
+.scq-field--small { min-height: 28px; font-size: 12px; border-radius: var(--scq-radius-sm, 6px); }
+.scq-field--small input, .scq-field--small .scq-field__trigger { min-height: 26px; padding: 4px 10px; }
+.scq-field--large { min-height: 42px; font-size: 15px; border-radius: var(--scq-radius-lg, 10px); }
+.scq-field--large input, .scq-field--large .scq-field__trigger { min-height: 40px; padding: 8px 14px; }
 @media (pointer: coarse) { .scq-field input { font-size: 16px; min-height: 42px; } .scq-field__clear { min-height: 44px; flex-basis: 44px; } }

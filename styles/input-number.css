@@ -1,13 +1,52 @@
 @import './icon.css';
 
-.scq-input-number { --scq-number-height: 34px; display: inline-flex; height: var(--scq-number-height); width: 160px; max-width: 100%; border: 1px solid var(--scq-border, #dcdfe6); border-radius: var(--scq-radius, 4px); overflow: hidden; background: var(--scq-surface, #fff); color: var(--scq-text, #303133); vertical-align: middle; }
-.scq-input-number--small { --scq-number-height: 28px; width: 130px; }
-.scq-input-number--large { --scq-number-height: 40px; width: 180px; }
-.scq-input-number:focus-within { outline: 2px solid var(--scq-primary, #409eff); outline-offset: 2px; }
-.scq-input-number__input { width: 100%; min-width: 0; border: 0; outline: 0; padding: 0 6px; color: inherit; font: inherit; font-size: 14px; text-align: center; background: transparent; appearance: textfield; -moz-appearance: textfield; }
+.scq-input-number {
+  --scq-number-height: 36px;
+  display: inline-flex;
+  height: var(--scq-number-height);
+  width: 160px;
+  max-width: 100%;
+  border: 1px solid var(--scq-border, #e2e8f0);
+  border-radius: var(--scq-radius-md, 8px);
+  overflow: hidden;
+  background: var(--scq-surface, #ffffff);
+  color: var(--scq-text, #0f172a);
+  vertical-align: middle;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scq-input-number:hover:not(.is-disabled) {
+  border-color: var(--scq-border-hover, #cbd5e1);
+}
+.scq-input-number:focus-within {
+  border-color: var(--scq-primary, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+  outline: none;
+}
+.scq-input-number--small { --scq-number-height: 28px; width: 130px; border-radius: var(--scq-radius-sm, 6px); }
+.scq-input-number--large { --scq-number-height: 42px; width: 180px; border-radius: var(--scq-radius-lg, 10px); }
+.scq-input-number__input { width: 100%; min-width: 0; border: 0; outline: 0; padding: 0 8px; color: inherit; font: inherit; font-size: 14px; font-weight: 500; text-align: center; background: transparent; appearance: textfield; -moz-appearance: textfield; }
 .scq-input-number__input::-webkit-inner-spin-button, .scq-input-number__input::-webkit-outer-spin-button { appearance: none; margin: 0; }
-.scq-input-number__control { display: grid; place-items: center; flex: 0 0 var(--scq-number-height); border: 0; background: var(--scq-fill, #f5f7fa); color: inherit; cursor: pointer; }
-.scq-input-number__control:enabled:hover { color: var(--scq-primary, #409eff); }
-.scq-input-number__control:focus-visible { outline: 2px solid var(--scq-primary, #409eff); outline-offset: -3px; }
+.scq-input-number__control {
+  display: grid;
+  place-items: center;
+  flex: 0 0 var(--scq-number-height);
+  border: 0;
+  background: var(--scq-fill, #f8fafc);
+  color: var(--scq-muted, #64748b);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.scq-input-number__control:first-child { border-right: 1px solid var(--scq-border, #e2e8f0); }
+.scq-input-number__control:last-child { border-left: 1px solid var(--scq-border, #e2e8f0); }
+.scq-input-number__control:enabled:hover {
+  background: var(--scq-fill-hover, #f1f5f9);
+  color: var(--scq-primary, #2563eb);
+}
+.scq-input-number__control:enabled:active {
+  background: var(--scq-color-primary-soft-bg, #eff6ff);
+  transform: scale(0.92);
+}
+.scq-input-number__control:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: -2px; }
 .scq-input-number__control:disabled, .scq-input-number.is-disabled { opacity: 0.5; cursor: not-allowed; }
 @media (pointer: coarse) { .scq-input-number { --scq-number-height: 44px; min-width: 150px; } }

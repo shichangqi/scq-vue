@@ -2,6 +2,8 @@
 
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import Tooltip from '../src/components/Tooltip/Tooltip.vue'
 import Popover from '../src/components/Popover/Popover.vue'
 import Drawer from '../src/components/Drawer/Drawer.vue'
@@ -105,6 +107,34 @@ describe('Extended feedback', () => {
     await flushPromises()
     expect(wrapper.emitted('confirm')).toBeUndefined()
     expect(wrapper.emitted('cancel')).toHaveLength(1)
+  })
+
+  it('keeps pending popconfirm indicators compact and inherits the button color', async () => {
+    const style = document.createElement('style')
+    style.textContent = ['loading', 'popconfirm']
+      .map((name) => readFileSync(resolve(__dirname, `../styles/${name}.css`), 'utf8'))
+      .join('\n')
+    document.head.append(style)
+    try {
+      const wrapper = mount(Popconfirm, {
+        props: { beforeConfirm: () => new Promise<void>(() => {}), teleport: false },
+        slots: { default: '<button>Delete</button>' },
+        attachTo: document.body,
+      })
+      wrappers.push(wrapper)
+      await wrapper.get('button').trigger('click')
+      const confirm = wrapper.get('.scq-popconfirm__confirm')
+      await confirm.trigger('click')
+      expect(confirm.attributes('aria-busy')).toBe('true')
+      const loading = confirm.get('.scq-loading')
+      const indicator = loading.get('.scq-loading__indicator')
+      expect(parseFloat(getComputedStyle(indicator.element).minHeight)).toBe(0)
+      expect(getComputedStyle(loading.element).color).toBe('inherit')
+      await wrapper.get('.scq-popconfirm__actions button').trigger('click')
+      expect(wrapper.emitted('cancel')).toHaveLength(1)
+    } finally {
+      style.remove()
+    }
   })
 
   it('supports blocked confirmation and result actions', async () => {

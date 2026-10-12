@@ -14,7 +14,7 @@
       </div>
     </div>
     <footer class="scq-calendar__footer">
-      <button type="button" :disabled="isDisabled || blocked(new Date())" @click="goToday">{{ text('today') }}</button>
+      <button type="button" :disabled="isDisabled || blocked(new Date())" @click="selectToday">{{ text('today') }}</button>
       <button v-if="showConfirm" type="button" class="scq-calendar__confirm" :disabled="isDisabled || !complete" @click="emit('confirm', value)">{{ confirmText || text('confirm') }}</button>
     </footer>
   </section>
@@ -95,7 +95,20 @@ const moveMonth = (amount: number) => {
   setMonth(date)
   focusKey.value = dateKey(date)
 }
-const goToday = () => { setMonth(new Date()); focusKey.value = today }
+const selectToday = () => {
+  if (isDisabled.value || blocked(new Date())) return
+  choose(new Date())
+}
+const goToday = async (select = false) => {
+  if (select) {
+    selectToday()
+    return
+  }
+  setMonth(new Date())
+  focusKey.value = today
+  await nextTick()
+  rootRef.value?.querySelector<HTMLButtonElement>(`[data-date="${today}"]`)?.focus()
+}
 const keydown = async (event: KeyboardEvent, date: Date) => {
   let target: Date
   if (event.key === 'ArrowLeft') target = addDays(date, -1)
@@ -123,5 +136,5 @@ watch(() => props.modelValue, (next) => {
 watch(days, (entries) => {
   if (!entries.some((entry) => entry.key === focusKey.value && !blocked(entry.date))) focusKey.value = entries.find((entry) => entry.date.getMonth() === visibleMonth.value.getMonth() && !blocked(entry.date))?.key || ''
 }, { immediate: true })
-defineExpose({ goToday })
+defineExpose({ goToday, selectToday })
 </script>
