@@ -387,11 +387,9 @@ describe('Swipe', () => {
     vi.mocked(emblaCarouselVue).mockReset().mockReturnValue([ref<HTMLElement>(), shallowRef<SwipeApi>()])
     const wrapper = mount(SwipeExample)
     wrappers.push(wrapper)
-    const switches = wrapper.findAll('input[role="switch"]')
-    expect(switches).toHaveLength(2)
-    await switches[0].setValue(true)
+    await wrapper.get('input[role="switch"][aria-label="自动播放行程照片"]').setValue(true)
     expect(wrapper.getComponent(Swipe).props('autoplay')).toBeGreaterThan(0)
-    await switches[1].setValue(true)
+    await wrapper.get('input[role="switch"][aria-label="纵向轮播"]').setValue(true)
     expect(wrapper.getComponent(Swipe).props('vertical')).toBe(true)
   })
   it('uses the vertical engine axis and keeps explicit pause independent of pointer release', async () => {
