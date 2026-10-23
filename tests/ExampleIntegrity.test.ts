@@ -127,6 +127,9 @@ describe('Documentation Example Code Integrity', () => {
         if (slug === 'modal') {
           if (example.variant === 'api') {
             expect(code, `${ctx} modal api should import Modal and call methods`).toMatch(/Modal\.(info|confirm)/)
+          } else if (example.source === 'LayerOptionsExample') {
+            expect(code, `${ctx} dynamic selector must include Modal`).toContain('Modal: ScqModal')
+            expect(code, `${ctx} dynamic selector must render the selected layer`).toContain('<component :is="LAYERS[kind]"')
           } else {
             expect(code, `${ctx} modal should show scq-modal`).toMatch(/<(?:scq-modal|ScqModal)(?:\s|>)/)
           }

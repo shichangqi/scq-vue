@@ -56,6 +56,7 @@ const tree = ref<TreeExpose>()
           default-expand-all
         >
           <template #default="{ node }"><span :title="node.label">{{ node.label }}</span></template>
+          <template #empty>没有匹配节点，请修改过滤条件。</template>
         </ScqTree>
       </ScqFormItem>
       <ScqFormItem prop="picked" :label="COPY.picker" :help="COPY.pickerHint">
@@ -68,7 +69,7 @@ const tree = ref<TreeExpose>()
           virtual
           filterable
           default-expand-all
-        />
+        ><template #empty>没有匹配的成员。</template></ScqTreeSelect>
       </ScqFormItem>
     </ScqForm>
     <output>{{ COPY.checked }}: {{ form.checked.length }} · {{ COPY.selected }}: {{ form.selected ?? COPY.none }}</output>

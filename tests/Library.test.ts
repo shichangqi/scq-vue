@@ -57,7 +57,7 @@ const styleDependencies: Record<string, string[]> = {
   alert: ['icon'],
   empty: ['icon'],
   tag: ['icon'],
-  pagination: ['icon'],
+  pagination: ['icon', 'select', 'input'],
   cell: ['icon'],
   'nav-bar': ['icon'],
   tabbar: ['badge', 'icon'],
@@ -73,6 +73,29 @@ const styleDependencies: Record<string, string[]> = {
 }
 
 describe('Library integration', () => {
+  it('distinguishes disabled pagination buttons from outlined available arrows without hover', () => {
+    const stylesheet = document.createElement('style')
+    stylesheet.textContent = styles['../styles/pagination.css']
+    document.head.append(stylesheet)
+    try {
+      const rules = Array.from(stylesheet.sheet!.cssRules).filter((rule): rule is CSSStyleRule => 'selectorText' in rule)
+      const pagination = rules.find(rule => rule.selectorText === '.scq-pagination')!
+      const available = rules.find(rule => rule.selectorText === '.scq-pagination__navigation > .scq-pagination__button:not(:disabled)')!
+      const disabled = rules.find(rule => rule.selectorText === '.scq-pagination__button:disabled')!
+      expect(pagination.style.getPropertyValue('--scq-pagination-disabled-opacity')).toBe('0.4')
+      expect(available.style.getPropertyValue('background')).toBe('var(--scq-surface, #ffffff)')
+      expect(available.style.getPropertyValue('box-shadow')).toContain('var(--scq-border-hover,')
+      expect(disabled.style.getPropertyValue('opacity')).toBe('var(--scq-pagination-disabled-opacity)')
+      expect(disabled.style.getPropertyValue('box-shadow')).toBe('none')
+      expect(disabled.style.getPropertyValue('cursor')).toBe('not-allowed')
+      for (const rule of rules.filter(rule => rule.selectorText.includes(':hover'))) {
+        expect(rule.selectorText).toContain(':not(:disabled)')
+      }
+    } finally {
+      stylesheet.remove()
+    }
+  })
+
   it.each([['success', 'success'], ['warning', 'warning'], ['exception', 'danger']])('keeps %s progress gradients and shadows connected to theme tokens', (status, token) => {
     const rule = styles['../styles/progress.css'].match(new RegExp(`\\.scq-progress--${status} \\.scq-progress__fill \\{([^}]+)\\}`))?.[1]
     expect(rule).toContain('var(--scq-progress-color)')

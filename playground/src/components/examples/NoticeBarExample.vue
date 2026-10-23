@@ -2,12 +2,13 @@
   <PhonePreview screen-id="notice-bar-preview">
     <div class="notice-example">
       <ScqNavBar title="系统消息" />
-      <ScqNoticeBar v-model="visible" type="info" text="你的资料已更新，所有设备将在下次登录时同步。" closable />
+      <ScqNoticeBar v-model="visible" type="info" text="你的资料已更新，所有设备将在下次登录时同步。" closable @close="status = '通知已关闭'" />
       <ScqNoticeBar v-model:paused="paused" text="系统将于本周五 22:00 至 23:00 进行维护，期间文件上传和云端同步将暂时不可用，请提前保存工作。" :wrap="false" scrollable :speed="35" :delay="600" />
       <ScqCheckbox v-model="paused" class="notice-example__pause">暂停公告</ScqCheckbox>
       <div class="notice-example__section">
         <h3>服务状态</h3>
-        <ScqNoticeBar type="success" icon="shield-check" text="所有服务运行正常" />
+        <ScqNoticeBar type="success" icon="shield-check" text="所有服务运行正常"><template #right><ScqButton size="small" text @click="status = '已查看服务状态'">详情</ScqButton></template></ScqNoticeBar>
+        <p role="status">{{ status }}</p>
       </div>
       <ScqCellGroup title="最近消息" inset>
         <ScqCell title="备份完成" label="资源文件已安全存储" value="10:24" />
@@ -30,6 +31,7 @@ import PhonePreview from '../PhonePreview.vue'
 
 const visible = ref(true)
 const paused = ref(false)
+const status = ref('')
 </script>
 
 <style scoped>

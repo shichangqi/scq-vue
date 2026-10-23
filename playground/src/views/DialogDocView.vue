@@ -176,125 +176,128 @@
       </scq-dialog>
     </DocExample>
 
-    <h2>{{ t('dialog.props') }}（{{ t('dialog.props.template') }}）</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('doc.param') }}</th>
-          <th>{{ t('doc.desc') }}</th>
-          <th>{{ t('doc.type') }}</th>
-          <th>{{ t('doc.default') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>v-model</td><td>{{ t('dialog.model.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>title</td><td>{{ t('dialog.title.desc') }}</td><td>string</td><td>''</td></tr>
-        <tr><td>type</td><td>{{ t('dialog.type.desc') }}</td><td>default | info | success | warning | error | confirm</td><td>default</td></tr>
-        <tr><td>width</td><td>{{ t('dialog.width.desc') }}</td><td>string | number</td><td>520</td></tr>
-        <tr><td>zIndex</td><td>{{ t('dialog.zIndex.desc') }}</td><td>number</td><td>2100</td></tr>
-        <tr><td>fullscreen</td><td>{{ t('dialog.fullscreen.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>showClose</td><td>{{ t('dialog.showClose.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>showFooter</td><td>{{ t('dialog.showFooter.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>showCancelButton</td><td>{{ t('dialog.showCancel.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>showConfirmButton</td><td>{{ t('dialog.showConfirm.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>cancelButtonText</td><td>{{ t('dialog.cancelText.desc') }}</td><td>string</td><td>取消</td></tr>
-        <tr><td>confirmButtonText</td><td>{{ t('dialog.confirmText.desc') }}</td><td>string</td><td>确定</td></tr>
-        <tr><td>confirmButtonType</td><td>{{ t('dialog.confirmButtonType.desc') }}</td><td>default | primary | success | warning | info | danger</td><td>{{ t('dialog.confirmButtonType.default') }}</td></tr>
-        <tr><td>confirmLoading</td><td>{{ t('dialog.confirmLoading.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>autoCloseOnCancel</td><td>{{ t('dialog.autoCloseOnCancel.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>autoCloseOnConfirm</td><td>{{ t('dialog.autoCloseOnConfirm.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>closeOnClickModal</td><td>{{ t('dialog.closeOnClickModal.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>closeOnPressEscape</td><td>{{ t('dialog.closeOnPressEscape.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>teleport</td><td>{{ t('dialog.teleport.desc') }}</td><td>boolean | string</td><td>{{ t('dialog.teleport.default') }}</td></tr>
-        <tr><td>beforeClose</td><td>{{ t('dialog.beforeClose.desc') }}</td><td>(reason) =&gt; boolean | Promise&lt;boolean&gt;</td><td>-</td></tr>
-      </tbody>
-    </table>
+    <ComponentDocView slug="dialog" supplement>
+      <template #api>
+        <h2>{{ t('dialog.props') }}（{{ t('dialog.props.template') }}）</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('doc.param') }}</th>
+              <th>{{ t('doc.desc') }}</th>
+              <th>{{ t('doc.type') }}</th>
+              <th>{{ t('doc.default') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>v-model</td><td>{{ t('dialog.model.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>title</td><td>{{ t('dialog.title.desc') }}</td><td>string</td><td>''</td></tr>
+            <tr><td>type</td><td>{{ t('dialog.type.desc') }}</td><td>default | info | success | warning | error | confirm</td><td>default</td></tr>
+            <tr><td>width</td><td>{{ t('dialog.width.desc') }}</td><td>string | number</td><td>520</td></tr>
+            <tr><td>zIndex</td><td>{{ t('dialog.zIndex.desc') }}</td><td>number</td><td>2100</td></tr>
+            <tr><td>fullscreen</td><td>{{ t('dialog.fullscreen.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>showClose</td><td>{{ t('dialog.showClose.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>showFooter</td><td>{{ t('dialog.showFooter.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>showCancelButton</td><td>{{ t('dialog.showCancel.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>showConfirmButton</td><td>{{ t('dialog.showConfirm.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>cancelButtonText</td><td>{{ t('dialog.cancelText.desc') }}</td><td>string</td><td>取消</td></tr>
+            <tr><td>confirmButtonText</td><td>{{ t('dialog.confirmText.desc') }}</td><td>string</td><td>确定</td></tr>
+            <tr><td>confirmButtonType</td><td>{{ t('dialog.confirmButtonType.desc') }}</td><td>default | primary | success | warning | info | danger</td><td>{{ t('dialog.confirmButtonType.default') }}</td></tr>
+            <tr><td>confirmLoading</td><td>{{ t('dialog.confirmLoading.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>autoCloseOnCancel</td><td>{{ t('dialog.autoCloseOnCancel.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>autoCloseOnConfirm</td><td>{{ t('dialog.autoCloseOnConfirm.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>closeOnClickModal</td><td>{{ t('dialog.closeOnClickModal.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>closeOnPressEscape</td><td>{{ t('dialog.closeOnPressEscape.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>teleport</td><td>{{ t('dialog.teleport.desc') }}</td><td>boolean | string</td><td>{{ t('dialog.teleport.default') }}</td></tr>
+            <tr><td>beforeClose</td><td>{{ t('dialog.beforeClose.desc') }}</td><td>(reason) =&gt; boolean | Promise&lt;boolean&gt;</td><td>-</td></tr>
+          </tbody>
+        </table>
 
-    <h2>{{ t('dialog.props') }}（{{ t('dialog.props.api') }}）</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('doc.param') }}</th>
-          <th>{{ t('doc.desc') }}</th>
-          <th>{{ t('doc.type') }}</th>
-          <th>{{ t('doc.default') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>type</td><td>{{ t('dialog.type.desc') }}</td><td>default | info | success | warning | error | confirm</td><td>info</td></tr>
-        <tr><td>title</td><td>{{ t('dialog.title.desc') }}</td><td>string</td><td>{{ t('dialog.title.defaultByType') }}</td></tr>
-        <tr><td>message</td><td>{{ t('dialog.message.desc') }}</td><td>string</td><td>''</td></tr>
-        <tr><td>content</td><td>{{ t('dialog.content.desc') }}</td><td>string | VNode | () =&gt; VNodeChild</td><td>-</td></tr>
-        <tr><td>width</td><td>{{ t('dialog.width.desc') }}</td><td>string | number</td><td>520</td></tr>
-        <tr><td>zIndex</td><td>{{ t('dialog.zIndex.desc') }}</td><td>number</td><td>{{ t('dialog.zIndex.auto') }}</td></tr>
-        <tr><td>fullscreen</td><td>{{ t('dialog.fullscreen.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>showClose</td><td>{{ t('dialog.showClose.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>showFooter</td><td>{{ t('dialog.showFooter.desc') }}</td><td>boolean</td><td>{{ t('dialog.showFooter.auto') }}</td></tr>
-        <tr><td>cancelButtonText</td><td>{{ t('dialog.cancelButtonText.apiDesc') }}</td><td>string</td><td>''</td></tr>
-        <tr><td>confirmButtonText</td><td>{{ t('dialog.confirmButtonText.apiDesc') }}</td><td>string</td><td>''</td></tr>
-        <tr><td>closeOnClickModal</td><td>{{ t('dialog.closeOnClickModal.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>closeOnPressEscape</td><td>{{ t('dialog.closeOnPressEscape.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>teleport</td><td>{{ t('dialog.teleport.desc') }}</td><td>boolean | string</td><td>{{ t('dialog.teleport.default') }}</td></tr>
-        <tr><td>beforeClose</td><td>{{ t('dialog.beforeClose.apiDesc') }}</td><td>(reason) =&gt; boolean | Promise&lt;boolean&gt;</td><td>-</td></tr>
-        <tr><td>onConfirm</td><td>{{ t('dialog.onConfirm.desc') }}</td><td>() =&gt; boolean | Promise&lt;boolean&gt;</td><td>-</td></tr>
-        <tr><td>onCancel</td><td>{{ t('dialog.onCancel.desc') }}</td><td>() =&gt; boolean | Promise&lt;boolean&gt;</td><td>-</td></tr>
-        <tr><td>onClose</td><td>{{ t('dialog.onClose.desc') }}</td><td>(reason) =&gt; void</td><td>-</td></tr>
-        <tr><td>onClosed</td><td>{{ t('dialog.onClosed.desc') }}</td><td>() =&gt; void</td><td>-</td></tr>
-      </tbody>
-    </table>
+        <h2>{{ t('dialog.props') }}（{{ t('dialog.props.api') }}）</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('doc.param') }}</th>
+              <th>{{ t('doc.desc') }}</th>
+              <th>{{ t('doc.type') }}</th>
+              <th>{{ t('doc.default') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>type</td><td>{{ t('dialog.type.desc') }}</td><td>default | info | success | warning | error | confirm</td><td>info</td></tr>
+            <tr><td>title</td><td>{{ t('dialog.title.desc') }}</td><td>string</td><td>{{ t('dialog.title.defaultByType') }}</td></tr>
+            <tr><td>message</td><td>{{ t('dialog.message.desc') }}</td><td>string</td><td>''</td></tr>
+            <tr><td>content</td><td>{{ t('dialog.content.desc') }}</td><td>string | VNode | () =&gt; VNodeChild</td><td>-</td></tr>
+            <tr><td>width</td><td>{{ t('dialog.width.desc') }}</td><td>string | number</td><td>520</td></tr>
+            <tr><td>zIndex</td><td>{{ t('dialog.zIndex.desc') }}</td><td>number</td><td>{{ t('dialog.zIndex.auto') }}</td></tr>
+            <tr><td>fullscreen</td><td>{{ t('dialog.fullscreen.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>showClose</td><td>{{ t('dialog.showClose.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>showFooter</td><td>{{ t('dialog.showFooter.desc') }}</td><td>boolean</td><td>{{ t('dialog.showFooter.auto') }}</td></tr>
+            <tr><td>cancelButtonText</td><td>{{ t('dialog.cancelButtonText.apiDesc') }}</td><td>string</td><td>''</td></tr>
+            <tr><td>confirmButtonText</td><td>{{ t('dialog.confirmButtonText.apiDesc') }}</td><td>string</td><td>''</td></tr>
+            <tr><td>closeOnClickModal</td><td>{{ t('dialog.closeOnClickModal.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>closeOnPressEscape</td><td>{{ t('dialog.closeOnPressEscape.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>teleport</td><td>{{ t('dialog.teleport.desc') }}</td><td>boolean | string</td><td>{{ t('dialog.teleport.default') }}</td></tr>
+            <tr><td>beforeClose</td><td>{{ t('dialog.beforeClose.apiDesc') }}</td><td>(reason) =&gt; boolean | Promise&lt;boolean&gt;</td><td>-</td></tr>
+            <tr><td>onConfirm</td><td>{{ t('dialog.onConfirm.desc') }}</td><td>() =&gt; boolean | Promise&lt;boolean&gt;</td><td>-</td></tr>
+            <tr><td>onCancel</td><td>{{ t('dialog.onCancel.desc') }}</td><td>() =&gt; boolean | Promise&lt;boolean&gt;</td><td>-</td></tr>
+            <tr><td>onClose</td><td>{{ t('dialog.onClose.desc') }}</td><td>(reason) =&gt; void</td><td>-</td></tr>
+            <tr><td>onClosed</td><td>{{ t('dialog.onClosed.desc') }}</td><td>() =&gt; void</td><td>-</td></tr>
+          </tbody>
+        </table>
 
-    <h2>{{ t('dialog.sec.api.methods') }}</h2>
-    <p><code>useDialog()</code> — {{ t('config.scopedFeedback') }}</p>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('dialog.method.col.method') }}</th>
-          <th>{{ t('dialog.method.col.usage') }}</th>
-          <th>{{ t('dialog.method.col.scene') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Dialog.open(options, appContext?)</td>
-          <td>{{ t('dialog.method.open.usage') }}</td>
-          <td>{{ t('dialog.method.open.scene') }}</td>
-        </tr>
-        <tr>
-          <td>Dialog.setGlobalZIndex(value)</td>
-          <td>{{ t('dialog.method.zIndex.usage') }}</td>
-          <td>{{ t('dialog.method.zIndex.scene') }}</td>
-        </tr>
-        <tr>
-          <td>Dialog.destroyAll()</td>
-          <td>{{ t('dialog.method.destroyAll.usage') }}</td>
-          <td>{{ t('dialog.method.destroyAll.scene') }}</td>
-        </tr>
-      </tbody>
-    </table>
+        <h2>{{ t('dialog.sec.api.methods') }}</h2>
+        <p><code>useDialog()</code> — {{ t('config.scopedFeedback') }}</p>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('dialog.method.col.method') }}</th>
+              <th>{{ t('dialog.method.col.usage') }}</th>
+              <th>{{ t('dialog.method.col.scene') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dialog.open(options, appContext?)</td>
+              <td>{{ t('dialog.method.open.usage') }}</td>
+              <td>{{ t('dialog.method.open.scene') }}</td>
+            </tr>
+            <tr>
+              <td>Dialog.setGlobalZIndex(value)</td>
+              <td>{{ t('dialog.method.zIndex.usage') }}</td>
+              <td>{{ t('dialog.method.zIndex.scene') }}</td>
+            </tr>
+            <tr>
+              <td>Dialog.destroyAll()</td>
+              <td>{{ t('dialog.method.destroyAll.usage') }}</td>
+              <td>{{ t('dialog.method.destroyAll.scene') }}</td>
+            </tr>
+          </tbody>
+        </table>
 
-    <h2>{{ t('dialog.sec.api.instanceMethods') }}</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('dialog.method.col.instanceMethod') }}</th>
-          <th>{{ t('dialog.method.col.usage') }}</th>
-          <th>{{ t('dialog.method.col.scene') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>instance.update(partialOptions)</td>
-          <td>{{ t('dialog.method.update.usage') }}</td>
-          <td>{{ t('dialog.method.update.scene') }}</td>
-        </tr>
-        <tr>
-          <td>instance.close()</td>
-          <td>{{ t('dialog.method.close.usage') }}</td>
-          <td>{{ t('dialog.method.close.scene') }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <ComponentDocView slug="dialog" supplement />
+        <h2>{{ t('dialog.sec.api.instanceMethods') }}</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('dialog.method.col.instanceMethod') }}</th>
+              <th>{{ t('dialog.method.col.usage') }}</th>
+              <th>{{ t('dialog.method.col.scene') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>instance.update(partialOptions)</td>
+              <td>{{ t('dialog.method.update.usage') }}</td>
+              <td>{{ t('dialog.method.update.scene') }}</td>
+            </tr>
+            <tr>
+              <td>instance.close()</td>
+              <td>{{ t('dialog.method.close.usage') }}</td>
+              <td>{{ t('dialog.method.close.scene') }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+    </ComponentDocView>
   </section>
 </template>
 

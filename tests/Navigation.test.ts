@@ -4,6 +4,8 @@ import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import Tabs from '../src/components/Tabs/Tabs.vue'
 import Pagination from '../src/components/Pagination/Pagination.vue'
+import Input from '../src/components/Input/Input.vue'
+import Select from '../src/components/Select/Select.vue'
 import Cell from '../src/components/Cell/Cell.vue'
 import NavBar from '../src/components/NavBar/NavBar.vue'
 import Tabbar from '../src/components/Tabbar/Tabbar.vue'
@@ -827,26 +829,184 @@ describe('Tabs', () => {
 })
 
 describe('Pagination', () => {
-  it('shows the normalized size and restores rejected native selections without duplicate requests', async () => {
-    const sizes = [10, 20, 20, 0, Number.NaN] as const
+  it('orders totals, sizes, navigation and a localized Input jumper while preserving slots', () => {
+    const wrapper = mount(Pagination, {
+      props: { modelValue: 3, total: 100, pageSizes: [10, 20], showTotal: true, showJumper: true },
+      slots: {
+        prefix: ({ page }) => h('span', { class: 'prefix' }, `Before ${page}`),
+        suffix: ({ page }) => h('span', { class: 'suffix' }, `After ${page}`),
+      },
+    })
+    wrappers.push(wrapper)
+    const order = ['prefix', 'scq-pagination__total', 'scq-pagination__size', 'scq-pagination__navigation', 'scq-pagination__jumper', 'suffix']
+    expect(wrapper.element.children).toHaveLength(order.length)
+    order.forEach((className, index) => expect(wrapper.element.children[index].classList.contains(className)).toBe(true))
+    expect(wrapper.get('.scq-pagination__total').text()).toBe('共 100 条')
+    expect(wrapper.get('.scq-pagination__jumper').text()).toBe('前往页')
+    expect(wrapper.get('.prefix').text()).toBe('Before 3')
+    expect(wrapper.get('.suffix').text()).toBe('After 3')
+    const input = wrapper.getComponent(Input).get('input')
+    expect(input.element.value).toBe('3')
+    expect(input.attributes()).toMatchObject({ type: 'number', inputmode: 'numeric', min: '1', max: '10', 'aria-label': '跳转到页' })
+  })
+
+  it.each([
+    ['999', 10],
+    ['0', 1],
+    ['-4', 1],
+    ['4.8', 4],
+    ['', 3],
+    ['3', 3],
+  ])('commits the page draft %s as %s and keeps the actual page visible', async (draft, expected) => {
+    const wrapper = mount(Pagination, {
+      props: {
+        modelValue: 3,
+        total: 100,
+        showJumper: true,
+        'onUpdate:modelValue': value => wrapper.setProps({ modelValue: value }),
+      },
+    })
+    wrappers.push(wrapper)
+    const input = wrapper.get('input')
+    await input.setValue(draft)
+    expect(wrapper.emitted('change')).toBeUndefined()
+    await input.trigger('keydown', { key: 'Enter' })
+    await input.trigger('blur')
+    expect(input.element.value).toBe(String(expected))
+    expect(wrapper.get('[aria-current="page"]').text()).toBe(String(expected))
+    expect(wrapper.emitted('change')).toEqual(expected === 3 ? undefined : [[expected]])
+    expect(wrapper.emitted('update:modelValue')).toEqual(wrapper.emitted('change'))
+  })
+
+  it('commits on blur and restores the controlled page when the parent rejects a jump', async () => {
+    const wrapper = mount(Pagination, { props: { modelValue: 3, total: 100, showJumper: true } })
+    wrappers.push(wrapper)
+    const input = wrapper.get('input')
+    await input.setValue('7')
+    await input.trigger('blur')
+    expect(wrapper.emitted('change')).toEqual([[7]])
+    expect(input.element.value).toBe('3')
+    await input.trigger('keydown', { key: 'Enter' })
+    await input.trigger('blur')
+    expect(wrapper.emitted('change')).toHaveLength(1)
+  })
+
+  it('localizes the jumper and total and inherits disabled state', async () => {
+    const wrapper = mount(ConfigProvider, {
+      props: { locale: 'en-US', disabled: true },
+      slots: { default: () => h(Pagination, { modelValue: 3, total: 100, showTotal: true, showJumper: true }) },
+    })
+    wrappers.push(wrapper)
+    const input = wrapper.get('input')
+    expect(wrapper.get('.scq-pagination__total').text()).toBe('Total 100')
+    expect(wrapper.get('.scq-pagination__jumper').text()).toBe('Go to')
+    expect(input.attributes('aria-label')).toBe('Jump to page')
+    expect(input.element.disabled).toBe(true)
+    await wrapper.setProps({ locale: 'zh-CN', disabled: false })
+    expect(wrapper.get('.scq-pagination__jumper').text()).toBe('前往页')
+    expect(input.attributes('aria-label')).toBe('跳转到页')
+    expect(input.element.disabled).toBe(false)
+    expect(input.element.value).toBe('3')
+  })
+
+  it('discards drafts when the jumper is hidden or page size changes', async () => {
+    const wrapper = mount(Pagination, { props: { modelValue: 3, total: 100, showJumper: true } })
+    wrappers.push(wrapper)
+    await wrapper.get('input').setValue('8')
+    await wrapper.setProps({ showJumper: false })
+    await wrapper.setProps({ showJumper: true })
+    expect(wrapper.get('input').element.value).toBe('3')
+    await wrapper.get('input').setValue('7')
+    await wrapper.setProps({ pageSize: 20 })
+    expect(wrapper.get('input').element.value).toBe('3')
+    await wrapper.get('input').trigger('blur')
+    expect(wrapper.emitted('change')).toBeUndefined()
+  })
+
+  it('does not commit an unfinished composition on blur', async () => {
+    const wrapper = mount(Pagination, { props: { modelValue: 3, total: 100, showJumper: true } })
+    wrappers.push(wrapper)
+    const input = wrapper.get('input')
+    await input.setValue('4')
+    await input.trigger('compositionstart')
+    await input.trigger('blur')
+    expect(wrapper.emitted('change')).toBeUndefined()
+    await input.trigger('compositionend')
+    await input.trigger('keydown', { key: 'Enter' })
+    expect(wrapper.emitted('change')).toEqual([[4]])
+  })
+
+  it('uses Select with normalized options and retains rejected controlled selections without duplicate requests', async () => {
+    const sizes = [20, 20, 0, -1, 1.5, Number.NaN, Infinity] as const
     const wrapper = mount(Pagination, { props: { total: 100, pageSize: 10.9, pageSizes: sizes } })
     wrappers.push(wrapper)
-    const select = wrapper.get<HTMLSelectElement>('select')
-    expect(select.element.value).toBe('10')
-    expect(select.findAll('option').map(option => option.attributes('value'))).toEqual(['10', '20'])
-    await select.setValue('20')
+    const select = wrapper.getComponent(Select)
+    const control = select.get('[role="combobox"]')
+    expect(wrapper.find('select').exists()).toBe(false)
+    expect(select.props('clearable')).toBe(false)
+    expect(select.props('options')).toEqual([{ value: 10, label: '10 条/页' }, { value: 20, label: '20 条/页' }])
+    expect(control.text()).toBe('10 条/页')
+    expect(control.attributes('aria-label')).toBe('每页条数')
+    await control.trigger('keydown', { key: 'ArrowDown' })
+    const list = document.getElementById(control.attributes('aria-controls'))
+    expect(list?.getAttribute('role')).toBe('listbox')
+    expect(document.body.contains(list)).toBe(true)
+    expect(wrapper.element.contains(list)).toBe(false)
+    await control.trigger('keydown', { key: 'End' })
+    await control.trigger('keydown', { key: 'Enter' })
+    expect(wrapper.emitted('update:pageSize')).toEqual([[20]])
     expect(wrapper.emitted('size-change')).toEqual([[20]])
-    expect(select.element.value).toBe('10')
-    await select.trigger('change')
+    expect(control.text()).toBe('10 条/页')
+    expect(control.attributes('aria-expanded')).toBe('false')
+    await control.trigger('keydown', { key: 'Enter' })
+    await control.trigger('keydown', { key: 'Home' })
+    await control.trigger('keydown', { key: 'Enter' })
     expect(wrapper.emitted('size-change')).toHaveLength(1)
     await wrapper.setProps({ pageSize: 20 })
-    expect(select.element.value).toBe('20')
+    expect(control.text()).toBe('20 条/页')
     await wrapper.setProps({ disabled: true })
-    select.element.value = '10'
-    select.element.dispatchEvent(new Event('change', { bubbles: true }))
+    select.vm.$emit('update:modelValue', 10)
     await nextTick()
-    expect(select.element.value).toBe('20')
+    expect(control.text()).toBe('20 条/页')
     expect(wrapper.emitted('size-change')).toHaveLength(1)
+  })
+
+  it.each(['disabled', 'loading'] as const)('closes the page-size dropdown and blocks interaction while %s', async (lock) => {
+    const wrapper = mount(Pagination, { props: { total: 100, pageSizes: [10, 20] } })
+    wrappers.push(wrapper)
+    const control = wrapper.get('[role="combobox"]')
+    await control.trigger('click')
+    expect(control.attributes('aria-expanded')).toBe('true')
+    await wrapper.setProps({ [lock]: true })
+    expect(control.attributes('aria-expanded')).toBe('false')
+    expect(control.attributes('aria-disabled')).toBe('true')
+    expect(control.attributes('tabindex')).toBeUndefined()
+    await control.trigger('click')
+    await control.trigger('keydown', { key: 'ArrowDown' })
+    await control.trigger('keydown', { key: 'Enter' })
+    expect(control.attributes('aria-expanded')).toBe('false')
+    expect(wrapper.emitted('size-change')).toBeUndefined()
+    await wrapper.setProps({ [lock]: false })
+    await control.trigger('keydown', { key: 'Enter' })
+    expect(control.attributes('aria-expanded')).toBe('true')
+    await control.trigger('keydown', { key: 'Escape' })
+    expect(control.attributes('aria-expanded')).toBe('false')
+  })
+
+  it('inherits locale and disabled state for the page-size Select', async () => {
+    const wrapper = mount(ConfigProvider, {
+      props: { locale: 'en-US', disabled: true },
+      slots: { default: () => h(Pagination, { total: 100, pageSizes: [10, 20] }) },
+    })
+    wrappers.push(wrapper)
+    const control = wrapper.get('[role="combobox"]')
+    expect(control.text()).toBe('10/page')
+    expect(control.attributes('aria-label')).toBe('Page size')
+    expect(control.attributes('aria-disabled')).toBe('true')
+    await wrapper.setProps({ locale: 'zh-CN', disabled: false })
+    expect(control.text()).toBe('10 条/页')
+    expect(control.attributes('aria-label')).toBe('每页条数')
+    expect(control.attributes('aria-disabled')).toBe('false')
   })
 
   it('clears stale page drafts after external changes and locking', async () => {
@@ -855,7 +1015,7 @@ describe('Pagination', () => {
     const input = wrapper.get('input')
     await input.setValue('8')
     await wrapper.setProps({ modelValue: 3 })
-    expect(input.element.value).toBe('')
+    expect(input.element.value).toBe('3')
     await input.trigger('blur')
     expect(wrapper.emitted('change')).toBeUndefined()
     await input.setValue('7')
@@ -901,9 +1061,14 @@ describe('Pagination', () => {
   it('resets page on size changes and disables controls', async () => {
     const wrapper = mount(Pagination, { props: { modelValue: 3, total: 100, pageSizes: [10, 20] } })
     wrappers.push(wrapper)
-    await wrapper.get('select').setValue('20')
+    const control = wrapper.get('[role="combobox"]')
+    await control.trigger('click')
+    await control.trigger('keydown', { key: 'End' })
+    await control.trigger('keydown', { key: 'Enter' })
     expect(wrapper.emitted('update:pageSize')).toEqual([[20]])
+    expect(wrapper.emitted('size-change')).toEqual([[20]])
     expect(wrapper.emitted('update:modelValue')).toEqual([[1]])
+    expect(wrapper.emitted('change')).toEqual([[1]])
     await wrapper.setProps({ disabled: true })
     expect(wrapper.findAll('button').every((button) => button.element.disabled)).toBe(true)
   })
@@ -911,6 +1076,7 @@ describe('Pagination', () => {
   it('handles empty totals and optional single-page hiding', async () => {
     const wrapper = mount(Pagination, { props: { total: 0 } })
     wrappers.push(wrapper)
+    expect(wrapper.findComponent(Select).exists()).toBe(false)
     expect(wrapper.get('[aria-current="page"]').text()).toBe('1')
     await wrapper.setProps({ hideOnSinglePage: true })
     expect(wrapper.find('nav').exists()).toBe(false)

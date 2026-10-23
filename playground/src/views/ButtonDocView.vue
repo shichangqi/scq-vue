@@ -58,31 +58,35 @@
       </div>
     </DocExample>
 
-    <h2>{{ t('button.props') }}</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('doc.param') }}</th>
-          <th>{{ t('doc.desc') }}</th>
-          <th>{{ t('doc.type') }}</th>
-          <th>{{ t('doc.default') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>type</td><td>{{ t('button.type.desc') }}</td><td>default | primary | success | warning | info | danger</td><td>default</td></tr>
-        <tr><td>size</td><td>{{ t('button.size.desc') }}</td><td>large | default | small</td><td>provider / default</td></tr>
-        <tr><td>plain</td><td>{{ t('button.plain.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>round</td><td>{{ t('button.round.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>circle</td><td>{{ t('button.circle.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>loading</td><td>{{ t('button.loading.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>disabled</td><td>{{ t('button.disabled.desc') }}</td><td>boolean</td><td>provider / false</td></tr>
-        <tr><td>text</td><td>{{ t('button.text.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>link</td><td>{{ t('button.link.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>bg</td><td>{{ t('button.bg.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>nativeType</td><td>{{ t('button.nativeType.desc') }}</td><td>button | submit | reset</td><td>button</td></tr>
-        <tr><td>autofocus</td><td>{{ t('button.autofocus.desc') }}</td><td>boolean</td><td>false</td></tr>
-      </tbody>
-    </table>
+    <ComponentDocView slug="button" supplement>
+      <template #api>
+        <h2>{{ t('button.props') }}</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('doc.param') }}</th>
+              <th>{{ t('doc.desc') }}</th>
+              <th>{{ t('doc.type') }}</th>
+              <th>{{ t('doc.default') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>type</td><td>{{ t('button.type.desc') }}</td><td>default | primary | success | warning | info | danger</td><td>default</td></tr>
+            <tr><td>size</td><td>{{ t('button.size.desc') }}</td><td>large | default | small</td><td>provider / default</td></tr>
+            <tr><td>plain</td><td>{{ t('button.plain.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>round</td><td>{{ t('button.round.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>circle</td><td>{{ t('button.circle.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>loading</td><td>{{ t('button.loading.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>disabled</td><td>{{ t('button.disabled.desc') }}</td><td>boolean</td><td>provider / false</td></tr>
+            <tr><td>text</td><td>{{ t('button.text.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>link</td><td>{{ t('button.link.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>bg</td><td>{{ t('button.bg.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>nativeType</td><td>{{ t('button.nativeType.desc') }}</td><td>button | submit | reset</td><td>button</td></tr>
+            <tr><td>autofocus</td><td>{{ t('button.autofocus.desc') }}</td><td>boolean</td><td>false</td></tr>
+          </tbody>
+        </table>
+      </template>
+    </ComponentDocView>
   </section>
 </template>
 
@@ -91,6 +95,7 @@ import ScqButton from '../../../src/components/Button'
 import ScqIcon from '../../../src/components/Icon'
 import DocExample from '../components/DocExample.vue'
 import OnDemandExample from '../components/OnDemandExample.vue'
+import ComponentDocView from './ComponentDocView.vue'
 import { t } from '../i18n'
 
 const basicCode = `<template>

@@ -374,7 +374,7 @@ const isolatedConsumers = {
   Badge: ['.scq-badge--bottom-left', '.scq-badge__text'],
   Empty: ['.scq-empty--small', '.scq-icon'],
   Tabs: ['.scq-tabs__panel'],
-  Pagination: ['.scq-pagination__jumper', '.scq-icon'],
+  Pagination: ['.scq-pagination__jumper', '.scq-input__wrapper', '.scq-icon', '.scq-select__control', '.scq-select__panel', '.scq-virtual-list'],
   Menu: ['.scq-menu__description', '.scq-menu__shortcut', '.scq-floating-panel', '.scq-icon'],
   Breadcrumb: ['.scq-breadcrumb', '.scq-dropdown', '.scq-menu', '.scq-floating-panel', '.scq-link', '.scq-icon'],
   Loading: ['.scq-loading.is-nonblocking'],
@@ -429,7 +429,7 @@ const isolatedConsumers = {
 const scopedDependencies = {
   Tag: ['Icon'],
   Empty: ['Icon'],
-  Pagination: ['Icon'],
+  Pagination: ['Icon', 'Select', 'VirtualList'],
   Menu: ['Popover', 'Icon'],
   Breadcrumb: ['Dropdown', 'Menu', 'Popover', 'Link', 'Icon', 'Loading'],
   Alert: ['Icon'],

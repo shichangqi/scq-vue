@@ -111,68 +111,71 @@
       </div>
     </DocExample>
 
-    <h2>Props</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>参数</th>
-          <th>说明</th>
-          <th>类型</th>
-          <th>默认值</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>modelValue</td><td>绑定值</td><td>string | number | Array&lt;string | number&gt; | null</td><td>null</td></tr>
-        <tr><td>options</td><td>选项列表</td><td>Array&lt;{ label, value, disabled? }&gt;</td><td>[]</td></tr>
-        <tr><td>multiple</td><td>是否多选</td><td>boolean</td><td>false</td></tr>
-        <tr><td>filterable</td><td>是否支持搜索</td><td>boolean</td><td>false</td></tr>
-        <tr><td>remote</td><td>是否启用远程搜索</td><td>boolean</td><td>false</td></tr>
-        <tr><td>remoteMethod</td><td>远程搜索函数</td><td>(query, page, pageSize) =&gt; Promise</td><td>-</td></tr>
-        <tr><td>pagination</td><td>是否启用分页</td><td>boolean</td><td>false</td></tr>
-        <tr><td>pageSize</td><td>每页条数</td><td>number</td><td>8</td></tr>
-        <tr><td>debounce</td><td>远程搜索防抖时间（毫秒）</td><td>number</td><td>300</td></tr>
-        <tr><td>size</td><td>尺寸；未设置时继承 ConfigProvider</td><td>large | default | small</td><td>provider / default</td></tr>
-        <tr><td>disabled</td><td>禁用；显式 false 可覆盖 ConfigProvider</td><td>boolean</td><td>provider / false</td></tr>
-        <tr><td>placeholder</td><td>占位文本；未设置时随 ConfigProvider 语言变化</td><td>string</td><td>locale</td></tr>
-      </tbody>
-    </table>
+    <ComponentDocView slug="select" supplement>
+      <template #api>
+        <h2>Props</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>参数</th>
+              <th>说明</th>
+              <th>类型</th>
+              <th>默认值</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>modelValue</td><td>绑定值</td><td>string | number | Array&lt;string | number&gt; | null</td><td>null</td></tr>
+            <tr><td>options</td><td>选项列表</td><td>Array&lt;{ label, value, disabled? }&gt;</td><td>[]</td></tr>
+            <tr><td>multiple</td><td>是否多选</td><td>boolean</td><td>false</td></tr>
+            <tr><td>filterable</td><td>是否支持搜索</td><td>boolean</td><td>false</td></tr>
+            <tr><td>remote</td><td>是否启用远程搜索</td><td>boolean</td><td>false</td></tr>
+            <tr><td>remoteMethod</td><td>远程搜索函数</td><td>(query, page, pageSize) =&gt; Promise</td><td>-</td></tr>
+            <tr><td>pagination</td><td>是否启用分页</td><td>boolean</td><td>false</td></tr>
+            <tr><td>pageSize</td><td>每页条数</td><td>number</td><td>8</td></tr>
+            <tr><td>debounce</td><td>远程搜索防抖时间（毫秒）</td><td>number</td><td>300</td></tr>
+            <tr><td>size</td><td>尺寸；未设置时继承 ConfigProvider</td><td>large | default | small</td><td>provider / default</td></tr>
+            <tr><td>disabled</td><td>禁用；显式 false 可覆盖 ConfigProvider</td><td>boolean</td><td>provider / false</td></tr>
+            <tr><td>placeholder</td><td>占位文本；未设置时随 ConfigProvider 语言变化</td><td>string</td><td>locale</td></tr>
+          </tbody>
+        </table>
 
-    <h2>Events</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>事件名</th>
-          <th>说明</th>
-          <th>回调参数</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>change</td><td>选中值变化时触发</td><td>(value)</td></tr>
-        <tr><td>clear</td><td>点击清空图标后触发</td><td>()</td></tr>
-        <tr><td>search</td><td>搜索关键字变化时触发</td><td>(keyword)</td></tr>
-        <tr><td>visible-change</td><td>下拉面板展开/收起时触发</td><td>(visible: boolean)</td></tr>
-      </tbody>
-    </table>
+        <h2>Events</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>事件名</th>
+              <th>说明</th>
+              <th>回调参数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>change</td><td>选中值变化时触发</td><td>(value)</td></tr>
+            <tr><td>clear</td><td>点击清空图标后触发</td><td>()</td></tr>
+            <tr><td>search</td><td>搜索关键字变化时触发</td><td>(keyword)</td></tr>
+            <tr><td>visible-change</td><td>下拉面板展开/收起时触发</td><td>(visible: boolean)</td></tr>
+          </tbody>
+        </table>
 
-    <h2>Methods</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>方法名</th>
-          <th>说明</th>
-          <th>参数</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>open</td><td>打开下拉面板</td><td>-</td></tr>
-        <tr><td>close</td><td>关闭下拉面板</td><td>-</td></tr>
-        <tr><td>clear</td><td>清空当前值</td><td>-</td></tr>
-        <tr><td>refreshRemote</td><td>远程模式下强制刷新当前搜索结果</td><td>-</td></tr>
-        <tr><td>focus</td><td>让内部输入框获得焦点（filterable 时）</td><td>-</td></tr>
-        <tr><td>blur</td><td>让内部输入框失焦（filterable 时）</td><td>-</td></tr>
-      </tbody>
-    </table>
-    <ComponentDocView slug="select" supplement />
+        <h2>Methods</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>方法名</th>
+              <th>说明</th>
+              <th>参数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>open</td><td>打开下拉面板</td><td>-</td></tr>
+            <tr><td>close</td><td>关闭下拉面板</td><td>-</td></tr>
+            <tr><td>clear</td><td>清空当前值</td><td>-</td></tr>
+            <tr><td>refreshRemote</td><td>远程模式下强制刷新当前搜索结果</td><td>-</td></tr>
+            <tr><td>focus</td><td>让内部输入框获得焦点（filterable 时）</td><td>-</td></tr>
+            <tr><td>blur</td><td>让内部输入框失焦（filterable 时）</td><td>-</td></tr>
+          </tbody>
+        </table>
+      </template>
+    </ComponentDocView>
   </section>
 </template>
 

@@ -8,11 +8,13 @@ import ScqTypography from '../../../../src/components/Typography'
 const PREVIEW_ROWS = 2
 const SUMMARY_WIDTHS = ['90%', '60%'] as const
 const loading = ref(true)
+const custom = ref(false)
 </script>
 
 <template>
   <div class="skeleton-preset-example">
     <ScqCheckbox v-model="loading" class="skeleton-preset-example__control">显示加载占位</ScqCheckbox>
+    <ScqCheckbox v-model="custom">自定义占位模板</ScqCheckbox>
     <div class="skeleton-preset-example__grid">
       <section class="skeleton-preset-example__card" aria-label="项目卡片">
         <ScqSkeleton preset="card" :loading="loading">
@@ -24,7 +26,8 @@ const loading = ref(true)
       </section>
       <section class="skeleton-preset-example__card" aria-label="紧凑摘要">
         <ScqTypography as="h4">显式属性优先</ScqTypography>
-        <ScqSkeleton preset="list-item" :loading="loading" :avatar="false" :rows="PREVIEW_ROWS" :row-widths="SUMMARY_WIDTHS" :animated="false">
+        <ScqSkeleton preset="list-item" :loading="loading" :avatar="false" :title="true" :image="false" :button="false" :rows="PREVIEW_ROWS" :row-widths="SUMMARY_WIDTHS" :animated="false">
+          <template v-if="custom" #template><p role="status">正在准备摘要内容…</p></template>
           <ScqTypography as="p" bold>交付评审已通过</ScqTypography>
           <ScqTypography as="p" type="secondary">这个列表预设显式隐藏头像、自定义行宽并关闭动画。</ScqTypography>
         </ScqSkeleton>

@@ -52,6 +52,7 @@ const recordMove = (_value: TransferKey[], direction: TransferSide, keys: Transf
           @change="recordMove"
         >
           <template #default="{ item }"><span class="transfer-virtual-example__label" :title="item.label">{{ item.label }}</span></template>
+          <template #empty="{ side }">{{ side === 'left' ? '候选' : '已选' }}面板没有匹配成员。</template>
           <template #left-footer="{ items, checkedKeys }">{{ COPY.visible }}: {{ items.length }} · {{ COPY.checked }}: {{ checkedKeys.length }}</template>
           <template #right-footer="{ items, checkedKeys }">{{ COPY.visible }}: {{ items.length }} · {{ COPY.checked }}: {{ checkedKeys.length }}</template>
         </ScqTransfer>

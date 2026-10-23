@@ -42,29 +42,33 @@
       </div>
     </DocExample>
 
-    <h2>{{ t('icon.props') }}</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('doc.param') }}</th>
-          <th>{{ t('doc.desc') }}</th>
-          <th>{{ t('doc.type') }}</th>
-          <th>{{ t('doc.default') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>name</td><td>{{ t('icon.name.desc') }}</td><td>IconName | string</td><td>-</td></tr>
-        <tr><td>variant</td><td>{{ t('icon.variant.desc') }}</td><td>'outline' | 'solid'</td><td>outline</td></tr>
-        <tr><td>size</td><td>{{ t('icon.size.desc') }}</td><td>number | string</td><td>1em</td></tr>
-        <tr><td>color</td><td>{{ t('icon.color.desc') }}</td><td>string</td><td>-</td></tr>
-      </tbody>
-    </table>
-    <ComponentDocView slug="icon" supplement />
+    <ComponentDocView slug="icon" supplement>
+      <template #api>
+        <h2>{{ t('icon.props') }}</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('doc.param') }}</th>
+              <th>{{ t('doc.desc') }}</th>
+              <th>{{ t('doc.type') }}</th>
+              <th>{{ t('doc.default') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>name</td><td>{{ t('icon.name.desc') }}</td><td>IconName | string</td><td>-</td></tr>
+            <tr><td>variant</td><td>{{ t('icon.variant.desc') }}</td><td>'outline' | 'solid'</td><td>outline</td></tr>
+            <tr><td>size</td><td>{{ t('icon.size.desc') }}</td><td>number | string</td><td>1em</td></tr>
+            <tr><td>color</td><td>{{ t('icon.color.desc') }}</td><td>string</td><td>-</td></tr>
+          </tbody>
+        </table>
+      </template>
+    </ComponentDocView>
   </section>
 </template>
 
 <script setup lang="ts">
 import ScqIcon from '../../../src/components/Icon'
+import Message from '../../../src/components/Message'
 import { ref } from 'vue'
 import { type IconName, type IconVariant } from 'scq-vue'
 import DocExample from '../components/DocExample.vue'
@@ -199,15 +203,19 @@ const copyIconCode = async (name: IconName | string, variant: IconVariant = 'out
 
   try {
     await navigator.clipboard.writeText(code)
-    copiedCode.value = code
-    if (copyTimer) {
-      window.clearTimeout(copyTimer)
-    }
-    copyTimer = window.setTimeout(() => {
-      copiedCode.value = ''
-    }, 1600)
   } catch {
     copiedCode.value = ''
+    Message.error(t('icon.copyFailed'))
+    return
   }
+
+  copiedCode.value = code
+  Message.success(t('icon.copied'))
+  if (copyTimer) {
+    window.clearTimeout(copyTimer)
+  }
+  copyTimer = window.setTimeout(() => {
+    copiedCode.value = ''
+  }, 1600)
 }
 </script>

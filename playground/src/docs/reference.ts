@@ -454,7 +454,7 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('empty', '-', '-', '自定义空状态', 'Custom empty state'),
     ],
     methods: [row('clearSelection', '() => void', '-', '清空选中键', 'Clear selected keys')],
-    note: text('筛选和分页由调用方控制。当前提供基础表格，不包含树形表格、固定列或虚拟滚动。', 'Filtering and pagination are controlled by the caller. This basic table does not include tree rows, fixed columns or virtualization.'),
+    note: text('支持本地查询与远程受控查询、固定列、列宽调整和列显隐；下面的示例分别演示这些功能。暂不包含树形表格或表格虚拟滚动。', 'Supports local and remote controlled queries, fixed columns, resizing and column visibility, demonstrated below. Tree rows and table virtualization are not included.'),
   },
   tabs: {
     description: text('在相关视图之间切换，支持键盘导航、禁用项和内容懒加载。', 'Switch between related views with keyboard navigation, disabled tabs and lazy-loaded panels.'),
@@ -488,7 +488,7 @@ export const componentReferences: Record<string, ComponentReference> = {
     ],
   },
   pagination: {
-    description: text('管理列表页码和每页数量，在窄屏自动使用紧凑布局。', 'Control page number and size with an automatic compact layout on narrow screens.'),
+    description: text('管理列表页码和每页数量，按总数、每页条数、翻页、跳转排列，窄屏自动使用紧凑布局。', 'Control page number and size with totals, page sizes, navigation and a jumper in order, switching to a compact layout on narrow screens.'),
     demo: 'navigation',
     examples: [
       {
@@ -506,9 +506,9 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('total', 'number', '0', '数据总条数', 'Total record count'),
       row('pageSize', 'number', '10', '每页数量，支持 v-model:page-size', 'Page size with v-model:page-size'),
       row('pagerCount', 'number', '7', '桌面页码按钮上限，规范为 5 到 11 的奇数', 'Desktop pager limit, normalized to an odd value from 5 to 11'),
-      row('showJumper', 'boolean', 'false', '输入页码后 Enter/失焦提交，越界裁剪；组合输入不提交，外部页码/页容量/锁定变化清理旧草稿；省略号按钮按可见页数大步翻页', 'Commit a page with Enter/blur, clamping bounds; composition does not commit and page/size/lock changes discard stale drafts; ellipsis buttons jump by the visible range'),
+      row('showJumper', 'boolean', 'false', '显示“前往 [当前页] 页”，复用 Input；聚焦选中页码，Enter/失焦提交，越界裁剪，清空或父级拒绝更新时恢复当前页；组合输入不提交，外部页码/页容量/锁定变化清理旧草稿；省略号可大步翻页', 'Show a localized Go to [current page] input using Input; focus selects the value, Enter/blur commits with bounds clamping, and empty or rejected drafts restore the current page; composition does not commit and page/size/lock changes discard drafts; ellipses jump by the visible range'),
       row('unknownTotal / hasNext / loading', 'boolean', 'false', '未知总数仅展示当前页和前后按钮；hasNext 控制下一页，loading 禁用操作', 'Unknown totals show only current page and previous/next; hasNext controls forward navigation and loading blocks actions'),
-      row('pageSizes', 'readonly number[]', '[]', '可选正整数页容量，去重并包含规范化当前值；父级拒绝更新时恢复原生选择', 'Unique positive integer sizes including the normalized current value; rejected controlled updates restore the native selection'),
+      row('pageSizes', 'readonly number[]', '[]', '可选正整数页容量，去重并包含规范化当前值；使用 Select 下拉，支持键盘操作，父级拒绝更新时保留当前选择', 'Unique positive integer sizes including the normalized current value; uses the keyboard-accessible Select dropdown and retains the current selection when controlled updates are rejected'),
       disabledProp,
       row('simple / showTotal / hideOnSinglePage', 'boolean', 'false', '紧凑模式、显示总数、单页隐藏', 'Compact mode, total count and single-page hiding'),
     ],

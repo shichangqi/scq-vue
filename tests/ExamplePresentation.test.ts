@@ -3,6 +3,10 @@
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { h, nextTick } from 'vue'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { parse } from 'vue/compiler-sfc'
+import DocExample from '../playground/src/components/DocExample.vue'
 import ExampleSection from '../playground/src/components/ExampleSection.vue'
 import CardExample from '../playground/src/components/examples/CardEnhancementExample.vue'
 import ConfigExample from '../playground/src/components/examples/ConfigProviderExample.vue'
@@ -42,6 +46,53 @@ afterEach(async () => {
 })
 
 describe('Example presentation and controls', () => {
+  it('keeps every preview palette visibly graded across repeated cycles', () => {
+    const paletteCount = 6
+    const minimumRgbDistance = 16
+    const maximumRgbDistance = 28
+    const stylesheet = document.createElement('style')
+    stylesheet.textContent = readFileSync(resolve(__dirname, '../playground/src/playground.css'), 'utf8')
+    document.head.append(stylesheet)
+    const wrapper = track(mount({
+      render: () => h('div', Array.from({ length: paletteCount * 2 }, () => [
+        h('h2', 'Example'),
+        h(DocExample, { code: '<button>Save</button>' }, () => h('button', 'Save')),
+      ])),
+    }, { attachTo: document.body }))
+    try {
+      const palettes = wrapper.findAll('.doc-example').map(example => {
+        const style = getComputedStyle(example.element)
+        const start = style.getPropertyValue('--demo-preview-bg-start').trim()
+        const end = style.getPropertyValue('--demo-preview-bg-end').trim()
+        const channels = (color: string) => {
+          expect(color).toMatch(/^#[\da-f]{6}$/i)
+          return color.slice(1).match(/.{2}/g)!.map(channel => parseInt(channel, 16))
+        }
+        const startChannels = channels(start)
+        const endChannels = channels(end)
+        const distance = Math.hypot(...startChannels.map((channel, index) => channel - endChannels[index]))
+        expect(distance).toBeGreaterThanOrEqual(minimumRgbDistance)
+        expect(distance).toBeLessThanOrEqual(maximumRgbDistance)
+        expect(style.getPropertyValue('--demo-preview-background')).toContain('linear-gradient(')
+        expect(style.getPropertyValue('--demo-bg-start')).toBe('')
+        expect(style.getPropertyValue('--demo-bg-end')).toBe('')
+        expect(style.getPropertyValue('--scq-surface')).toBe('')
+        return `${start}:${end}`
+      })
+      expect(new Set(palettes).size).toBe(paletteCount)
+      expect(palettes.slice(paletteCount)).toEqual(palettes.slice(0, paletteCount))
+    } finally { stylesheet.remove() }
+  })
+
+  it('limits the preview gradient to the outer background without replacing content surfaces', () => {
+    const styles = (filename: string) => {
+      const source = readFileSync(resolve(__dirname, '../playground/src/components', filename), 'utf8')
+      return parse(source).descriptor.styles.map(style => style.content).join('\n')
+    }
+    expect(styles('DocExample.vue')).toMatch(/\.doc-example__demo\s*\{[^}]*background:\s*var\(--demo-preview-background\)/)
+    expect(styles('ExampleSection.vue')).toMatch(/background:\s*var\(--scq-surface\)/)
+  })
+
   it('separates headings, controls and content without changing alert semantics', () => {
     const wrapper = track(mount(ExampleSection, {
       props: { title: 'Example', subtitle: 'Details', description: 'Instructions' },

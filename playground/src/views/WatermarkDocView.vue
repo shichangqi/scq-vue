@@ -53,27 +53,30 @@
       </scq-watermark>
     </DocExample>
 
-    <h2>{{ t('watermark.props') }}</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('doc.param') }}</th>
-          <th>{{ t('doc.desc') }}</th>
-          <th>{{ t('doc.type') }}</th>
-          <th>{{ t('doc.default') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>content</td><td>{{ t('watermark.content.desc') }}</td><td>string</td><td>SCQ VUE</td></tr>
-        <tr><td>color</td><td>{{ t('watermark.color.desc') }}</td><td>string</td><td>rgba(0, 0, 0, 0.12)</td></tr>
-        <tr><td>gap</td><td>{{ t('watermark.gap.desc') }}</td><td>number | [number, number]</td><td>120</td></tr>
-        <tr><td>size</td><td>{{ t('watermark.size.desc') }}</td><td>number</td><td>16</td></tr>
-        <tr><td>rotate</td><td>{{ t('watermark.rotate.desc') }}</td><td>number</td><td>-22</td></tr>
-        <tr><td>zIndex</td><td>{{ t('watermark.zIndex.desc') }}</td><td>number</td><td>9</td></tr>
-        <tr><td>fullscreen</td><td>{{ t('watermark.fullscreen.desc') }}</td><td>boolean</td><td>false</td></tr>
-      </tbody>
-    </table>
-    <ComponentDocView slug="watermark" supplement />
+    <ComponentDocView slug="watermark" supplement>
+      <template #api>
+        <h2>{{ t('watermark.props') }}</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('doc.param') }}</th>
+              <th>{{ t('doc.desc') }}</th>
+              <th>{{ t('doc.type') }}</th>
+              <th>{{ t('doc.default') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>content</td><td>{{ t('watermark.content.desc') }}</td><td>string</td><td>SCQ VUE</td></tr>
+            <tr><td>color</td><td>{{ t('watermark.color.desc') }}</td><td>string</td><td>rgba(0, 0, 0, 0.12)</td></tr>
+            <tr><td>gap</td><td>{{ t('watermark.gap.desc') }}</td><td>number | [number, number]</td><td>120</td></tr>
+            <tr><td>size</td><td>{{ t('watermark.size.desc') }}</td><td>number</td><td>16</td></tr>
+            <tr><td>rotate</td><td>{{ t('watermark.rotate.desc') }}</td><td>number</td><td>-22</td></tr>
+            <tr><td>zIndex</td><td>{{ t('watermark.zIndex.desc') }}</td><td>number</td><td>9</td></tr>
+            <tr><td>fullscreen</td><td>{{ t('watermark.fullscreen.desc') }}</td><td>boolean</td><td>false</td></tr>
+          </tbody>
+        </table>
+      </template>
+    </ComponentDocView>
   </section>
 </template>
 

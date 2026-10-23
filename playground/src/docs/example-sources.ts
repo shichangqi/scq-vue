@@ -1,6 +1,7 @@
 import { defineAsyncComponent, type Component } from 'vue'
 import phoneSource from '../components/PhonePreview.vue?raw'
 import sectionSource from '../components/ExampleSection.vue?raw'
+import draftSource from '../components/examples/LocalDraft.vue?raw'
 
 const sources = import.meta.glob<string>('../components/examples/*Example.vue', { eager: true, query: '?raw', import: 'default' })
 const loaders = import.meta.glob<{ default: Component }>('../components/examples/*Example.vue')
@@ -22,5 +23,6 @@ export const sourceExample = (name: string, phone = false) => {
   const files: Record<string, string> = { 'App.vue': code }
   if (phone) files['PhonePreview.vue'] = phoneSource
   if (code.includes("from './ExampleSection.vue'")) files['ExampleSection.vue'] = sectionSource
+  if (code.includes("from './LocalDraft.vue'")) files['LocalDraft.vue'] = draftSource.replaceAll("from '../../../../src/components/", "from 'scq-vue/components/")
   return { source: name, code, files }
 }

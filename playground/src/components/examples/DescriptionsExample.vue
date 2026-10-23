@@ -7,12 +7,14 @@ import ScqFormItem from '../../../../src/components/FormItem'
 import ScqInput from '../../../../src/components/Input'
 import ScqTag from '../../../../src/components/Tag'
 import ScqTypography from '../../../../src/components/Typography'
+import ScqCheckbox from '../../../../src/components/Checkbox'
 import type { DescriptionFormatter, DescriptionItem, FormRules } from '../../../../src/index'
 
 const COLUMNS = { xs: 1, md: 2, xl: 3 } as const
 const LABEL_WIDTH = 96
 const currency = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY' })
 const editing = ref(false)
+const empty = ref(false)
 const profile = reactive({ owner: '林一', address: '浙江省杭州市西湖区文三路 18 号 A 座 402' })
 const draft = reactive({ ...profile })
 const rules: FormRules = {
@@ -44,6 +46,7 @@ const save = (valid: boolean) => {
 
 <template>
   <div class="descriptions-example">
+    <ScqCheckbox v-model="empty">展示空详情</ScqCheckbox>
     <ScqForm v-if="editing" :model="draft" :rules="rules" label-position="top" focus-on-error @submit="save">
       <ScqFormItem label="负责人" prop="owner"><ScqInput v-model="draft.owner" /></ScqFormItem>
       <ScqFormItem label="交付地址" prop="address"><ScqInput v-model="draft.address" type="textarea" /></ScqFormItem>
@@ -52,7 +55,9 @@ const save = (valid: boolean) => {
         <ScqButton @click="editing = false">取消</ScqButton>
       </div>
     </ScqForm>
-    <ScqDescriptions v-else title="订单详情" :items="items" :columns="COLUMNS" :label-width="LABEL_WIDTH" :formatter="formatValue" empty-text="未填写" border>
+    <ScqDescriptions v-else title="订单详情" :items="empty ? [] : items" :columns="COLUMNS" :label-width="LABEL_WIDTH" :formatter="formatValue" empty-text="未填写" border>
+      <template #title><strong>订单详情</strong></template>
+      <template #empty>暂未选择订单。</template>
       <template #extra><ScqButton size="small" @click="beginEdit">编辑资料</ScqButton></template>
       <template #order="{ displayValue }"><ScqTypography code copyable>{{ displayValue }}</ScqTypography></template>
       <template #status><ScqTag type="success">已确认</ScqTag></template>

@@ -33,27 +33,30 @@
       </div>
     </DocExample>
 
-    <h2>{{ t('radio.props') }}</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('doc.param') }}</th>
-          <th>{{ t('doc.desc') }}</th>
-          <th>{{ t('doc.type') }}</th>
-          <th>{{ t('doc.default') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>modelValue</td><td>{{ t('radio.model.desc') }}</td><td>string | number | boolean</td><td>-</td></tr>
-        <tr><td>value</td><td>{{ t('radio.value.desc') }}</td><td>string | number | boolean</td><td>true</td></tr>
-        <tr><td>text</td><td>{{ t('radio.text.desc') }}</td><td>string</td><td>''</td></tr>
-        <tr><td>name</td><td>{{ t('radio.name.desc') }}</td><td>string</td><td>''</td></tr>
-        <tr><td>disabled</td><td>{{ t('radio.disabled.desc') }}</td><td>boolean</td><td>provider / false</td></tr>
-        <tr><td>size</td><td>{{ t('radio.size.desc') }}</td><td>small | default | large</td><td>provider / default</td></tr>
-        <tr><td>direction</td><td>{{ t('radio.direction.desc') }}</td><td>horizontal | vertical</td><td>horizontal</td></tr>
-      </tbody>
-    </table>
-    <ComponentDocView slug="radio" supplement />
+    <ComponentDocView slug="radio" supplement>
+      <template #api>
+        <h2>{{ t('radio.props') }}</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('doc.param') }}</th>
+              <th>{{ t('doc.desc') }}</th>
+              <th>{{ t('doc.type') }}</th>
+              <th>{{ t('doc.default') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>modelValue</td><td>{{ t('radio.model.desc') }}</td><td>string | number | boolean</td><td>-</td></tr>
+            <tr><td>value</td><td>{{ t('radio.value.desc') }}</td><td>string | number | boolean</td><td>true</td></tr>
+            <tr><td>text</td><td>{{ t('radio.text.desc') }}</td><td>string</td><td>''</td></tr>
+            <tr><td>name</td><td>{{ t('radio.name.desc') }}</td><td>string</td><td>''</td></tr>
+            <tr><td>disabled</td><td>{{ t('radio.disabled.desc') }}</td><td>boolean</td><td>provider / false</td></tr>
+            <tr><td>size</td><td>{{ t('radio.size.desc') }}</td><td>small | default | large</td><td>provider / default</td></tr>
+            <tr><td>direction</td><td>{{ t('radio.direction.desc') }}</td><td>horizontal | vertical</td><td>horizontal</td></tr>
+          </tbody>
+        </table>
+      </template>
+    </ComponentDocView>
   </section>
 </template>
 

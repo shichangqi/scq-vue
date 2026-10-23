@@ -28,7 +28,7 @@ export const createEnhancementReferences = ({ row, text }: { row: typeof createR
   const layoutBreakpoints = row('breakpoints', 'LayoutBreakpoints', 'LAYOUT_BREAKPOINTS', '可覆盖 sm/md/lg/xl 的最小屏宽，必须递增；默认 640/768/1024/1280px，xs 固定为 0', 'Override increasing sm/md/lg/xl minimum viewport widths; defaults 640/768/1024/1280px, with xs fixed at zero')
   const layoutExample = example('LayoutFoundationExample', '响应式布局、栅格与分割线', 'Responsive Layouts, Grid and Dividers')
   const responsiveNote = text('响应式对象从 xs 向上继承已设置值，未设置 xs 时使用组件默认值。命名间距 none/xs/sm/md/lg/xl/xxl 对应 0/4/8/12/16/24/32px，可用 --scq-space-* CSS 变量覆盖。响应式配置在服务端渲染时先使用 xs，挂载后按视口更新，并保留插槽内容状态。', 'Responsive objects inherit earlier values; without xs the component default applies. Spacing tokens none/xs/sm/md/lg/xl/xxl map to 0/4/8/12/16/24/32px and support --scq-space-* CSS overrides. Responsive configurations start at xs during server rendering, then resolve the viewport after mounting while preserving slot state.')
-  return {
+  const references: Record<string, ComponentReference> = {
     card: entry([
       row('clickable / selectable / selected', 'boolean', 'false / false / uncontrolled false', '显式整卡操作与可选 v-model:selected；受控时以业务值为准', 'Opt-in card activation with optional v-model:selected; controlled values remain authoritative'),
       row('disabled / ariaLabel', 'boolean / string', 'provider / header or locale', '禁用整卡入口及其名称，不强制禁用插槽内的独立业务操作', 'Disable/name the card-level action without forcing independent slot controls to be disabled'),
@@ -281,4 +281,43 @@ export const createEnhancementReferences = ({ row, text }: { row: typeof createR
       row('ariaLabel / title', 'string', '-', '语义图标的可访问名称或 SVG 标题', 'Accessible name or SVG title for a semantic icon'),
     ], { examples: [example('IconSemanticExample', '装饰与语义图标', 'Decorative and Semantic Icons')], events: [row('accessibility-error', '(error: Error)', '-', '语义图标没有名称时保持隐藏并报告，未监听时警告', 'Unlabeled semantic icons stay hidden and report an error, warning when unhandled')] }),
   }
+  const featureExamples: [string[], ComponentReference['examples'][number]][] = [
+    [['button'], example('ButtonFeaturesExample', '尺寸、加载文案与焦点', 'Sizes, Loading Labels and Focus')],
+    [['input'], example('InputFeaturesExample', '组合输入、状态与实例方法', 'Input Groups, States and Instance Methods')],
+    [['input-number'], example('InputNumberFeaturesExample', '精度、无按钮输入与只读', 'Precision, Hidden Controls and Readonly Input')],
+    [['loading'], example('LoadingTimingExample', '延迟、最短展示与阻塞', 'Delay, Minimum Duration and Blocking')],
+    [['alert'], example('AlertActionsExample', '受控关闭与操作插槽', 'Controlled Dismissal and Actions')],
+    [['badge'], example('BadgePlacementExample', '位置、偏移与自定义计数', 'Placement, Offset and Custom Counts')],
+    [['empty'], example('EmptyImageExample', '图片回退与自定义内容', 'Image Fallbacks and Custom Content')],
+    [['pagination'], example('PaginationFeaturesExample', '跳转、未知总数与自定义区域', 'Jumping, Unknown Totals and Custom Regions')],
+    [['tabs'], example('TabsLifecycleExample', '销毁策略与切换拦截', 'Panel Lifecycle and Change Guards')],
+    [['chat-choice'], example('ChatChoiceStatesExample', '校验、提交状态与插槽', 'Validation, Submission States and Slots')],
+    [['dialog', 'modal', 'drawer', 'popup'], example('LayerOptionsExample', '关闭守卫、内容保留与生命周期', 'Close Guards, Preserved Content and Lifecycle')],
+    [['nav-bar', 'tabbar', 'action-sheet'], example('MobileGuardExample', '返回、导航与动作拦截', 'Back, Navigation and Action Guards', true)],
+    [['popconfirm'], example('PopconfirmStatesExample', '失败重试与自定义操作', 'Retrying Failures and Custom Actions')],
+    [['calendar'], example('CalendarModesExample', '单选、多选与日期插槽', 'Single and Multiple Selection with Day Slots')],
+    [['search'], example('SearchFormExample', '原生表单与自定义操作', 'Native Forms and Custom Actions')],
+    [['tooltip', 'popover'], example('FloatingOptionsExample', '受控浮层、延迟与焦点', 'Controlled Floating Panels, Delays and Focus')],
+    [['table'], example('TableStatesExample', '默认查询、加载与空状态', 'Default Queries, Loading and Empty States')],
+    [['upload'], example('UploadManualExample', '手动上传与前置校验', 'Manual Uploads and Hooks')],
+    [['chat-message'], example('ChatMessageSlotsExample', '选择插槽与内容显示选项', 'Selection Slots and Content Options')],
+    [['radio', 'checkbox'], example('SelectionStatesExample', '整组禁用与变化事件', 'Disabled Groups and Change Events')],
+    [['cell'], example('CellSlotsExample', '链接、点击行为与内容插槽', 'Links, Actions and Content Slots')],
+  ]
+  for (const [slugs, feature] of featureExamples) {
+    for (const slug of slugs) {
+      const reference = references[slug] ?? (references[slug] = entry([]))
+      reference.examples.push(feature)
+    }
+  }
+  references.button.props.push(row('loadingText', 'string', "''", '加载期间替换按钮文字', 'Replace the label while loading'))
+  references.input.props.push(
+    row('status', 'default | success | warning | error', 'default', '输入框校验外观', 'Validation appearance'),
+    row('autosize / showWordLimit / maxlength / minlength', 'boolean / boolean / number / number', 'false / false / - / -', '文本域自适应高度与字数限制', 'Autosizing textarea and character limits'),
+    row('fullWidth / name / autocomplete / inputStyle / inputClass', 'boolean / string / string / CSSProperties / string', "true / '' / off / '' / ''", '宽度、原生输入属性与输入区域样式', 'Width, native input attributes and input styling'),
+  )
+  references.input.slots = [row('prepend / append / prefix / suffix', '-', '-', '前后组合区域与输入框内插槽；优先于图标属性', 'Grouped content and inner slots; slots take precedence over icon props')]
+  references.input.methods = [row('focus / blur / select / clear', '() => void', '-', '聚焦、失焦、选择文本或清空', 'Focus, blur, select text or clear')]
+  references['chat-choice'].methods = [row('submit / validate', '() => void / () => boolean', '-', '提交选择或仅执行校验', 'Submit the answer or validate without submitting')]
+  return references
 }

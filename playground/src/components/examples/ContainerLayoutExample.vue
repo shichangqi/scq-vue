@@ -11,6 +11,8 @@ const EXAMPLE = { height: 400, minAsideWidth: 160, maxAsideWidth: 360, widthStep
 const collapsed = ref(false)
 const opened = ref(false)
 const right = ref(false)
+const customToggle = ref(false)
+const disabled = ref(false)
 const asideWidth = ref<number>(EXAMPLE.initialAsideWidth)
 const sideDraft = ref('')
 const mainDraft = ref('')
@@ -22,10 +24,11 @@ const resizeAside = (value: number | [number, number]) => {
 
 <template>
   <ExampleSection class="container-layout-example" title="可调整的工作台" subtitle="Responsive workspace">
-    <template #controls><ScqCheckbox v-model="right">右侧栏</ScqCheckbox></template>
+    <template #controls><ScqCheckbox v-model="right">右侧栏</ScqCheckbox><ScqCheckbox v-model="customToggle">自定义侧栏入口</ScqCheckbox><ScqCheckbox v-model="disabled">禁用侧栏操作</ScqCheckbox></template>
     <label>侧栏宽度 / Sidebar width: {{ asideWidth }}px<ScqSlider :model-value="asideWidth" :min="EXAMPLE.minAsideWidth" :max="EXAMPLE.maxAsideWidth" :step="EXAMPLE.widthStep" aria-label="Sidebar width" @update:model-value="resizeAside" /></label>
     <p>拖动滑块可调整侧栏宽度，也可使用方向键微调。缩小窗口后，侧栏以抽屉形式打开；本示例不会保存布局偏好。</p>
-    <ScqContainer v-model:collapsed="collapsed" v-model:aside-open="opened" class="container-layout-example__workspace" collapsible aside-mode="drawer" :aside-position="right ? 'right' : 'left'" :aside-width="asideWidth" :height="EXAMPLE.height" :padding="0" scrollable aside-title="工作台侧栏 / Workspace sidebar">
+    <ScqContainer v-model:collapsed="collapsed" v-model:aside-open="opened" class="container-layout-example__workspace" collapsible aside-mode="drawer" :disabled="disabled" :aside-position="right ? 'right' : 'left'" :aside-width="asideWidth" :height="EXAMPLE.height" :padding="0" scrollable aside-title="工作台侧栏 / Workspace sidebar">
+      <template v-if="customToggle" #aside-toggle="{ collapsed: folded, mobile, toggle }"><ScqButton :disabled="disabled" @click="toggle">{{ mobile ? '打开导航抽屉' : folded ? '展开侧栏' : '折叠侧栏' }}</ScqButton></template>
       <template #header><header class="container-layout-example__fixed">Fixed header · {{ collapsed ? 'Collapsed' : 'Expanded' }}</header></template>
       <template #aside>
         <div class="container-layout-example__aside">

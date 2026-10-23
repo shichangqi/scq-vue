@@ -49,7 +49,10 @@ const onError = (error: unknown) => { failure.value = error instanceof Error ? e
       <template #controls><ScqCheckbox v-model="formDisabled">禁用整个表单</ScqCheckbox></template>
       <ScqForm :model="model" :disabled="formDisabled" label-position="top" show-error-summary focus-on-error>
         <ScqFormItem prop="member" label="成员 / Member" help="输入姓名或邮箱，选中后提交邮箱。" :rules="{ required: true, message: '请选择成员 / Choose a member' }">
-          <ScqAutoComplete v-model="model.member" :options="members" :group-by="groupBy" :filter-method="filterMember" highlight-match :disabled="false" />
+          <ScqAutoComplete v-model="model.member" :options="members" :group-by="groupBy" :filter-method="filterMember" highlight-match :disabled="false">
+            <template #group="{ group }">部门：{{ group }}</template>
+            <template #empty>没有匹配的成员，请修改姓名或邮箱。</template>
+          </ScqAutoComplete>
         </ScqFormItem>
         <ScqButton native-type="submit" type="primary" :disabled="formDisabled">校验</ScqButton>
       </ScqForm>

@@ -14,6 +14,7 @@
         <DocExample :code="example.code" :files="example.files" lang="vue"><component v-if="example.source" :is="sourceComponents[example.source]" /><component v-else :is="demoComponent" :kind="slug" :variant="example.variant" @notify="notify" /></DocExample>
       </template>
     </template>
+    <slot name="api" />
     <h2 v-if="apiSections.length" :id="supplement ? 'enhancement-api' : 'api'">{{ entry.name }} API</h2>
     <template v-for="section in apiSections" :key="section.title">
       <h3 :id="supplement ? `enhancement-${section.id}` : section.id">{{ section.title }}</h3>

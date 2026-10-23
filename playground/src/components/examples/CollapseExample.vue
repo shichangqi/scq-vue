@@ -1,11 +1,13 @@
 <template>
   <div class="collapse-example">
     <ScqSwitch v-model="accordion" active-text="手风琴模式" inactive-text="多面板展开" />
-    <ScqCollapse v-model="opened" :accordion="accordion">
-      <ScqCollapseItem name="delivery" title="何时可以收到更新？"><p>新版本发布后会推送至工作区，你可以在设置中选择通知方式。</p></ScqCollapseItem>
+    <ScqCheckbox v-model="disabled">禁用所有面板</ScqCheckbox>
+    <ScqCollapse v-model="opened" :accordion="accordion" :disabled="disabled" @change="status = JSON.stringify($event)">
+      <ScqCollapseItem name="delivery" title="何时可以收到更新？"><template #title><strong>何时可以收到更新？</strong></template><template #extra>通知说明</template><p>新版本发布后会推送至工作区，你可以在设置中选择通知方式。</p></ScqCollapseItem>
       <ScqCollapseItem name="contact" title="如何修改联系邮箱？" lazy><ScqInput v-model="email" aria-label="联系邮箱" placeholder="name@example.com" /></ScqCollapseItem>
       <ScqCollapseItem name="archived" title="已归档的申请" disabled><p>此申请已归档。</p></ScqCollapseItem>
     </ScqCollapse>
+    <output role="status">{{ status }}</output>
   </div>
 </template>
 
@@ -15,11 +17,14 @@ import ScqCollapse from '../../../../src/components/Collapse'
 import ScqCollapseItem from '../../../../src/components/CollapseItem'
 import ScqInput from '../../../../src/components/Input'
 import ScqSwitch from '../../../../src/components/Switch'
+import ScqCheckbox from '../../../../src/components/Checkbox'
 import type { CollapseValue } from '../../../../src/index'
 
 const opened = ref<CollapseValue>(['delivery'])
 const accordion = ref(false)
 const email = ref('')
+const disabled = ref(false)
+const status = ref('')
 </script>
 
 <style scoped>

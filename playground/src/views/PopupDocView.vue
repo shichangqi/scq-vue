@@ -89,33 +89,36 @@
       </div>
     </DocExample>
 
-    <h2>{{ t('popup.props') }}</h2>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>{{ t('doc.param') }}</th>
-          <th>{{ t('doc.desc') }}</th>
-          <th>{{ t('doc.type') }}</th>
-          <th>{{ t('doc.default') }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>v-model</td><td>{{ t('popup.model.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>position</td><td>{{ t('popup.position.desc') }}</td><td>left | right | top | bottom | center</td><td>center</td></tr>
-        <tr><td>size</td><td>{{ t('popup.size.desc') }}</td><td>string | number</td><td>-</td></tr>
-        <tr><td>showClose</td><td>{{ t('popup.showClose.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>closeIcon</td><td>{{ t('popup.closeIcon.desc') }}</td><td>string | Component</td><td>×</td></tr>
-        <tr><td>round</td><td>{{ t('popup.round.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>roundRadius</td><td>{{ t('popup.roundRadius.desc') }}</td><td>string | number</td><td>12</td></tr>
-        <tr><td>overlayTheme</td><td>{{ t('popup.overlayTheme.desc') }}</td><td>dialog | modal</td><td>dialog</td></tr>
-        <tr><td>closeOnClickOverlay</td><td>{{ t('popup.closeOnClickOverlay.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>closeOnPressEscape</td><td>{{ t('popup.closeOnPressEscape.desc') }}</td><td>boolean</td><td>true</td></tr>
-        <tr><td>teleport</td><td>{{ t('popup.teleport.desc') }}</td><td>boolean | string</td><td>true</td></tr>
-        <tr><td>@opened</td><td>{{ t('popup.onOpened.desc') }}</td><td>() =&gt; void</td><td>-</td></tr>
-        <tr><td>@closed</td><td>{{ t('popup.onClosed.desc') }}</td><td>() =&gt; void</td><td>-</td></tr>
-      </tbody>
-    </table>
-    <ComponentDocView slug="popup" supplement />
+    <ComponentDocView slug="popup" supplement>
+      <template #api>
+        <h2>{{ t('popup.props') }}</h2>
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>{{ t('doc.param') }}</th>
+              <th>{{ t('doc.desc') }}</th>
+              <th>{{ t('doc.type') }}</th>
+              <th>{{ t('doc.default') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>v-model</td><td>{{ t('popup.model.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>position</td><td>{{ t('popup.position.desc') }}</td><td>left | right | top | bottom | center</td><td>center</td></tr>
+            <tr><td>size</td><td>{{ t('popup.size.desc') }}</td><td>string | number</td><td>-</td></tr>
+            <tr><td>showClose</td><td>{{ t('popup.showClose.desc') }}</td><td>boolean</td><td>false</td></tr>
+            <tr><td>closeIcon</td><td>{{ t('popup.closeIcon.desc') }}</td><td>string | Component</td><td>×</td></tr>
+            <tr><td>round</td><td>{{ t('popup.round.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>roundRadius</td><td>{{ t('popup.roundRadius.desc') }}</td><td>string | number</td><td>12</td></tr>
+            <tr><td>overlayTheme</td><td>{{ t('popup.overlayTheme.desc') }}</td><td>dialog | modal</td><td>dialog</td></tr>
+            <tr><td>closeOnClickOverlay</td><td>{{ t('popup.closeOnClickOverlay.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>closeOnPressEscape</td><td>{{ t('popup.closeOnPressEscape.desc') }}</td><td>boolean</td><td>true</td></tr>
+            <tr><td>teleport</td><td>{{ t('popup.teleport.desc') }}</td><td>boolean | string</td><td>true</td></tr>
+            <tr><td>@opened</td><td>{{ t('popup.onOpened.desc') }}</td><td>() =&gt; void</td><td>-</td></tr>
+            <tr><td>@closed</td><td>{{ t('popup.onClosed.desc') }}</td><td>() =&gt; void</td><td>-</td></tr>
+          </tbody>
+        </table>
+      </template>
+    </ComponentDocView>
   </section>
 </template>
 

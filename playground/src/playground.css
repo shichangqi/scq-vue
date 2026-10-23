@@ -197,44 +197,39 @@ body {
 }
 
 .doc-example {
-  --demo-bg-start: #f8fbff;
-  --demo-bg-end: #eff6ff;
+  --demo-preview-bg-start: #f5faff;
+  --demo-preview-bg-end: #e3f0ff;
   --demo-border-color: #dbeafe;
-}
-
-.doc-example:nth-of-type(6n + 1) {
-  --demo-bg-start: #f8fbff;
-  --demo-bg-end: #eff6ff;
-  --demo-border-color: #dbeafe;
+  --demo-preview-background: linear-gradient(135deg, var(--demo-preview-bg-start) 0%, var(--demo-preview-bg-end) 100%);
 }
 
 .doc-example:nth-of-type(6n + 2) {
-  --demo-bg-start: #fbfffb;
-  --demo-bg-end: #f0fdf4;
+  --demo-preview-bg-start: #f3fcf7;
+  --demo-preview-bg-end: #e3f6eb;
   --demo-border-color: #dcfce7;
 }
 
 .doc-example:nth-of-type(6n + 3) {
-  --demo-bg-start: #fffdf7;
-  --demo-bg-end: #fffbeb;
+  --demo-preview-bg-start: #fffaf0;
+  --demo-preview-bg-end: #fff2d8;
   --demo-border-color: #fdecc8;
 }
 
 .doc-example:nth-of-type(6n + 4) {
-  --demo-bg-start: #fffafa;
-  --demo-bg-end: #fff1f2;
+  --demo-preview-bg-start: #fff5f7;
+  --demo-preview-bg-end: #ffe6ec;
   --demo-border-color: #ffe4e6;
 }
 
 .doc-example:nth-of-type(6n + 5) {
-  --demo-bg-start: #faffff;
-  --demo-bg-end: #ecfeff;
+  --demo-preview-bg-start: #f0fcff;
+  --demo-preview-bg-end: #e0f6fa;
   --demo-border-color: #cffafe;
 }
 
 .doc-example:nth-of-type(6n + 6) {
-  --demo-bg-start: #fdfcff;
-  --demo-bg-end: #f5f3ff;
+  --demo-preview-bg-start: #faf5ff;
+  --demo-preview-bg-end: #f0e8ff;
   --demo-border-color: #e9d5ff;
 }
 

@@ -9,6 +9,8 @@ import type { AvatarFallback } from '../../../../src/components/Avatar'
 import ExampleSection from '../ExampleSection.vue'
 
 const GROUP_LIMIT = 3
+const TEXT_LAYOUT = { gap: 6, size: 64 }
+const autoSize = ref(true)
 const title = ref('Development team')
 const preferText = ref(false)
 const errors = ref(0)
@@ -19,12 +21,12 @@ const people = ['Ada', 'Grace', 'Lin', 'Sam', 'Alex']
 
 <template>
   <ExampleSection class="avatar-enhancement-example" title="头像回退与成员组合" subtitle="Avatar fallback &amp; groups">
-    <template #controls><ScqCheckbox v-model="preferText">文本优先</ScqCheckbox></template>
+    <template #controls><ScqCheckbox v-model="preferText">文本优先</ScqCheckbox><ScqCheckbox v-model="autoSize">文字自动缩放</ScqCheckbox></template>
     <ScqInput v-model="title" aria-label="头像文本" placeholder="输入团队名称" />
     <ScqSpace>
       <ScqAvatar :text="title" alt="Team name" />
-      <ScqAvatar :text="title" :size="64" alt="Large team name" />
-      <ScqAvatar :src="portrait" :srcset="`${portrait} 1x, ${portrait} 2x`" sizes="40px" text="AL" :fallback-order="order" alt="Responsive avatar" />
+      <ScqAvatar :text="title" :size="TEXT_LAYOUT.size" :gap="TEXT_LAYOUT.gap" :auto-size="autoSize" alt="Large team name" />
+      <ScqAvatar :src="portrait" :srcset="`${portrait} 1x, ${portrait} 2x`" sizes="40px" text="AL" :fallback-order="order" fit="contain" loading="eager" alt="Responsive avatar" />
       <ScqAvatar src="/__scq-avatar-missing.png" :fallback-src="portrait" text="Fallback" alt="Backup avatar" @error="errors += 1" />
       <ScqBadge is-dot type="success" label="Online"><ScqAvatar text="AL" alt="Ada" /></ScqBadge>
     </ScqSpace>

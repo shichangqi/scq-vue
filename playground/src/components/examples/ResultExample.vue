@@ -3,6 +3,9 @@ import { ref } from 'vue'
 import ScqButton from '../../../../src/components/Button'
 import ScqResult from '../../../../src/components/Result'
 import ScqSelect from '../../../../src/components/Select'
+import ScqCheckbox from '../../../../src/components/Checkbox'
+import ScqIcon from '../../../../src/components/Icon'
+import ExampleSection from '../ExampleSection.vue'
 import type { ResultStatus, SelectValue } from '../../../../src/index'
 
 const status = ref<ResultStatus>('success')
@@ -13,9 +16,21 @@ const setStatus = (value: SelectValue | SelectValue[] | null) => {
   status.value = value
 }
 const options = Object.entries(results).map(([value, result]) => ({ label: result.title, value }))
+const custom = ref(false)
+const compact = ref(false)
 </script>
 
-<template><label class="result-example__state">结果状态<ScqSelect :model-value="status" :options="options" :clearable="false" aria-label="结果状态" @update:model-value="setStatus" /></label><ScqResult :status="status" :title="results[status].title" :subtitle="results[status].subtitle"><template #extra><ScqButton type="primary" @click="status = 'success'">重新提交</ScqButton><ScqButton @click="status = 'info'">查看进度</ScqButton></template></ScqResult></template>
+<template>
+  <label class="result-example__state">结果状态<ScqSelect :model-value="status" :options="options" :clearable="false" aria-label="结果状态" @update:model-value="setStatus" /></label><ScqResult :status="status" :title="results[status].title" :subtitle="results[status].subtitle"><template #extra><ScqButton type="primary" @click="status = 'success'">重新提交</ScqButton><ScqButton @click="status = 'info'">查看进度</ScqButton></template></ScqResult>
+  <ExampleSection title="预设文案、尺寸与插槽" description="preset 使用组件内置的本地化文案；自定义插槽优先于预设。">
+    <template #controls><ScqCheckbox v-model="custom">自定义内容</ScqCheckbox><ScqCheckbox v-model="compact">紧凑尺寸</ScqCheckbox></template>
+    <ScqResult :status="status" preset :size="compact ? 'small' : 'default'">
+      <template v-if="custom" #icon><ScqIcon name="file" /></template>
+      <template v-if="custom" #title>项目处理结果</template>
+      <template v-if="custom" #subtitle>可根据业务状态替换图标、标题和说明。</template>
+    </ScqResult>
+  </ExampleSection>
+</template>
 
 <style scoped>
 .result-example__state { display: flex; flex-wrap: wrap; align-items: center; gap: var(--scq-space-md, 12px); font-size: 13px; color: var(--scq-muted); }

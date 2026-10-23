@@ -4,7 +4,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
-import { mount, shallowMount } from '@vue/test-utils'
+import { mount, shallowMount, type VueWrapper } from '@vue/test-utils'
+import type { Component } from 'vue'
 import { compileScript, compileStyle, compileTemplate, parse } from 'vue/compiler-sfc'
 import OnDemandExample from '../playground/src/components/OnDemandExample.vue'
 import DocExample from '../playground/src/components/DocExample.vue'
@@ -41,6 +42,48 @@ const examples = [
   ...Object.entries(componentReferences).map(([slug, reference]) => ({ slug, ...reference.examples[0] })),
   ...standaloneExamples,
 ]
+
+const docViews = import.meta.glob<{ default: Component }>('../playground/src/views/*DocView.vue')
+const expectExamplesBeforeApi = (wrapper: VueWrapper) => {
+  const sections = wrapper.findAll('on-demand-example-stub, doc-example-stub, table.prop-table')
+    .map(section => section.element.matches('table') ? 'api' : 'example')
+  expect(sections).toContain('example')
+  expect(sections).toContain('api')
+  expect(sections).toEqual([
+    ...sections.filter(section => section === 'example'),
+    ...sections.filter(section => section === 'api'),
+  ])
+}
+
+describe('Documentation section order', () => {
+  it.each(Object.keys(componentReferences))('groups all %s reference examples before API tables', slug => {
+    const wrapper = shallowMount(ComponentDocView, { props: { slug } })
+    try {
+      expectExamplesBeforeApi(wrapper)
+    } finally {
+      wrapper.unmount()
+    }
+  })
+
+  it.each(standaloneExamples)('groups all $slug standalone examples before API tables without losing content', async ({ name, slug, source }) => {
+    const { default: view } = await docViews[`../playground/src/views/${name}DocView.vue`]()
+    const wrapper = shallowMount(view, { global: { stubs: { ComponentDocView: false } } })
+    try {
+      expectExamplesBeforeApi(wrapper)
+      const template = parse(source).descriptor.template!.content.replace(/<!--[\s\S]*?-->/g, '')
+      const enhancement = template.includes('<ComponentDocView') ? componentEnhancements[slug] : undefined
+      const baseExamples = template.match(/<(?:OnDemandExample|DocExample)\b/g) || []
+      const baseTables = template.match(/<table class="prop-table">/g) || []
+      const addedTables = enhancement
+        ? [enhancement.props, enhancement.events, enhancement.slots, enhancement.methods].filter(rows => rows?.length)
+        : []
+      expect(wrapper.findAll('on-demand-example-stub, doc-example-stub')).toHaveLength(baseExamples.length + (enhancement?.examples.length || 0))
+      expect(wrapper.findAll('table.prop-table')).toHaveLength(baseTables.length + addedTables.length)
+    } finally {
+      wrapper.unmount()
+    }
+  })
+})
 
 describe('On-demand documentation examples', () => {
   it('covers every catalog component and keeps the first section before existing examples', () => {
