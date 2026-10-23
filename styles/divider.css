@@ -1,7 +1,11 @@
-.scq-divider--horizontal { display: flex; align-items: center; width: 100%; gap: 16px; margin: 24px 0; color: var(--scq-muted, #64748b); font-size: 13px; font-weight: 500; }
-.scq-divider--horizontal::before, .scq-divider--horizontal::after { content: ''; flex: 1; border-top: 1px solid var(--scq-border, #e2e8f0); }
-.scq-divider--left::before, .scq-divider--right::after { flex: 0 0 24px; }
-.scq-divider__text { max-width: 75%; overflow-wrap: anywhere; padding: 0 4px; }
+@import './tokens.css';
+.scq-divider--horizontal { display: flex; align-items: center; width: 100%; gap: 0; margin-block: var(--scq-divider-margin); margin-inline: 0; color: var(--scq-divider-text-color, var(--scq-muted)); font-size: var(--scq-divider-font-size); font-weight: 500; }
+.scq-divider--horizontal::before, .scq-divider--horizontal::after { content: ''; flex: 1; border-top: var(--scq-divider-width) solid var(--scq-divider-color, var(--scq-border)); }
+.scq-divider--left::before, .scq-divider--right::after, .scq-divider--start::before, .scq-divider--end::after { flex: 0 0 var(--scq-divider-inset); }
+.scq-divider--left:dir(rtl)::before, .scq-divider--right:dir(rtl)::after { flex: 1; }
+.scq-divider--left:dir(rtl)::after, .scq-divider--right:dir(rtl)::before { flex: 0 0 var(--scq-divider-inset); }
+.scq-divider__text { max-width: var(--scq-divider-text-max-width); overflow-wrap: anywhere; padding-inline: var(--scq-divider-text-padding); margin-inline: var(--scq-divider-gap); }
+.scq-divider__text:empty { display: none; }
 .scq-divider.is-dashed::before, .scq-divider.is-dashed::after { border-top-style: dashed; }
-.scq-divider--vertical { display: inline-block; height: 0.9em; margin: 0 12px; border-left: 1px solid var(--scq-border, #e2e8f0); vertical-align: -0.1em; }
-.scq-divider--vertical.is-dashed { border-left-style: dashed; }
+.scq-divider--vertical { display: inline-block; height: var(--scq-divider-vertical-height); margin-block: 0; margin-inline: var(--scq-divider-vertical-margin); border-inline-start: var(--scq-divider-width) solid var(--scq-divider-color, var(--scq-border)); vertical-align: var(--scq-divider-vertical-align); }
+.scq-divider--vertical.is-dashed { border-inline-start-style: dashed; }

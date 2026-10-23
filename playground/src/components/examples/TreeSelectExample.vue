@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqTreeSelect, type TreeNode, type TreeSelectValue } from '../../../../src/index'
+import ScqTreeSelect from '../../../../src/components/TreeSelect'
+import type { TreeNode, TreeSelectValue } from '../../../../src/index'
 
 const owner = ref<TreeSelectValue>('frontend')
 const participants = ref<TreeSelectValue>(['design'])
@@ -17,6 +18,7 @@ const data: TreeNode[] = [
 
 <style scoped>
 .tree-select-example { display: flex; flex-wrap: wrap; gap: 20px; }
-.tree-select-example label { display: grid; gap: 8px; max-width: 100%; color: var(--scq-text); font-size: 13px; }
+.tree-select-example label { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; max-width: 100%; color: var(--scq-text); font-size: 13px; }
+.tree-select-example .scq-tree-select { min-width: 0; max-width: 100%; }
 .tree-select-example__output { display: block; margin-top: 18px; color: var(--scq-muted); font-size: 13px; overflow-wrap: anywhere; }
 </style>

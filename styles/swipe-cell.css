@@ -6,4 +6,6 @@
 .scq-swipe-cell__actions--left { left: 0; }
 .scq-swipe-cell__actions--right { right: 0; }
 .scq-swipe-cell__actions > * { height: auto; border-radius: 0; }
+.scq-swipe-cell.is-pending .scq-swipe-cell__actions { opacity: .6; }
+.scq-swipe-cell__pending { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 @media (prefers-reduced-motion: reduce) { .scq-swipe-cell__content { transition: none; } }

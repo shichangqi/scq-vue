@@ -39,4 +39,6 @@
 .scq-alert__close { display: grid; place-items: center; width: 22px; height: 22px; flex: 0 0 22px; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--scq-muted, #94a3b8); cursor: pointer; transition: all 0.15s ease; }
 .scq-alert__close:hover { color: var(--scq-text, #0f172a); background: rgba(0, 0, 0, 0.06); }
 .scq-alert__close:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); }
+.scq-alert__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.scq-alert__close.has-text { width: auto; height: auto; min-height: 22px; flex: 0 1 auto; max-width: 40%; font: inherit; padding: 0 4px; overflow-wrap: anywhere; }
 @media (pointer: coarse) { .scq-alert__close { width: 44px; height: 44px; flex-basis: 44px; margin: -10px -12px -10px 0; } }

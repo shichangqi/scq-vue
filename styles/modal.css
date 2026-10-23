@@ -20,9 +20,9 @@
   width: min(var(--scq-modal-width, 270px), calc(100vw - 32px));
   max-width: 312px;
   max-height: calc(100vh - 32px);
-  background: rgba(248, 248, 248, 0.92);
-  border: 0.5px solid rgba(255, 255, 255, 0.52);
-  border-radius: 14px;
+  background: var(--scq-modal-surface, rgba(248, 248, 248, 0.92));
+  border: 0.5px solid var(--scq-modal-border, rgba(255, 255, 255, 0.52));
+  border-radius: var(--scq-modal-radius, 14px);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
   overflow: hidden;
   display: flex;
@@ -55,7 +55,7 @@
   font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #000000;
+  color: var(--scq-modal-text, #000000);
   white-space: normal;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,7 +67,7 @@
   right: 10px;
   border: none;
   background: transparent;
-  color: rgba(60, 60, 67, 0.42);
+  color: var(--scq-modal-muted, rgba(60, 60, 67, 0.42));
   font-size: 24px;
   line-height: 1;
   width: 28px;
@@ -78,8 +78,8 @@
 }
 
 .scq-modal__close:hover {
-  color: rgba(60, 60, 67, 0.78);
-  background: rgba(60, 60, 67, 0.08);
+  color: var(--scq-modal-text, rgba(60, 60, 67, 0.78));
+  background: var(--scq-modal-fill, rgba(60, 60, 67, 0.08));
 }
 
 .scq-modal__close:active {
@@ -88,7 +88,7 @@
 
 .scq-modal__body {
   padding: 0 20px 18px;
-  color: rgba(60, 60, 67, 0.85);
+  color: var(--scq-modal-text, rgba(60, 60, 67, 0.85));
   text-align: center;
   font-size: 13px;
   line-height: 1.35;
@@ -141,7 +141,7 @@
 .scq-modal__footer.is-default-footer {
   display: flex;
   align-items: stretch;
-  border-top: 0.5px solid rgba(60, 60, 67, 0.22);
+  border-top: 0.5px solid var(--scq-modal-border, rgba(60, 60, 67, 0.22));
 }
 
 .scq-modal__footer.is-slot-footer {
@@ -149,7 +149,7 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 12px 16px 16px;
-  border-top: 0.5px solid rgba(60, 60, 67, 0.18);
+  border-top: 0.5px solid var(--scq-modal-border, rgba(60, 60, 67, 0.18));
 }
 
 .scq-modal__action {
@@ -158,7 +158,7 @@
   padding: 0 12px;
   border: none;
   background: transparent;
-  color: #007aff;
+  color: var(--scq-modal-primary, #007aff);
   font-size: 17px;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -174,11 +174,11 @@
 }
 
 .scq-modal__action:not(:disabled):hover {
-  background: rgba(0, 122, 255, 0.06);
+  background: var(--scq-modal-fill, rgba(0, 122, 255, 0.06));
 }
 
 .scq-modal__action--cancel {
-  color: #ff3b30;
+  color: var(--scq-modal-danger, #ff3b30);
   font-weight: 400;
 }
 
@@ -187,25 +187,25 @@
 }
 
 .scq-modal__action--confirm.is-success {
-  color: #34c759;
+  color: var(--scq-modal-success, #34c759);
 }
 
 .scq-modal__action--confirm.is-warning {
-  color: #ff9f0a;
+  color: var(--scq-modal-warning, #ff9f0a);
 }
 
 .scq-modal__action--confirm.is-danger {
-  color: #ff3b30;
+  color: var(--scq-modal-danger, #ff3b30);
 }
 
 .scq-modal__action--confirm.is-info,
 .scq-modal__action--confirm.is-primary,
 .scq-modal__action--confirm.is-default {
-  color: #007aff;
+  color: var(--scq-modal-primary, #007aff);
 }
 
 .scq-modal__footer.is-double-action .scq-modal__action + .scq-modal__action {
-  border-left: 0.5px solid rgba(60, 60, 67, 0.22);
+  border-left: 0.5px solid var(--scq-modal-border, rgba(60, 60, 67, 0.22));
 }
 
 .scq-modal-fade-enter-active,

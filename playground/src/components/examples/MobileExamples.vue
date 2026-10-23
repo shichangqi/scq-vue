@@ -29,7 +29,7 @@
             </div>
 
             <!-- 第一组：账号与偏好 -->
-            <scq-cell-group :title="label('通用设置', 'Preferences')" :inset="true">
+            <scq-cell-group :title="label('通用设置', 'Preferences')" :description="label('此账号的设备偏好', 'Device preferences for this account')" :footer="label('更改会在设备间同步', 'Changes sync across devices')" :inset="true">
               <scq-cell
                 :title="label('个人资料', 'Profile')"
                 :value="label('已完善', 'Complete')"
@@ -374,14 +374,24 @@
 </template>
 
 <script setup lang="ts">
+import ScqActionSheet from '../../../../src/components/ActionSheet'
+import ScqButton from '../../../../src/components/Button'
+import ScqCell from '../../../../src/components/Cell'
+import ScqCellGroup from '../../../../src/components/CellGroup'
+import ScqIcon from '../../../../src/components/Icon'
+import ScqNavBar from '../../../../src/components/NavBar'
+import ScqSwitch from '../../../../src/components/Switch'
+import ScqTabbar from '../../../../src/components/Tabbar'
+import ScqTag from '../../../../src/components/Tag'
 import { computed, onMounted, ref } from 'vue'
 import { locale } from '../../i18n'
 import PhonePreview from '../PhonePreview.vue'
 import { useComponentId } from '../../../../src/utils/id'
-import { Modal } from 'scq-vue'
+import Modal from '../../../../src/components/Modal'
 import type { TabbarItem } from '../../../../src/components/Tabbar'
 import type { ActionSheetItem } from '../../../../src/components/ActionSheet'
 
+const ScqModal = Modal
 const props = defineProps<{ kind: string; variant?: string }>()
 const previewId = useComponentId('mobile-preview')
 const previewReady = ref(false)

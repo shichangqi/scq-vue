@@ -2,14 +2,12 @@
   <section class="doc-block">
     <h1>{{ t('radio.title') }}</h1>
     <p class="lead">{{ t('radio.lead') }}</p>
-
-    <h2>{{ t('radio.basic') }}</h2>
-    <DocExample :code="basicCode" lang="vue">
+    <OnDemandExample :code="basicCode">
       <div class="demo-grid">
         <scq-radio v-model="singleValue" value="ready">{{ t('radio.singleLabel') }}</scq-radio>
         <div>{{ t('radio.current') }}{{ singleValue }}</div>
       </div>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('radio.group') }}</h2>
     <DocExample :code="groupCode" lang="vue">
@@ -26,7 +24,7 @@
     <h2>{{ t('radio.vertical') }}</h2>
     <DocExample :code="verticalCode" lang="vue">
       <div class="demo-grid">
-        <scq-radio-group v-model="pickedPlan" direction="vertical" name="plan" size="large">
+        <scq-radio-group v-model="pickedPlan" direction="vertical" size="large">
           <scq-radio value="starter">Starter</scq-radio>
           <scq-radio value="pro">Pro</scq-radio>
           <scq-radio value="enterprise" disabled>Enterprise</scq-radio>
@@ -50,17 +48,22 @@
         <tr><td>value</td><td>{{ t('radio.value.desc') }}</td><td>string | number | boolean</td><td>true</td></tr>
         <tr><td>text</td><td>{{ t('radio.text.desc') }}</td><td>string</td><td>''</td></tr>
         <tr><td>name</td><td>{{ t('radio.name.desc') }}</td><td>string</td><td>''</td></tr>
-        <tr><td>disabled</td><td>{{ t('radio.disabled.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>size</td><td>{{ t('radio.size.desc') }}</td><td>small | default | large</td><td>default</td></tr>
+        <tr><td>disabled</td><td>{{ t('radio.disabled.desc') }}</td><td>boolean</td><td>provider / false</td></tr>
+        <tr><td>size</td><td>{{ t('radio.size.desc') }}</td><td>small | default | large</td><td>provider / default</td></tr>
         <tr><td>direction</td><td>{{ t('radio.direction.desc') }}</td><td>horizontal | vertical</td><td>horizontal</td></tr>
       </tbody>
     </table>
+    <ComponentDocView slug="radio" supplement />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScqRadio from '../../../src/components/Radio'
+import ScqRadioGroup from '../../../src/components/RadioGroup'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
+import ComponentDocView from './ComponentDocView.vue'
 import { t } from '../i18n'
 
 const singleValue = ref('ready')
@@ -99,7 +102,7 @@ const pickedChannel = ref('web')
 
 const verticalCode = `<template>
   <div class="demo-grid">
-    <scq-radio-group v-model="pickedPlan" direction="vertical" name="plan" size="large">
+    <scq-radio-group v-model="pickedPlan" direction="vertical" size="large">
       <scq-radio value="starter">Starter</scq-radio>
       <scq-radio value="pro">Pro</scq-radio>
       <scq-radio value="enterprise" disabled>Enterprise</scq-radio>

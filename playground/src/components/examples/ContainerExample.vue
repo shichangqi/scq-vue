@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqContainer, ScqDescriptions, ScqMenu, type MenuKey } from '../../../../src/index'
+import ScqContainer from '../../../../src/components/Container'
+import ScqDescriptions from '../../../../src/components/Descriptions'
+import ScqMenu from '../../../../src/components/Menu'
+import type { MenuKey } from '../../../../src/index'
 
 const active = ref<MenuKey | null>('overview')
 const items = [{ key: 'overview', label: '概览', icon: 'home' as const }, { key: 'projects', label: '项目', icon: 'folder' as const }, { key: 'settings', label: '设置', icon: 'settings' as const }]

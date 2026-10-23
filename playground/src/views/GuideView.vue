@@ -12,7 +12,7 @@
     <DocExample :code="globalUseCode" lang="ts" :show-demo="false" :default-expanded="true" :collapsible="false" />
 
     <p class="lead">
-      {{ label('全局组件使用 scq- 前缀，如 scq-button、scq-form 和 scq-action-sheet；原有组件名称及调用方式保持不变。', 'Global components use the scq- prefix, such as scq-button, scq-form and scq-action-sheet. Existing names and invocation patterns remain unchanged.') }}
+      {{ label('全局注册后，使用 scq- 前缀标签，例如 scq-button、scq-form 和 scq-action-sheet。', 'After global registration, use tags with the scq- prefix, such as scq-button, scq-form and scq-action-sheet.') }}
     </p>
 
     <h2>{{ t('guide.ondemand') }}</h2>
@@ -21,19 +21,19 @@
 
     <h2 id="individual-registration">{{ label('按需全局注册', 'Individual Global Registration') }}</h2>
     <DocExample :code="individualRegistrationCode" lang="ts" :show-demo="false" :default-expanded="true" :collapsible="false" />
-    <p class="lead">{{ label('FormItem、CellGroup、RadioGroup、CheckboxGroup 和 CollapseItem 也可以独立引入和注册；原有父组件注册与命名导出继续支持。', 'FormItem, CellGroup, RadioGroup, CheckboxGroup and CollapseItem can also be imported and installed independently. Parent installation and existing named exports remain supported.') }}</p>
+    <p class="lead">{{ label('FormItem、CellGroup、RadioGroup、CheckboxGroup 和 CollapseItem 也可以独立引入和注册，或通过对应父组件注册。', 'FormItem, CellGroup, RadioGroup, CheckboxGroup and CollapseItem can also be imported and registered independently, or registered with their parent component.') }}</p>
 
     <h2>{{ t('guide.style') }}</h2>
     <DocExample :code="styleCode" lang="ts" :show-demo="false" :default-expanded="true" :collapsible="false" />
-    <p class="lead">{{ label('按需路径不自动加载 CSS。先引入一次 tokens.css，再引入所用组件的样式；组件内部依赖的图标和控件样式会一并加载。', 'Individual entries do not load CSS automatically. Import tokens.css once, then each component stylesheet; internal icon and control styles are included as dependencies.') }}</p>
+    <p class="lead">{{ label('组件的 JavaScript 入口不自动加载 CSS，只需引入所用组件的样式；公共主题变量及内部依赖的图标和控件样式会自动加载，无需额外引入。', 'JavaScript component entries do not load CSS automatically. Import only the component styles you use; shared theme variables and internal icon and control styles are included automatically.') }}</p>
 
     <h2 id="configuration">{{ label('主题与全局配置', 'Theme and Global Configuration') }}</h2>
     <DocExample :code="configCode" lang="vue" :show-demo="false" :default-expanded="true" :collapsible="false" />
-    <p class="lead">{{ label('ConfigProvider 为新增组件提供默认语言、尺寸、禁用和主题。既有组件保持原有默认样式及 Props，不会被隐式改写。', 'ConfigProvider supplies defaults for new components. Existing component styles and props are preserved without implicit changes.') }}</p>
+    <p class="lead">{{ label('使用 ConfigProvider 统一配置组件的语言、尺寸、禁用状态和主题。支持继承的配置项以各组件 API 为准，组件显式传入的属性优先于全局默认值；Form 的整表禁用约束仍然生效。自定义文案和示例内容不会自动翻译。', 'Use ConfigProvider to share locale, size, disabled state and theme settings. See each component API for supported settings. Explicit component props take precedence over provider defaults; form-wide disabling still applies. Custom labels and example content are not translated automatically.') }}</p>
 
     <h2 id="mobile">{{ label('移动端使用', 'Mobile Usage') }}</h2>
     <DocExample :code="mobileCode" lang="html" :show-demo="false" :default-expanded="true" :collapsible="false" />
-    <p class="lead">{{ label('移动端专用组件集中在移动端区域：Toast、Search、NoticeBar、Cell、NavBar、Tabbar、ActionSheet、Modal，以及 Picker、List、PullRefresh、Swipe、SwipeCell、Calendar 和 ActionBar。它们的示例在手机 UI 中展示，通用组件不区分 PC 与窄屏预览模式。', 'Mobile-specific components are grouped in the Mobile section, including Toast, Search, NoticeBar, Cell, NavBar, Tabbar, ActionSheet, Modal, Picker, List, PullRefresh, Swipe, SwipeCell, Calendar and ActionBar. Their examples use phone UI previews; general components do not have separate desktop and narrow preview modes.') }}</p>
+    <p class="lead">{{ label('可在导航中选择“移动端”，查看适合触屏交互的组件。示例通过手机预览展示布局；在实际页面中使用时，请设置 viewport，并按需开启安全区适配。', 'Choose Mobile in the navigation to browse touch-friendly components. Examples use phone previews to show their layouts. Set the viewport on your application page and enable safe-area support where needed.') }}</p>
   </section>
 </template>
 
@@ -57,7 +57,6 @@ const onDemandCode = `<script setup lang="ts">
 import { ref } from 'vue'
 import ScqSwitch from 'scq-vue/components/Switch'
 import ScqInputNumber from 'scq-vue/components/InputNumber'
-import 'scq-vue/styles/tokens.css'
 import 'scq-vue/styles/switch.css'
 import 'scq-vue/styles/input-number.css'
 
@@ -82,7 +81,6 @@ import ScqButton from 'scq-vue/components/Button'
 import ScqInput from 'scq-vue/components/Input'
 import ScqFormItem from 'scq-vue/components/FormItem'
 import ScqSwitch from 'scq-vue/components/Switch'
-import 'scq-vue/styles/tokens.css'
 import 'scq-vue/styles/button.css'
 import 'scq-vue/styles/input.css'
 import 'scq-vue/styles/form-item.css'
@@ -98,7 +96,6 @@ app.mount('#app')`
 const styleCode = `import ScqActionSheet from 'scq-vue/components/ActionSheet'
 import ScqCell from 'scq-vue/components/Cell'
 import ScqCellGroup from 'scq-vue/components/CellGroup'
-import 'scq-vue/styles/tokens.css'
 import 'scq-vue/styles/action-sheet.css'
 import 'scq-vue/styles/cell.css'
 import 'scq-vue/styles/cell-group.css'`

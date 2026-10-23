@@ -42,10 +42,12 @@
 .scq-notice-bar__icon { flex-shrink: 0; font-size: 16px; }
 .scq-notice-bar__viewport { flex: 1; min-width: 0; overflow: hidden; }
 .scq-notice-bar__content { white-space: nowrap; }
+.scq-notice-bar.is-scrollable .scq-notice-bar__content { width: max-content; min-width: 100%; }
 .scq-notice-bar:not(.is-scrolling):not(.is-wrap) .scq-notice-bar__content { overflow: hidden; text-overflow: ellipsis; }
 .scq-notice-bar.is-wrap .scq-notice-bar__content { white-space: normal; overflow-wrap: anywhere; }
-.scq-notice-bar.is-scrolling .scq-notice-bar__content { width: max-content; animation: scq-notice-scroll var(--scq-notice-duration) linear var(--scq-notice-delay) infinite alternate; }
+.scq-notice-bar.is-scrolling .scq-notice-bar__content { animation: scq-notice-scroll var(--scq-notice-duration) linear var(--scq-notice-delay) infinite alternate; }
 .scq-notice-bar:hover .scq-notice-bar__content, .scq-notice-bar:focus-within .scq-notice-bar__content { animation-play-state: paused; }
+.scq-notice-bar.is-paused .scq-notice-bar__content { animation-play-state: paused; }
 .scq-notice-bar__close { display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; margin: -2px -4px -2px 0; padding: 0; border: 0; border-radius: 50%; background: transparent; color: inherit; opacity: 0.75; cursor: pointer; transition: all 0.15s ease; }
 .scq-notice-bar__close:hover { opacity: 1; background: rgba(0, 0, 0, 0.06); }
 .scq-notice-bar__close:focus-visible { outline: 2px solid currentColor; outline-offset: -2px; }

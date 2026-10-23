@@ -1,7 +1,17 @@
-.scq-container { display: flex; flex-direction: column; box-sizing: border-box; width: 100%; min-width: 0; margin-inline: auto; }
-.scq-container__body { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
+@import './drawer.css';
+@import './icon.css';
+.scq-container { display: flex; flex-direction: column; box-sizing: border-box; width: 100%; min-width: 0; min-height: 0; margin-inline: auto; }
+.scq-container__body { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; min-height: 0; }
 .scq-container.has-aside .scq-container__body { grid-template-columns: minmax(0, var(--scq-container-aside)) minmax(0, 1fr); }
-.scq-container__main, .scq-container__aside { min-width: 0; }
-.scq-container.is-aside-right .scq-container__body { grid-template-columns: minmax(0, 1fr) minmax(0, var(--scq-container-aside)); }
+.scq-container__main, .scq-container__aside { min-width: 0; min-height: 0; }
+.scq-container.has-aside.is-aside-right .scq-container__body { grid-template-columns: minmax(0, 1fr) minmax(0, var(--scq-container-aside)); }
 .scq-container.is-aside-right .scq-container__aside { order: 2; }
 @media (max-width: 767px) { .scq-container.has-aside .scq-container__body { grid-template-columns: minmax(0, 1fr); } .scq-container.is-aside-right .scq-container__aside { order: 0; } }
+.scq-container__header, .scq-container__footer, .scq-container__tools { flex: none; min-width: 0; }
+.scq-container.is-scrollable { overflow: hidden; }
+.scq-container.is-scrollable > .scq-container__body { flex: 1; overflow: hidden; }
+.scq-container.is-scrollable .scq-container__main, .scq-container__aside.is-scrollable { overflow: auto; overscroll-behavior: contain; }
+.scq-container__drawer-content { min-width: 0; }
+.scq-container__toggle { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border: 1px solid var(--scq-border, #e2e8f0); border-radius: var(--scq-radius-sm, 6px); background: var(--scq-surface, #ffffff); color: var(--scq-text, #0f172a); font: inherit; cursor: pointer; }
+.scq-container__toggle:disabled { opacity: .45; cursor: not-allowed; }
+.scq-container__toggle:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: 2px; }

@@ -1,5 +1,6 @@
 import { sourceExample } from './example-sources'
 import { createExtendedReferences } from './reference-extended'
+import { createEnhancementReferences } from './reference-enhancements'
 
 export interface DocText { zh: string; en: string }
 export interface ApiRow { name: string; type: string; defaultValue: string; description: DocText }
@@ -21,8 +22,8 @@ export const sample = (template: string, setup = '') => `<template>\n${template}
 const basic = text('基础用法', 'Basic Usage')
 const states = text('尺寸与状态', 'Sizes and States')
 const modelEvent = row('update:modelValue / change', '(value) => void', '-', '绑定值变化时触发', 'Emitted when the value changes')
-const sizeProp = row('size', 'small | default | large', 'default', '尺寸，可继承 ConfigProvider', 'Size, inherited from ConfigProvider')
-const disabledProp = row('disabled', 'boolean', 'false', '禁用交互，可继承 ConfigProvider', 'Disable interaction; inherits ConfigProvider')
+const sizeProp = row('size', 'small | default | large', 'provider / default', '尺寸，显式属性优先，否则继承 ConfigProvider', 'Explicit size takes precedence over ConfigProvider')
+const disabledProp = row('disabled', 'boolean', 'provider / false', '禁用交互，显式 false 可覆盖 ConfigProvider', 'Disable interaction; explicit false overrides ConfigProvider')
 const defaultSlot = row('default', '-', '-', '自定义内容', 'Custom content')
 
 export const componentReferences: Record<string, ComponentReference> = {
@@ -40,7 +41,7 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('message', 'string', "''", '提示内容，支持换行，不解析 HTML', 'Plain text, supports newlines; no HTML parsing'),
       row('type', 'text | success | fail | loading', 'text', '提示类型', 'Notification type'),
       row('position', 'top | middle | bottom', 'middle', '显示位置', 'Placement'),
-      row('duration', 'number', '2000 / loading: 0', '毫秒；0 表示不自动关闭', 'Milliseconds; zero disables auto-dismiss'),
+      row('duration', 'number', '2000 / loading: 0', '毫秒；非正数不自动关闭，必须有限且不超过 2147483647', 'Milliseconds; non-positive values disable dismissal, must be finite and at most 2147483647'),
       row('icon', 'IconName', '-', '自定义状态图标', 'Custom status icon'),
       row('overlay / forbidClick', 'boolean', 'false', '显示遮罩或阻止背景指针操作', 'Show an overlay or block background pointer interaction'),
       row('closeOnClick / closeOnClickOverlay', 'boolean', 'false', '点击内容或遮罩时关闭', 'Dismiss on content or overlay click'),
@@ -50,33 +51,37 @@ export const componentReferences: Record<string, ComponentReference> = {
     events: [row('update:modelValue', '(visible: boolean) => void', '-', '请求关闭时返回 false', 'Emit false on dismissal'), row('open / opened / close / closed', '() => void', '-', '显示、关闭及过渡完成', 'Visibility and transition lifecycle'), row('click', '(event: MouseEvent) => void', '-', '提示内容点击', 'Toast content clicked')],
     slots: [defaultSlot, row('icon', '-', '-', '自定义图标区域', 'Custom icon area')],
     methods: [
+      row('useToast', '() => scoped Toast API', '-', '在 setup 中绑定当前配置；作用域内同一容器替换，卸载时清理', 'Bind configuration in setup; replace within the same scope and target, and dispose on unmount'),
       row('Toast.show / success / fail / loading', '(message | options, appContext?) => ToastInstance', '-', '同一目标替换旧提示，返回实例', 'Replace the toast in the same target and return an instance'),
       row('instance.update', '(options) => void', '-', '更新文字、类型和时长，重新计时；不移动挂载容器', 'Update content, type and duration; restart timer without changing target'),
       row('instance.close / exposed.close', '() => void', '-', '手动关闭', 'Dismiss manually'),
       row('Toast.clear / destroyAll', '(selector?: string) => void', '-', '清理指定容器或全部方法实例', 'Dispose method instances in one target or all targets'),
       row('options.onClose / options.onClosed', '() => void', '-', '关闭开始与实例清理回调', 'Dismissal and disposal callbacks'),
     ],
-    note: text('手机示例的 App.vue 和 PhonePreview.vue 源码均可复制。方法调用每个挂载容器只保留一个提示；加载示例使用本地计时模拟传输，没有网络请求。', 'Copy both App.vue and PhonePreview.vue for the phone examples. Method calls keep one toast per target. The loading example simulates transfer locally without network requests.'),
+    note: text('手机示例的 App.vue 和 PhonePreview.vue 源码均可复制。方法调用每个挂载容器只保留一个提示；无效配置或找不到目标明确报错，不替换已有提示；无效 update 不改变原实例，卸载后 close 不再发事件。加载示例仅本地模拟，没有网络请求。', 'Copy both App.vue and PhonePreview.vue for the phone examples. Method calls keep one toast per target; invalid options or missing targets throw without replacing existing feedback. Invalid updates preserve the instance, and close after unmount emits nothing. Loading is simulated locally without network requests.'),
   },
   search: {
-    description: text('移动端搜索框，支持中文输入法、清空、取消和键盘搜索。', 'Mobile search with IME composition, clearing, cancellation and keyboard submission.'), demo: 'mobile',
+    description: text('移动端搜索框，支持中文输入法、清空、取消和键盘搜索。在表单内按 Enter 仅触发搜索，不提交表单。', 'Mobile search with IME support, clearing, cancellation and keyboard search. Pressing Enter inside a form searches without submitting the form.'), demo: 'mobile',
     examples: [{ title: text('文档搜索', 'Document Search'), ...sourceExample('SearchExample', true) }],
-    props: [row('modelValue', 'string', "''", '搜索内容', 'Search query'), row('placeholder / label / ariaLabel', 'string', 'locale / empty', '占位、标签和无障碍名称', 'Placeholder, label and accessible name'), row('id / name', 'string', 'auto / empty', '原生输入标识', 'Native input identification'), row('shape', 'square | round', 'round', '输入区域形状', 'Field shape'), disabledProp, row('readonly', 'boolean', 'false', '只读，禁止清除和编辑', 'Prevent edits and clearing'), row('clearable', 'boolean', 'true', '显示清空按钮', 'Show clear control'), row('showAction', 'boolean', 'false', '显示取消操作', 'Show cancel action'), row('actionText', 'string', 'locale', '取消文字', 'Cancel label'), row('maxlength', 'number', '-', '最大输入长度', 'Maximum input length')],
+    props: [row('modelValue', 'string', "''", '搜索内容', 'Search query'), row('nativeForm', 'boolean', 'auto', '默认独立使用原生 form，在 SCQ Form 内自动使用 div；嵌入普通 HTML form 时设为 false', 'Use a native form standalone and a div inside SCQ Form by default; set false inside a plain HTML form'), row('placeholder / label / ariaLabel', 'string', 'locale / empty', '占位、标签和无障碍名称', 'Placeholder, label and accessible name'), row('id / name', 'string', 'auto / empty', '原生输入标识', 'Native input identification'), row('shape', 'square | round', 'round', '输入区域形状', 'Field shape'), disabledProp, row('readonly', 'boolean', 'false', '只读，禁止清除和编辑', 'Prevent edits and clearing'), row('clearable', 'boolean', 'true', '显示清空按钮', 'Show clear control'), row('showAction', 'boolean', 'false', '显示取消操作', 'Show cancel action'), row('actionText', 'string', 'locale', '取消文字', 'Cancel label'), row('maxlength', 'number', '-', '最大输入长度', 'Maximum input length')],
     events: [row('update:modelValue / input', '(value: string) => void', '-', '输入更新，组合输入结束后提交', 'Input changes, committed after composition ends'), row('search', '(value: string) => void', '-', '提交搜索时触发', 'Search submitted'), row('clear / cancel', '() => void', '-', '清空或取消', 'Cleared or cancelled'), row('focus / blur', '(event: FocusEvent) => void', '-', '焦点事件', 'Focus events')],
     slots: [row('action', '{ cancel }', '-', '自定义右侧操作', 'Custom trailing action')],
     methods: [row('focus / blur / clear', '() => void', '-', '控制输入框', 'Control the input')],
   },
   'notice-bar': {
     description: text('页面内公告通知，支持多行、关闭和按内容宽度滚动。', 'Inline notices with wrapping, dismissal and overflow-aware scrolling.'), demo: 'mobile',
+    note: text('modelValue 为可选受控可见性，关闭发出 update:modelValue(false)，可以显式重新显示。paused / update:paused 支持受控暂停；实例 pause()/resume()/play() 仅改变播放状态，不重置滚动位置，悬停和聚焦暂停仍有效。滚动内容按自然宽度观测，内部内容独立变长也会重新检测溢出；减少动画时完整换行。保留无效 speed/delay 的默认回退，计算时长溢出明确报错。', 'modelValue optionally controls visibility; closing emits update:modelValue(false) and the owner can reopen. paused / update:paused control playback; pause()/resume()/play() preserve scroll position. Hover/focus pauses remain effective. Intrinsic width observation detects independently growing content; reduced motion wraps the complete text. Invalid speed/delay retain default normalization; derived duration overflow reports an error.'),
     examples: [{ title: text('公告与服务状态', 'Notices and Service Status'), ...sourceExample('NoticeBarExample', true) }],
-    props: [row('text', 'string', "''", '公告文字', 'Notice text'), row('type', 'info | success | warning | danger', 'warning', '语义状态', 'Semantic status'), row('icon', 'IconName | false', 'bell', '左侧图标，false 隐藏', 'Leading icon; false hides it'), row('closable', 'boolean', 'false', '显示关闭按钮', 'Show dismiss action'), row('wrap', 'boolean', 'true', '多行展示；滚动需关闭此项', 'Wrap text; disable to enable scrolling'), row('scrollable', 'boolean', 'false', '仅溢出时滚动，遵循减少动画设置', 'Scroll only on overflow; respect reduced motion'), row('speed / delay', 'number', '40 / 1000', '滚动速度 px/s 与首次延迟 ms', 'Speed in px/s and initial delay in ms')],
-    events: [row('click / close', '(event: MouseEvent) => void', '-', '点击通知或关闭', 'Notice click or dismissal')],
+    props: [row('modelValue / paused', 'boolean', 'uncontrolled', '可选受控可见性和播放状态', 'Optional controlled visibility and playback'), row('text', 'string', "''", '公告文字', 'Notice text'), row('type', 'info | success | warning | danger', 'warning', '语义状态', 'Semantic status'), row('icon', 'IconName | false', 'bell', '左侧图标，false 隐藏', 'Leading icon; false hides it'), row('closable', 'boolean', 'false', '显示关闭按钮', 'Show dismiss action'), row('wrap', 'boolean', 'true', '多行展示；滚动需关闭此项', 'Wrap text; disable to enable scrolling'), row('scrollable', 'boolean', 'false', '仅溢出时滚动，遵循减少动画设置', 'Scroll only on overflow; respect reduced motion'), row('speed / delay', 'number', '40 / 1000', '滚动速度 px/s 与首次延迟 ms', 'Speed in px/s and initial delay in ms')],
+    events: [row('click / close', '(event: MouseEvent) => void', '-', '点击通知或关闭', 'Notice click or dismissal'), row('update:modelValue / update:paused', '(value: boolean) => void', '-', '请求更新可见性/暂停状态', 'Request visibility/pause updates')],
+    methods: [row('pause / resume / play / paused', '() => void / boolean', '-', '控制播放并读取手动暂停状态', 'Control playback and read the manual paused state')],
     slots: [defaultSlot, row('right', '-', '-', '未显示关闭按钮时的右侧内容', 'Trailing content when not closable')],
   },
   progress: {
-    description: text('线性进度展示，支持状态、自定义文字和不确定进度。', 'Linear progress with statuses, custom labels and indeterminate activity.'), demo: 'basic',
+    description: text('展示线性、环形或仪表盘进度，支持状态颜色、自定义文字和不确定进度，颜色可跟随主题或单独设置。', 'Display line, circle or dashboard progress with status colors, custom labels and indeterminate activity. Colors can follow the theme or be set explicitly.'), demo: 'basic',
+    note: text('type 支持 line（默认）、circle、dashboard；width 默认 120px，用于环形尺寸。buffer 为缓冲百分比，裁剪到实际进度至 100；不确定模式不显示缓冲。color 也可传 { percentage, color }[]，选择第一个覆盖当前进度的阈值，显式颜色优先于状态色。所有形态沿用同一 aria-valuenow，未知进度不声明虚假数值。', 'type supports line (default), circle and dashboard; width defaults to 120px for circular variants. buffer is clamped between progress and 100 and hidden in indeterminate mode. color also accepts { percentage, color }[] and selects the first threshold covering progress, overriding status colors. All variants share aria-valuenow; unknown progress never reports a fabricated number.'),
     examples: [{ title: text('进度与状态', 'Progress and Status'), ...sourceExample('ProgressExample') }],
-    props: [row('percentage', 'number', '0', '进度值，规范到 0 至 100', 'Progress normalized to 0-100'), row('status', 'normal | success | warning | exception', 'normal', '状态颜色', 'Status color'), row('strokeWidth', 'number', '8', '轨道高度，单位 px', 'Track height in pixels'), row('color', 'string', "''", '自定义进度颜色', 'Custom progress color'), row('showText', 'boolean', 'true', '显示右侧文字', 'Display text'), row('indeterminate', 'boolean', 'false', '未知总进度', 'Indeterminate activity'), row('format', '(percentage: number) => string', '-', '自定义文字', 'Format the text'), row('ariaLabel', 'string', 'locale', '进度条的无障碍名称', 'Accessible progress name')],
+    props: [row('type / width', 'line | circle | dashboard / number', 'line / 120', '形态和环形宽度 px', 'Variant and circular width in pixels'), row('buffer', 'number', '-', '缓冲值，至少等于实际进度', 'Buffered percentage, never below actual progress'), row('percentage', 'number', '0', '进度值，规范到 0 至 100', 'Progress normalized to 0-100'), row('status', 'normal | success | warning | exception', 'normal', '状态颜色', 'Status color'), row('strokeWidth', 'number', '8', '轨道高度，单位 px', 'Track height in pixels'), row('color', 'string | ProgressColorStop[]', "''", '自定义颜色或阈值颜色，优先于状态色', 'Custom color or threshold colors, overriding status colors'), row('showText', 'boolean', 'true', '显示进度文字', 'Display progress text'), row('indeterminate', 'boolean', 'false', '未知总进度', 'Indeterminate activity'), row('format', '(percentage: number) => string', '-', '自定义文字', 'Format the text'), row('ariaLabel', 'string', 'locale', '进度条的无障碍名称', 'Accessible progress name')],
     slots: [row('default', '{ percentage }', '-', '自定义右侧内容', 'Custom trailing content')],
   },
   avatar: {
@@ -86,9 +91,9 @@ export const componentReferences: Record<string, ComponentReference> = {
     events: [row('load / error', '(event: Event) => void', '-', '图片加载或失败', 'Image load or error')], slots: [row('default', '-', '-', '无图片或加载失败时的回退内容', 'Fallback when missing or failed')],
   },
   collapse: {
-    description: text('折叠相关内容，支持手风琴模式、键盘导航与懒加载。', 'Disclosure panels with accordion mode, keyboard navigation and lazy content.'), demo: 'basic',
+    description: text('展开或收起相关内容，支持手风琴模式、键盘导航与懒加载。', 'Expand or collapse related content, with accordion mode, keyboard navigation and lazy loading.'), demo: 'basic',
     examples: [{ title: text('展开方式与内容保留', 'Expansion and Preserved Content'), ...sourceExample('CollapseExample') }],
-    props: [row('modelValue', 'CollapseName | CollapseName[]', '[]', '展开项，多开用数组，手风琴用单值', 'Expanded names; array for multiple, scalar for accordion'), row('accordion', 'boolean', 'false', '最多展开一项', 'Allow one expanded item'), disabledProp, row('CollapseItem.name', 'string | number', 'auto', '受控使用时应提供稳定唯一标识', 'Use a stable unique name for controlled panels'), row('CollapseItem.title', 'string', "''", '标题文字', 'Header text'), row('CollapseItem.disabled', 'boolean', 'false', '禁用当前项', 'Disable this item'), row('CollapseItem.lazy', 'boolean', 'false', '首次展开后挂载，关闭后保留内容', 'Mount on first expansion and preserve content')],
+    props: [row('modelValue', 'CollapseName | readonly CollapseName[]', '[]', '展开项，多开接受只读数组并去重，手风琴用单值；数字与字符串名称不混淆', 'Expanded names; multiple mode accepts readonly arrays and deduplicates, accordion uses a scalar; numeric and string names remain distinct'), row('accordion', 'boolean', 'false', '最多展开一项', 'Allow one expanded item'), disabledProp, row('CollapseItem.name', 'string | number', 'auto', '受控使用时应提供稳定唯一标识', 'Use a stable unique name for controlled panels'), row('CollapseItem.title', 'string', "''", '标题文字', 'Header text'), row('CollapseItem.disabled', 'boolean', 'false', '禁用当前项', 'Disable this item'), row('CollapseItem.lazy', 'boolean', 'false', '首次展开后挂载，关闭后保留内容', 'Mount on first expansion and preserve content')],
     events: [modelEvent], slots: [defaultSlot, row('CollapseItem.default', '-', '-', '折叠内容', 'Panel content'), row('CollapseItem.title / extra', '{ expanded }', '-', '自定义标题和辅助内容', 'Custom header and trailing content')],
   },
   'config-provider': {
@@ -104,16 +109,21 @@ export const componentReferences: Record<string, ComponentReference> = {
         variant: 'states',
         code: sample('  <scq-config-provider theme="dark" locale="en-US">\n    <scq-empty />\n  </scq-config-provider>'),
       },
+      { title: text('配置继承与作用域提示', 'Configuration Inheritance and Scoped Feedback'), ...sourceExample('ConfigProviderExample') },
     ],
     props: [
-      row('locale', 'zh-CN | en-US', 'zh-CN', '组件默认文案', 'Default component messages'),
+      row('locale', 'zh-CN | en-US', 'parent / zh-CN', '组件默认文案；显式文案和业务内容不自动翻译', 'Default UI labels; explicit labels and business content are not translated'),
       sizeProp,
       disabledProp,
-      row('theme', 'light | dark', '-', '作用域主题', 'Scoped color theme'),
-      row('tokens', 'ThemeTokens', '{}', 'primary、text、muted、border、surface、fill 等 CSS 变量', 'Override primary, text, muted, border, surface, fill and other tokens'),
+      row('theme', 'light | dark', 'parent / unset', '作用域主题；嵌套覆盖，传送内容保持同步', 'Nested theme overrides; teleported content stays in sync'),
+      row('tokens', 'ThemeTokens', 'parent / {}', '按键合并 primary、success、warning、danger、text、muted、border、surface、fill、radius；undefined 恢复继承，传送浮层和作用域方法同步', 'Merge primary, success, warning, danger, text, muted, border, surface, fill and radius by key; undefined restores inheritance, including portals and scoped feedback'),
     ],
     slots: [defaultSlot],
-    note: text('配置适用于本次新增且接入上下文的组件；既有组件保持原有 Props 和默认样式。Button 已支持的主题变量仍可单独配置。', 'Configuration applies to new context-aware components. Existing component props and default styling remain unchanged; existing Button theme variables remain available.'),
+    methods: [
+      row('useDialog / useModal / useMessage / useToast / useNotification', '() => scoped API', '-', '从组件库或对应组件入口导入；在 Provider 后代的 setup 中调用，已打开实例响应配置更新；不可改绑其他 appContext', 'Import from the library or corresponding component entry; call in setup below the provider; open instances react to updates; rebinding to another appContext is not allowed'),
+      row('scoped.destroyAll / clear / closeAll', 'same as component API', '-', '仅清理此调用作用域；所属组件卸载时自动清理，setGlobalZIndex 仍是全局设置', 'Dispose only this invocation scope; owner unmount also disposes it; setGlobalZIndex remains global'),
+    ],
+    note: text('组件显式属性 > 最近配置作用域 > 默认值；RadioGroup/CheckboxGroup 的组尺寸与整组禁用约束保持不变，Form 的原生 fieldset 禁用约束仍生效。仅标准 small/default/large 尺寸继承，像素尺寸与业务文本不重解释。全局静态方法不会自动捕获局部 Provider，可使用作用域方法或显式 appContext；作用域方法的批量清理不会影响其他作用域。', 'Explicit component props > nearest scope > defaults. RadioGroup/CheckboxGroup size and group-disable constraints remain, as does the native Form fieldset constraint. Only standard small/default/large sizes inherit; pixel dimensions and business content are unchanged. Global static methods do not capture local providers; use scoped methods or an explicit appContext. Scoped cleanup never clears other scopes.'),
   },
   switch: {
     description: text('在两种互斥状态之间切换，支持键盘、加载和禁用状态。', 'Toggle between two states with keyboard, loading and disabled support.'),
@@ -143,7 +153,7 @@ export const componentReferences: Record<string, ComponentReference> = {
     methods: [row('focus / blur', '() => void', '-', '管理原生输入焦点', 'Manage native input focus')],
   },
   'input-number': {
-    description: text('通过步进按钮或键盘输入数字，支持精度、范围和清空。', 'Enter numeric values using step controls or the keyboard, with bounds, precision and clearing.'),
+    description: text('通过步进按钮或键盘输入数字，支持精度、取值范围、清空、禁用和只读状态。', 'Enter numbers using step controls or the keyboard, with precision, bounds, clearing, disabled and readonly states.'),
     demo: 'basic',
     examples: [
       {
@@ -160,14 +170,14 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('modelValue', 'number | undefined', 'undefined', '绑定值；清空后为 undefined', 'Bound value; undefined when cleared'),
       row('min / max', 'number', '-Infinity / Infinity', '允许范围', 'Allowed range'),
       row('step', 'number', '1', '正数步长', 'Positive step size'),
-      row('precision', 'number', '-', '小数位数，范围 0 至 15', 'Decimal places from 0 to 15'),
+      row('precision', 'number', '12', '小数位数，0 至 15 的整数', 'Integer decimal places from 0 to 15'),
       sizeProp,
       disabledProp,
       row('readonly', 'boolean', 'false', '只读状态', 'Read-only state'),
       row('controls', 'boolean', 'true', '显示步进按钮', 'Show step buttons'),
       row('id / name / ariaLabel / placeholder', 'string', "''", '原生输入标识和提示', 'Native input identification and hint'),
     ],
-    events: [modelEvent, row('focus / blur', '(event: FocusEvent) => void', '-', '原生焦点事件', 'Native focus events')],
+    events: [modelEvent, row('focus / blur', '(event: FocusEvent) => void', '-', '原生焦点事件', 'Native focus events'), row('invalid', '(value: number | undefined, reason: configuration | number) => void', '-', '无效配置或非有限数值；阻止提交并标记 aria-invalid，修正配置/绑定值或成功输入后恢复', 'Invalid configuration or non-finite value; prevents submission and sets aria-invalid, recovering after corrected props or successful input')],
     methods: [row('focus / blur', '() => void', '-', '管理焦点', 'Manage focus')],
   },
   space: {
@@ -195,7 +205,7 @@ export const componentReferences: Record<string, ComponentReference> = {
     slots: [defaultSlot],
   },
   divider: {
-    description: text('分隔相邻内容，支持文字位置、虚线和纵向分隔。', 'Separate adjacent content with labeled, dashed or vertical dividers.'),
+    description: text('分隔相邻内容，支持文字位置、虚线和纵向分隔，也可适配从右向左的布局。', 'Separate adjacent content with labeled, dashed or vertical dividers and support for right-to-left layouts.'),
     demo: 'basic',
     examples: [
       {
@@ -232,9 +242,11 @@ export const componentReferences: Record<string, ComponentReference> = {
     props: [
       row('loading', 'boolean', 'true', '是否显示加载；遮罩内元素暂不可交互', 'Display loading and make masked content inert'),
       row('text', 'string', "''", '加载说明', 'Loading text'),
-      row('size', 'number', '24', '指示器尺寸，单位 px', 'Spinner size in pixels'),
+      row('size', 'number', '24', '有限数值指示器尺寸，单位 px；负值归零', 'Finite spinner size in pixels; negative values clamp to zero'),
+      row('delay / minDuration', 'number', '0', '有限毫秒数，负数按 0；卸载清理计时。任务结束立即恢复交互和非忙语义，视觉尾帧不再作为加载状态播报', 'Finite milliseconds, with negative values clamped to zero; timers clean up on unmount. Finished work immediately restores interaction and non-busy semantics; the minimum-duration visual tail is not announced as loading'),
+      row('blocking', 'boolean', 'true', '加载期间使内容 inert；结束后恢复原控件焦点，但不抢夺已移开的焦点；false 为非阻塞', 'Make content inert during loading; restore prior control focus afterward without stealing moved focus. False is non-blocking'),
     ],
-    slots: [defaultSlot],
+    slots: [defaultSlot, row('indicator', '{ size, loading }', '-', '自定义指示器', 'Custom indicator')],
   },
   empty: {
     description: text('为空列表和无搜索结果提供占位内容与后续操作。', 'Display an empty state with optional imagery and actions.'),
@@ -247,15 +259,18 @@ export const componentReferences: Record<string, ComponentReference> = {
       {
         title: text('自定义文案与操作', 'Description and Actions'),
         variant: 'states',
-        code: sample('  <scq-empty description="没有匹配的记录">\n    <scq-button type="primary" @click="resetFilters">重置筛选</scq-button>\n  </scq-empty>', "const resetFilters = () => {\n  // 执行重置逻辑\n}"),
+        code: sample('  <scq-empty preset="search" size="small">\n    <scq-button type="primary" @click="resetFilters">重置筛选</scq-button>\n  </scq-empty>', "const resetFilters = () => {\n  // 执行重置逻辑\n}"),
       },
     ],
     props: [
-      row('description', 'string', 'locale', '空状态描述', 'Empty state description'),
-      row('image', 'string', "''", '自定义图片地址', 'Custom image URL'),
-      row('imageSize', 'number', '90', '图片区域大小', 'Image area size in pixels'),
+      row('description', 'string', 'locale', '空状态描述；省略时使用默认文案，显式空字符串隐藏描述', 'Description; omission uses locale text while an explicit empty string hides it'),
+      row('image', 'string', "''", '自定义图片地址，失败时显示预设图标并触发 error', 'Custom image URL; failure displays the preset icon and emits error'),
+      row('imageSize', 'number', '90', '有限数值图片区域大小，负值归零', 'Finite image-area size in pixels; negative values clamp to zero'),
+      row('preset / size', 'default | search | unconfigured / default | small', 'default / default', '显式场景和紧凑布局；文案/图片插槽仍优先，不表示请求错误', 'Opt-in scenario and compact layout; explicit content and slots win, never implies a request error'),
     ],
     slots: [defaultSlot, row('image / description', '-', '-', '替换图片或描述', 'Replace the image or description')],
+    events: [row('load / error', '(event: Event) => void', '-', '当前图片的加载或失败；已替换图片的迟到事件被隔离', 'Current image load or failure; late events from replaced images are ignored')],
+    methods: [row('retry', '() => void', '-', '重试当前图片；无图片时保留预设图标', 'Retry the current image; without a URL, keep the preset icon')],
   },
   skeleton: {
     description: text('在内容准备完成之前展示结构占位。', 'Show structural placeholders before content is ready.'),
@@ -293,21 +308,22 @@ export const componentReferences: Record<string, ComponentReference> = {
       },
     ],
     props: [
+      row('modelValue / closeText', 'boolean / string', "uncontrolled / ''", '可选受控显示与关闭文字；更新内容不会自动重开', 'Optional controlled visibility and close text; updating content does not reopen the alert'),
       row('title / description', 'string', "''", '标题与说明', 'Title and description'),
       row('type', 'success | info | warning | error', 'info', '状态类型', 'Status type'),
       row('closable', 'boolean', 'true', '显示关闭按钮', 'Show dismiss button'),
       row('showIcon', 'boolean', 'true', '显示状态图标', 'Show status icon'),
     ],
-    events: [row('close', '(event: MouseEvent) => void', '-', '关闭后触发', 'Emitted after dismissal')],
-    slots: [defaultSlot, row('title', '-', '-', '自定义标题', 'Custom title')],
+    events: [row('close', '(event: MouseEvent) => void', '-', '每次打开仅发出一次关闭请求；受控状态由父级更新', 'One close request per opening; controlled state is updated by the owner'), row('update:modelValue', '(visible: boolean) => void', '-', '请求关闭', 'Request dismissal')],
+    slots: [defaultSlot, row('title / icon / actions', '-', '-', '标题、图标与操作区', 'Title, icon and actions')],
   },
   tag: {
-    description: text('为项目添加分类或状态标签，关闭事件由调用方处理。', 'Label categories and statuses; the parent controls removal after a close event.'),
+    description: text('用于展示分类或状态，支持选择和关闭操作。关闭事件由调用方处理。', 'Display categories or statuses with selection and close actions. The parent handles removal after a close event.'),
     demo: 'basic',
     examples: [
       {
         title: basic,
-        code: sample('  <scq-space>\n    <scq-tag>Vue 3</scq-tag>\n    <scq-tag type="success">已发布</scq-tag>\n    <scq-tag type="warning">待审核</scq-tag>\n    <scq-tag type="danger">失败</scq-tag>\n  </scq-space>'),
+        code: sample('  <scq-space>\n    <scq-tag v-model:selected="selected" selectable round icon="check">Vue 3</scq-tag>\n    <scq-tag type="success">已发布</scq-tag>\n    <scq-tag type="warning">待审核</scq-tag>\n    <scq-tag type="danger">失败</scq-tag>\n  </scq-space>', 'const selected = ref(true)'),
       },
       {
         title: text('可移除标签', 'Removable Tags'),
@@ -320,9 +336,13 @@ export const componentReferences: Record<string, ComponentReference> = {
       sizeProp,
       row('effect', 'light | dark | plain', 'light', '颜色样式', 'Color effect'),
       row('closable', 'boolean', 'false', '显示移除按钮', 'Show remove button'),
+      row('selectable / selected', 'boolean', 'false', '可选择标签及 v-model:selected；选择与关闭独立', 'Selectable tag and v-model:selected; selection and closing are independent'),
+      row('disabled', 'boolean', 'provider / false', '禁用选择和关闭，可覆盖 Provider，但不能绕过 Form 禁用', 'Disable selection and closing; overrides Provider but cannot bypass a disabled Form'),
+      row('icon / round', 'IconName / boolean', '- / false', '前置图标与圆角外观', 'Leading icon and rounded appearance'),
+      row('ariaLabel / closeLabel', 'string', "'' / locale", '选择按钮或普通标签的名称，以及关闭按钮名称；关闭按钮同时描述标签内容', 'Name the selection control or plain tag and the close control; the close control also describes the tag content'),
     ],
-    events: [row('close', '(event: MouseEvent) => void', '-', '请求移除，不自动卸载组件', 'Request removal without unmounting itself')],
-    slots: [defaultSlot],
+    events: [row('close', '(event: MouseEvent) => void', '-', '请求移除，不自动卸载组件', 'Request removal without unmounting itself'), row('update:selected / change', '(selected: boolean) => void', '-', '请求切换受控选中值', 'Request a controlled selection change')],
+    slots: [defaultSlot, row('icon', '-', '-', '自定义前置图标', 'Custom leading icon')],
   },
   badge: {
     description: text('显示未读数量、状态文字或提示圆点。', 'Display unread counts, status labels or notification dots.'),
@@ -339,15 +359,17 @@ export const componentReferences: Record<string, ComponentReference> = {
       },
     ],
     props: [
-      row('value', 'string | number', '-', '显示值', 'Displayed value'),
-      row('max', 'number', '99', '数字上限，超过显示 max+', 'Numeric limit; larger values show max+'),
+      row('value', 'string | number', '-', '显示值；数字必须有限，字符串不按数值裁剪', 'Displayed value; numbers must be finite and strings are not numerically capped'),
+      row('max', 'number', '99', '非负数字上限，超过显示 max+；Infinity 表示不设上限，无效数值明确报错', 'Non-negative numeric limit; larger values show max+, Infinity disables the cap and invalid numbers are reported explicitly'),
       row('isDot', 'boolean', 'false', '圆点模式', 'Dot mode'),
+      row('placement / offset', 'top-right | top-left | bottom-right | bottom-left / [number, number]', 'top-right / [0, 0]', '四角位置；偏移为两个有限的向右/向下像素量，可为负数', 'Corner placement; offsets are two finite right/down pixel amounts and may be negative'),
+      row('text / live', 'string / off | polite | assertive', "'' / off", '状态文字及显式更新播报', 'Status text and opt-in live announcements'),
       row('hidden', 'boolean', 'false', '隐藏徽标', 'Hide the badge'),
       row('showZero', 'boolean', 'false', '显示数字 0', 'Display numeric zero'),
       row('label', 'string', "''", '无障碍说明', 'Accessible description'),
       row('type', 'primary | success | warning | danger | info', 'danger', '语义颜色', 'Semantic color'),
     ],
-    slots: [defaultSlot],
+    slots: [defaultSlot, row('content', '{ value, displayValue }', '-', '自定义徽标内容；hidden 仍优先', 'Custom badge content; hidden still takes precedence')],
   },
   form: {
     description: text('组合已有输入组件，提供规则校验、字段校验、重置与响应式布局。', 'Compose existing inputs with rule validation, field validation, reset and responsive layouts.'),
@@ -367,8 +389,10 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('model', 'Record<string, unknown>', 'required', '响应式表单对象', 'Reactive form model'),
       row('rules', 'FormRules', '{}', '基于 async-validator 的字段规则，支持 trigger', 'async-validator field rules with trigger support'),
       row('labelPosition', 'left | right | top', 'right', '标签位置；默认布局在手机上堆叠', 'Label position; default layout stacks on phones'),
-      row('labelWidth', 'number | string', '100', '标签宽度', 'Label width'),
-      row('inline / disabled', 'boolean', 'false', '行内布局或禁用表单原生控件', 'Inline layout or disable native form controls'),
+      row('labelWidth', 'number | string', '100', '有限数值或 CSS 标签宽度，负数值归零', 'Finite numeric or CSS label width; negative numbers clamp to zero'),
+      row('inline', 'boolean', 'false', '行内布局', 'Inline layout'),
+      sizeProp,
+      row('disabled', 'boolean', 'provider / false', '继承或覆盖配置，并传给子控件；保留原生 fieldset 禁用约束', 'Inherit or override configuration for descendants; retain the native disabled fieldset constraint'),
       row('FormItem.prop', 'string', "''", '字段路径，例如 user.name', 'Field path such as user.name'),
       row('FormItem.label / forId', 'string', "''", '标签与对应的原生输入 id', 'Label and associated native input id'),
       row('FormItem.rules', 'FormRule | FormRule[]', '-', '覆盖当前字段规则', 'Override rules for this field'),
@@ -433,7 +457,7 @@ export const componentReferences: Record<string, ComponentReference> = {
     note: text('筛选和分页由调用方控制。当前提供基础表格，不包含树形表格、固定列或虚拟滚动。', 'Filtering and pagination are controlled by the caller. This basic table does not include tree rows, fixed columns or virtualization.'),
   },
   tabs: {
-    description: text('在相关视图之间切换，支持键盘导航、禁用项和懒加载。', 'Switch related views with keyboard navigation, disabled items and lazy panels.'),
+    description: text('在相关视图之间切换，支持键盘导航、禁用项和内容懒加载。', 'Switch between related views with keyboard navigation, disabled tabs and lazy-loaded panels.'),
     demo: 'navigation',
     examples: [
       {
@@ -447,13 +471,16 @@ export const componentReferences: Record<string, ComponentReference> = {
       },
     ],
     props: [
-      row('modelValue', 'string | number', 'first enabled', '当前页签，可受控或内部管理', 'Active tab, controlled or internally managed'),
-      row('items', 'TabItem[]', 'required', 'name、label、disabled', 'name, label and disabled'),
+      row('modelValue', 'string | number', 'first enabled', '当前页签，可受控或内部管理；内部默认选择按名称保留，不随列表重排改变', 'Active tab, controlled or internally managed; the internal default selection is preserved by name through reordering'),
+      row('items', 'readonly TabItem[]', 'required', 'name、label、disabled，支持不可变数据数组', 'name, label and disabled; accepts immutable arrays'),
       row('direction', 'horizontal | vertical', 'horizontal', '导航方向', 'Navigation direction'),
       row('lazy', 'boolean', 'false', '首次激活后挂载，之后保留', 'Mount on first activation and preserve thereafter'),
+      row('destroyInactive', 'boolean', 'false', '销毁非活动面板，优先于 lazy 的保留策略', 'Destroy inactive panels, overriding lazy preservation'),
+      row('beforeChange', '(name, signal) => boolean | void | Promise', '-', '拒绝保留当前页；等待时去重，外部值/数据变化取消旧请求', 'Rejection retains the current panel; pending requests deduplicate and external value/data changes cancel stale work'),
       row('ariaLabel / id', 'string', "''", '导航名称或稳定 ID 前缀', 'Accessible name or stable ID prefix'),
     ],
-    events: [modelEvent],
+    events: [modelEvent, row('error', '(error, name) => void', '-', '切换拦截失败', 'Tab-change guard failed')],
+    methods: [row('cancelPending / pending', '() => void / boolean', '-', '取消等待或读取等待状态', 'Cancel or inspect pending work')],
     slots: [
       row('[item.name]', '{ tab }', '-', '指定页签内容', 'Named tab content'),
       row('label', '{ tab }', '-', '自定义页签标题', 'Custom tab label'),
@@ -479,7 +506,9 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('total', 'number', '0', '数据总条数', 'Total record count'),
       row('pageSize', 'number', '10', '每页数量，支持 v-model:page-size', 'Page size with v-model:page-size'),
       row('pagerCount', 'number', '7', '桌面页码按钮上限，规范为 5 到 11 的奇数', 'Desktop pager limit, normalized to an odd value from 5 to 11'),
-      row('pageSizes', 'number[]', '[]', '可选页容量', 'Available page sizes'),
+      row('showJumper', 'boolean', 'false', '输入页码后 Enter/失焦提交，越界裁剪；组合输入不提交，外部页码/页容量/锁定变化清理旧草稿；省略号按钮按可见页数大步翻页', 'Commit a page with Enter/blur, clamping bounds; composition does not commit and page/size/lock changes discard stale drafts; ellipsis buttons jump by the visible range'),
+      row('unknownTotal / hasNext / loading', 'boolean', 'false', '未知总数仅展示当前页和前后按钮；hasNext 控制下一页，loading 禁用操作', 'Unknown totals show only current page and previous/next; hasNext controls forward navigation and loading blocks actions'),
+      row('pageSizes', 'readonly number[]', '[]', '可选正整数页容量，去重并包含规范化当前值；父级拒绝更新时恢复原生选择', 'Unique positive integer sizes including the normalized current value; rejected controlled updates restore the native selection'),
       disabledProp,
       row('simple / showTotal / hideOnSinglePage', 'boolean', 'false', '紧凑模式、显示总数、单页隐藏', 'Compact mode, total count and single-page hiding'),
     ],
@@ -487,6 +516,7 @@ export const componentReferences: Record<string, ComponentReference> = {
       modelEvent,
       row('update:pageSize / size-change', '(size: number) => void', '-', '页容量变化，随后页码回到 1', 'Page size changes, followed by reset to page 1'),
     ],
+    slots: [row('prefix / suffix', '{ page }', '-', '前后区域', 'Leading and trailing regions'), row('total', '{ total }', '-', '自定义总数', 'Custom total count')],
   },
   tooltip: {
     description: text('为图标和操作添加文字提示，支持鼠标悬停、键盘焦点和点击触发。', 'Add contextual text to controls with hover, keyboard focus or click triggers.'),
@@ -506,6 +536,7 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('content', 'string', "''", '提示内容', 'Tooltip text'),
       row('modelValue', 'boolean', 'undefined', '可选受控开关', 'Optional controlled visibility'),
       row('placement', 'FloatingPlacement', 'top', 'top、bottom、left、right 及 -start / -end', 'top, bottom, left, right and -start / -end variants'),
+      row('shiftCrossAxis', 'boolean', 'false', '空间不足时允许沿放置方向移动以保持浮层在视口内，可能覆盖触发元素', 'Allow shifting along the placement direction to remain in the viewport; may overlap the trigger'),
       row('trigger', 'hover | click | focus', 'hover', '触发方式；移动端建议 click', 'Trigger; click is recommended for touch'),
       row('disabled', 'boolean', 'false', '禁用提示', 'Disable the tooltip'),
       row('showDelay / hideDelay', 'number', '80 / 100', '悬停显示和隐藏延迟，单位毫秒', 'Hover show and hide delays in milliseconds'),
@@ -540,6 +571,7 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('title / content', 'string', "''", '标题和内容', 'Title and content'),
       row('modelValue', 'boolean', 'undefined', '可选受控显示', 'Optional controlled visibility'),
       row('placement', 'FloatingPlacement', 'bottom', '浮层位置', 'Overlay placement'),
+      row('shiftCrossAxis', 'boolean', 'false', '空间不足时允许沿放置方向移动以保持浮层在视口内，可能覆盖触发元素', 'Allow shifting along the placement direction to remain in the viewport; may overlap the trigger'),
       row('trigger', 'hover | click | focus', 'click', '触发方式', 'Trigger mode'),
       row('width', 'number | string', '240', '内容宽度', 'Content width'),
       row('teleport', 'boolean | string', 'true', '传送目标', 'Portal target'),
@@ -552,7 +584,7 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('show / hide', '() => void', '-', '可见状态改变', 'Visibility changed'),
     ],
     slots: [
-      row('reference', '-', '-', '触发元素', 'Trigger element'),
+      row('reference', '{ panelId, visible }', '-', '触发元素，可关联真实浮层 ID 与实际可见状态', 'Trigger element with the real panel ID and resolved visibility for ARIA association'),
       defaultSlot,
     ],
   },
@@ -608,7 +640,9 @@ export const componentReferences: Record<string, ComponentReference> = {
     ],
     props: [
       row('modelValue', 'boolean', 'false', '显示状态', 'Visibility'),
-      row('actions', 'ActionSheetItem[]', '[]', 'name、value、description、icon、danger、disabled、loading', 'name, value, description, icon, danger, disabled and loading'),
+      row('actions', 'readonly ActionSheetItem[]', '[]', 'name、value、description、icon、danger、disabled、loading；支持只读数据，旧动作事件不提交', 'name, value, description, icon, danger, disabled and loading; supports readonly data and rejects stale action events'),
+      row('beforeSelect', '(action, index, signal) => boolean | void | Promise', '-', '操作完成后才触发 select；拒绝/异常保持打开，取消或关闭隔离旧结果', 'Emit select only after approval; rejection/failure keeps the sheet open, dismissal isolates stale results'),
+      row('columns / errorText', 'number / string', "1 / locale", '有限列数裁剪到 1-4；安全失败提示。拒绝后恢复动作焦点，移除焦点动作后恢复面板。action.group 为连续分组标题；action/error 插槽定制内容', 'Finite columns clamp to 1-4; safe failure text. Vetoes restore action focus and removing focused actions restores panel focus. action.group labels consecutive groups; action/error slots customize content'),
       row('title / description', 'string', "''", '标题和说明', 'Title and description'),
       row('cancelText', 'string', 'locale', '取消文字，空字符串隐藏', 'Cancel label; empty string hides it'),
       row('closeOnSelect', 'boolean', 'true', '选择后请求关闭', 'Request close after selection'),
@@ -618,11 +652,13 @@ export const componentReferences: Record<string, ComponentReference> = {
     events: [
       row('update:modelValue', '(visible: boolean) => void', '-', '请求关闭', 'Request close'),
       row('select', '(action, index) => void', '-', '选择可用操作', 'An enabled action was selected'),
+      row('error', '(error, action, index) => void', '-', '选择处理失败', 'Selection handler failed'),
       row('cancel', '() => void', '-', '点击取消按钮', 'Cancel button clicked'),
       row('close', '(reason) => void', '-', '关闭来源，含 select 和 cancel', 'Close reason, including select and cancel'),
       row('opened / closed', '() => void', '-', '过渡完成', 'Transition completed'),
     ],
-    slots: [defaultSlot],
+    slots: [defaultSlot, row('action', '{ action, index, pending }', '-', '操作按钮内容', 'Action button content'), row('error', '{ error }', '-', '失败提示', 'Failure content')],
+    methods: [row('cancelPending / pending', '() => void / boolean', '-', '取消或读取等待状态', 'Cancel or inspect pending work')],
   },
   modal: {
     description: text('适用于移动端的轻量模态对话框，具备 iOS 拟真交互动效，支持模板受控与命令式方法调用。', 'A lightweight mobile modal dialog with iOS-style interactive feel, supporting template control and imperative methods.'),
@@ -679,8 +715,9 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('footer', '{ cancel, confirm }', '-', '自定义底部按钮操作', 'Custom footer buttons with cancel/confirm helpers'),
     ],
     methods: [
-      row('Modal.info', '(options: ModalApiOptions) => ModalInstance', '-', '弹出信息提示型模态框', 'Open an informational modal dialog'),
-      row('Modal.confirm', '(options: ModalApiOptions) => ModalInstance', '-', '弹出确认型双按钮模态框', 'Open a confirmation modal dialog'),
+      row('useModal', '() => scoped Modal API', '-', 'setup 中绑定当前配置，默认标题与按钮文案实时同步，卸载自动清理', 'Bind current configuration in setup; default titles and labels stay reactive; dispose on unmount'),
+      row('Modal.info', '(options: ModalApiOptions, appContext?) => ModalInstance', '-', '弹出信息提示型模态框', 'Open an informational modal dialog'),
+      row('Modal.confirm', '(options: ModalApiOptions, appContext?) => ModalInstance', '-', '弹出确认型双按钮模态框', 'Open a confirmation modal dialog'),
       row('Modal.destroyAll', '() => void', '-', '手动销毁所有命令式弹窗实例', 'Destroy all imperative modal instances'),
     ],
   },
@@ -703,10 +740,11 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('value', 'string | number', "''", '右侧内容', 'Trailing value'),
       row('icon', 'IconName', '-', '左侧图标', 'Leading icon'),
       row('isLink / clickable', 'boolean', 'false', '交互状态；isLink 显示箭头', 'Interactive state; isLink shows an arrow'),
-      row('href', 'string', "''", '存在时使用原生链接', 'Use a native link when provided'),
-      row('disabled', 'boolean', 'false', '禁用整行操作', 'Disable the row action'),
+      row('href', 'string', "''", '存在时使用原生链接；复用 Link 的协议校验，不支持的地址明确报错', 'Use a native link when provided; shares Link protocol validation and reports unsupported destinations'),
+      row('disabled', 'boolean', 'false', '禁用整行操作；Form 禁用不可被显式 false 或 Teleport 绕过', 'Disable the row action; explicit false and Teleport cannot bypass Form disabling'),
       row('border', 'boolean', 'true', '显示底部分隔线', 'Show a bottom divider'),
       row('CellGroup.title', 'string', "''", '分组标题', 'Group title'),
+      row('CellGroup.description / footer', 'string', "''", '分组说明和页脚，也支持同名插槽；空白/注释插槽回退到属性，无内容不生成空描述；合并到组级 aria-describedby，不重复关联每行', 'Group description/footer with matching slots; blank/comment slots fall back to props and absent content creates no empty descriptions; merged into group aria-describedby, not repeated on each row'),
       row('CellGroup.inset', 'boolean', 'false', '内嵌分组布局', 'Inset group layout'),
     ],
     events: [row('click', '(event: MouseEvent) => void', '-', '未禁用时的点击', 'Click while enabled')],
@@ -734,18 +772,23 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('title / leftText / rightText', 'string', "''", '标题和按钮文字', 'Title and button labels'),
       row('leftArrow', 'boolean', 'false', '显示返回图标', 'Show back icon'),
       row('rightIcon', 'IconName', '-', '右侧图标', 'Trailing icon'),
-      row('rightLabel', 'string', 'Actions', '图标按钮无障碍名称', 'Accessible icon-button label'),
+      row('rightLabel', 'string', 'locale', '图标按钮无障碍名称；省略时跟随语言设置', 'Accessible icon-button label; follows the locale when omitted'),
+      row('beforeBack', '(event, signal) => boolean | void | Promise', '-', '返回前拦截；拒绝不触发 click-left，禁用/卸载取消旧任务；error 报告异常。左右操作在等待/加载结束后恢复原键盘焦点，不抢占已移动焦点', 'Guard back navigation; rejection suppresses click-left, disabled/unmount cancels stale work, and error reports failures. Actions restore original keyboard focus after guards/loading without stealing moved focus'),
+      row('disabled / leftDisabled / rightDisabled / leftLoading / rightLoading', 'boolean', 'provider / false', '整体或分侧状态；左侧自动 pending，实例可 cancelPending()', 'Global/per-side state; the left action automatically tracks pending and exposes cancelPending()'),
       row('fixed', 'boolean', 'false', '固定顶部并自动保留占位', 'Fix to viewport top and preserve layout space'),
       row('border', 'boolean', 'true', '底部分隔线', 'Bottom divider'),
       row('safeAreaInsetTop', 'boolean', 'false', '顶部安全区', 'Top safe-area inset'),
     ],
     events: [
       row('click-left / click-right', '(event: MouseEvent) => void', '-', '两侧按钮点击', 'Leading or trailing action clicked'),
+      row('error', '(error) => void', '-', '返回拦截失败', 'Back guard failed'),
     ],
-    slots: [row('left / title / right', '-', '-', '自定义导航区域', 'Custom navigation areas')],
+    slots: [row('left', '{ back, pending, disabled }', '-', '自定义返回区域', 'Custom back area'), row('title', '-', '-', '标题', 'Title'), row('right', '{ click, disabled }', '-', '自定义右侧区域', 'Custom trailing area')],
+    methods: [row('cancelPending / pending', '() => void / boolean', '-', '取消或读取返回任务', 'Cancel or inspect the back task')],
   },
   tabbar: {
     description: text('移动端主导航，支持图标、徽标、禁用项与底部安全区。', 'Mobile primary navigation with icons, badges, disabled items and bottom safe-area support.'),
+    note: text('beforeChange(item, signal) 可异步拦截导航，返回 false 保留当前项；error(error,item) 报告异常，外部值/项目/禁用更新取消旧任务。item.action=true 只发 action(item)，不触发导航或 change。showLabels 默认 true，关闭时按钮保留可访问名称。disabled 可继承 Provider，实例暴露 pending/cancelPending()。', 'beforeChange(item, signal) guards navigation; false retains the current item. error(error,item) reports failures, and external value/items/disabled changes cancel stale work. item.action=true emits only action(item), never navigation/change. showLabels defaults to true; hidden labels retain accessible names. disabled inherits the provider; pending/cancelPending() are exposed.'),
     demo: 'mobile',
     examples: [
       {
@@ -759,20 +802,23 @@ export const componentReferences: Record<string, ComponentReference> = {
       },
     ],
     props: [
+      row('beforeChange', '(item, signal) => boolean | void | Promise', '-', '切换前拦截', 'Guard navigation changes'),
+      row('showLabels / disabled', 'boolean', 'true / provider', '标签显隐和禁用', 'Label visibility and disabled state'),
       row('modelValue', 'string | number', 'first enabled', '当前导航项', 'Active navigation item'),
-      row('items', 'TabbarItem[]', 'required', 'name、label、icon、activeIcon、badge、dot、disabled', 'name, label, icon, activeIcon, badge, dot and disabled'),
+      row('items', 'readonly TabbarItem[]', 'required', 'name、label、icon、activeIcon、badge、dot、disabled；action=true 为非导航操作，不使用活动图标。非受控选择按名称保留，删除后回退首个可用导航项', 'name, label, icon, activeIcon, badge, dot, disabled; action=true is non-navigational and never uses an active icon. Uncontrolled selection stays by name, falling back to the first available navigation item after removal'),
       row('fixed', 'boolean', 'false', '固定底部并保留占位', 'Fix to viewport bottom and preserve layout space'),
       row('safeAreaInsetBottom', 'boolean', 'true', '底部安全区', 'Bottom safe-area inset'),
       row('ariaLabel', 'string', 'locale', '导航区域名称', 'Accessible navigation name'),
     ],
-    events: [modelEvent],
+    events: [modelEvent, row('action', '(item) => void', '-', '非导航操作', 'Non-navigation action'), row('error', '(error, item) => void', '-', '切换失败', 'Navigation failed')],
+    methods: [row('cancelPending / pending', '() => void / boolean', '-', '取消或读取等待状态', 'Cancel or inspect pending work')],
     slots: [
       row('icon', '{ item, active }', '-', '自定义图标', 'Custom icon'),
       row('label', '{ item }', '-', '自定义文字', 'Custom label'),
     ],
   },
   'chat-choice': {
-    description: text('聊天中的单选、多选与自定义输入，保持既有值结构与提交行为。', 'Single or multiple choices and custom input inside a conversation, preserving the existing value and submit contract.'),
+    description: text('在聊天中提供单选、多选和自定义输入，支持选择数量限制与提交校验。', 'Offer single or multiple choices and custom input in conversations, with selection limits and submission validation.'),
     demo: 'chat-choice',
     examples: [
       {
@@ -809,4 +855,19 @@ export const componentReferences: Record<string, ComponentReference> = {
       row('footer', '{ submit, disabled, validationMessage }', '-', '自定义底部操作', 'Custom footer actions'),
     ],
   },
+}
+
+export const componentEnhancements = createEnhancementReferences({ row, text })
+const mergeRows = (base: ApiRow[] = [], added: ApiRow[] = []) => [...new Map([...base, ...added].map((value) => [value.name, value])).values()]
+for (const [slug, enhancement] of Object.entries(componentEnhancements)) {
+  const reference = componentReferences[slug]
+  if (!reference) continue
+  reference.props = mergeRows(reference.props, enhancement.props)
+  reference.events = mergeRows(reference.events, enhancement.events)
+  reference.methods = mergeRows(reference.methods, enhancement.methods)
+  reference.slots = mergeRows(reference.slots, enhancement.slots)
+  reference.examples.push(...enhancement.examples)
+  if (enhancement.note) reference.note = reference.note
+    ? text(`${reference.note.zh}\n${enhancement.note.zh}`, `${reference.note.en}\n${enhancement.note.en}`)
+    : enhancement.note
 }

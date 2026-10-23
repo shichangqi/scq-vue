@@ -11,7 +11,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqCollapse, ScqCollapseItem, ScqInput, ScqSwitch, type CollapseValue } from '../../../../src/index'
+import ScqCollapse from '../../../../src/components/Collapse'
+import ScqCollapseItem from '../../../../src/components/CollapseItem'
+import ScqInput from '../../../../src/components/Input'
+import ScqSwitch from '../../../../src/components/Switch'
+import type { CollapseValue } from '../../../../src/index'
 
 const opened = ref<CollapseValue>(['delivery'])
 const accordion = ref(false)

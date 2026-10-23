@@ -12,4 +12,4 @@ export interface CheckboxGroupContext {
   changeEvent: (value: CheckboxValue, checked: boolean) => void
 }
 
-export const checkboxGroupKey: InjectionKey<CheckboxGroupContext> = Symbol('scq-checkbox-group')
+export const checkboxGroupKey: InjectionKey<CheckboxGroupContext> = Symbol.for('scq-vue.checkbox-group')

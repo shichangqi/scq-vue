@@ -12,6 +12,12 @@
 </template>
 
 <script setup lang="ts">
+import ScqButton from '../../../../src/components/Button'
+import ScqForm from '../../../../src/components/Form'
+import ScqFormItem from '../../../../src/components/FormItem'
+import ScqInput from '../../../../src/components/Input'
+import ScqSpace from '../../../../src/components/Space'
+import ScqSwitch from '../../../../src/components/Switch'
 import { computed, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from '../../../../src/components/Form'
 import { useComponentId } from '../../../../src/utils/id'

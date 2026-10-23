@@ -27,5 +27,6 @@ _Message.install = (app: App): void => {
 }
 
 export type { MessageApiOptions, MessageInstance }
+export { useMessage } from './message-method'
 export type { MessagePlacement, MessageType } from './Message.vue'
 export default _Message

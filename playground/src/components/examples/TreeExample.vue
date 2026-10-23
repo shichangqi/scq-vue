@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqInput, ScqTree, type TreeKey, type TreeNode } from '../../../../src/index'
+import ScqInput from '../../../../src/components/Input'
+import ScqTree from '../../../../src/components/Tree'
+import type { TreeKey, TreeNode } from '../../../../src/index'
 
 const query = ref('')
 const active = ref<TreeKey | null>('guide')

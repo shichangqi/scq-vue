@@ -22,7 +22,14 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
-import { ScqButton, ScqCell, ScqCellGroup, ScqIcon, ScqNavBar, ScqProgress, Toast, type ToastInstance } from '../../../../src/index'
+import ScqButton from '../../../../src/components/Button'
+import ScqCell from '../../../../src/components/Cell'
+import ScqCellGroup from '../../../../src/components/CellGroup'
+import ScqIcon from '../../../../src/components/Icon'
+import ScqNavBar from '../../../../src/components/NavBar'
+import ScqProgress from '../../../../src/components/Progress'
+import Toast from '../../../../src/components/Toast'
+import type { ToastInstance } from '../../../../src/index'
 import PhonePreview from '../PhonePreview.vue'
 
 const previewId = 'toast-loading-preview'

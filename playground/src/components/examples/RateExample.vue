@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqRate, ScqSwitch } from '../../../../src/index'
+import ScqRate from '../../../../src/components/Rate'
+import ScqSwitch from '../../../../src/components/Switch'
 
 const score = ref(3.5)
 const readonly = ref(false)

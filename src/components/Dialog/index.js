@@ -12,3 +12,4 @@ dialogWithApi.install = (app) => {
 }
 
 export default dialogWithApi
+export { useDialog } from './dialog-method'

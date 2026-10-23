@@ -15,12 +15,11 @@ button.scq-steps__step { cursor: pointer; }
   flex: 0 0 34px;
   width: 34px;
   height: 34px;
-  border: 2px solid var(--scq-border, #e2e8f0);
+  border: var(--scq-control-border-width, 1px) solid var(--scq-border, #e2e8f0);
   border-radius: 50%;
   background: var(--scq-surface, #ffffff);
   color: var(--scq-muted, #64748b);
   font-weight: 600;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .scq-steps__content { display: flex; flex-direction: column; min-width: 0; gap: 4px; overflow-wrap: anywhere; }
@@ -30,13 +29,11 @@ button.scq-steps__step { cursor: pointer; }
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   border-color: #2563eb;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
 }
 .scq-steps .is-finish .scq-steps__number {
   border-color: var(--scq-success, #10b981);
   color: var(--scq-success, #10b981);
   background: var(--scq-color-success-soft-bg, #ecfdf5);
-  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
 }
 .scq-steps .is-error .scq-steps__number {
   border-color: var(--scq-danger, #ef4444);
@@ -47,7 +44,8 @@ button.scq-steps__step { cursor: pointer; }
 .scq-steps .is-wait strong { color: var(--scq-muted, #94a3b8); font-weight: 400; }
 .scq-steps .is-disabled { opacity: .5; }
 .scq-steps button:disabled { cursor: not-allowed; }
-.scq-steps button:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: 4px; }
+.scq-steps button:focus-visible { outline: none; }
+.scq-steps button:focus-visible .scq-steps__number { box-shadow: 0 0 0 var(--scq-control-border-width, 1px) currentColor inset; }
 .scq-steps--vertical { flex-direction: column; }
 .scq-steps--vertical .scq-steps__step { flex-direction: row; padding-bottom: 28px; }
 .scq-steps--vertical .scq-steps__item:not(:last-child)::after { left: 16px; top: 40px; bottom: 8px; height: auto; width: 2px; }

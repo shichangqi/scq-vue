@@ -1,13 +1,17 @@
 @import './icon.css';
 @import './loading.css';
+@import './virtual-list.css';
 .scq-tree { list-style: none; margin: 0; padding: 0; min-width: 0; color: var(--scq-text, #0f172a); background: var(--scq-surface, #ffffff); font-size: 14px; }
-.scq-tree [role="treeitem"] { display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 10px 4px 6px; box-sizing: border-box; cursor: pointer; border-radius: var(--scq-radius-md, 8px); transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1); }
+.scq-tree [role="treeitem"] { display: flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 10px 4px 6px; box-sizing: border-box; cursor: pointer; border-radius: var(--scq-radius-md, 8px); transition: background-color 0.15s, color 0.15s, opacity 0.15s; transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
 .scq-tree [role="treeitem"]:hover { background: var(--scq-fill, #f8fafc); color: var(--scq-primary, #2563eb); }
 .scq-tree [role="treeitem"].is-selected { color: var(--scq-primary, #2563eb); background: var(--scq-color-primary-soft-bg, #eff6ff); font-weight: 600; }
 .scq-tree [role="treeitem"].is-disabled { opacity: .45; cursor: not-allowed; background: transparent !important; }
 .scq-tree [role="treeitem"]:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: -2px; }
-.scq-tree__toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 24px; width: 24px; height: 24px; border: 0; border-radius: var(--scq-radius-sm, 6px); background: transparent; color: var(--scq-muted, #64748b); padding: 0; cursor: pointer; transition: all 0.15s ease; }
+.scq-tree__toggle { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 24px; width: 24px; height: 24px; border: 0; border-radius: var(--scq-radius-sm, 6px); background: transparent; color: var(--scq-muted, #64748b); padding: 0; cursor: pointer; transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease; }
 .scq-tree__toggle:hover { color: var(--scq-primary, #2563eb); background: rgba(37, 99, 235, 0.08); }
 .scq-tree__label { min-width: 0; overflow-wrap: anywhere; }
 .scq-tree input { flex-shrink: 0; margin: 0; accent-color: var(--scq-primary, #2563eb); width: 16px; height: 16px; }
 .scq-tree__empty { padding: 24px 12px; text-align: center; color: var(--scq-muted, #64748b); }
+.scq-tree--virtual [role="treeitem"] { min-height: 0; overflow: hidden; }
+.scq-tree--virtual .scq-tree__label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scq-tree:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: -2px; }

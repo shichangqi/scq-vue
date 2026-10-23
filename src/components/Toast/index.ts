@@ -4,4 +4,5 @@ import { toast } from './toast-method'
 
 export type { ToastPosition, ToastType } from './Toast.vue'
 export type { ToastApiOptions, ToastInstance } from './toast-method'
+export { useToast } from './toast-method'
 export default Object.assign(withInstall(Toast), toast)

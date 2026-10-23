@@ -8,6 +8,10 @@
 </template>
 
 <script setup lang="ts">
+import ScqInput from '../../../../src/components/Input'
+import ScqPagination from '../../../../src/components/Pagination'
+import ScqTable from '../../../../src/components/Table'
+import ScqTag from '../../../../src/components/Tag'
 import { computed, ref } from 'vue'
 import { locale } from '../../i18n'
 import type { TableColumn, TableRowKey } from '../../../../src/components/Table'

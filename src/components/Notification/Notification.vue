@@ -15,17 +15,19 @@ import { computed, onBeforeUnmount, onMounted, ref, watch, type CSSProperties } 
 import Icon from '../Icon/Icon.vue'
 import type { IconName } from '../Icon/icons'
 import { useLocale, useThemeStyle } from '../ConfigProvider/context'
+import { NOTIFICATION_DEFAULTS, validateFeedbackOptions } from '../../utils/feedback'
 
 export type NotificationType = 'info' | 'success' | 'warning' | 'error'
 export type NotificationPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
 defineOptions({ name: 'Notification' })
-const props = withDefaults(defineProps<{ modelValue?: boolean; title?: string; message?: string; type?: NotificationType; position?: NotificationPosition; duration?: number; offset?: number; showClose?: boolean; closeOnClick?: boolean; icon?: IconName; teleport?: boolean | string; zIndex?: number }>(), { modelValue: false, title: '', message: '', type: 'info', position: 'top-right', duration: 4500, offset: 16, showClose: true, closeOnClick: false, teleport: true, zIndex: 4000 })
+const props = withDefaults(defineProps<{ modelValue?: boolean; title?: string; message?: string; type?: NotificationType; position?: NotificationPosition; duration?: number; offset?: number; showClose?: boolean; closeOnClick?: boolean; icon?: IconName; teleport?: boolean | string; zIndex?: number }>(), { modelValue: false, title: '', message: '', type: 'info', position: 'top-right', duration: NOTIFICATION_DEFAULTS.duration, offset: NOTIFICATION_DEFAULTS.offset, showClose: true, closeOnClick: false, teleport: true, zIndex: NOTIFICATION_DEFAULTS.zIndex })
 const emit = defineEmits<{ (event: 'update:modelValue', value: boolean): void; (event: 'open' | 'opened' | 'close' | 'closed'): void; (event: 'click', value: MouseEvent): void }>()
 const mounted = ref(false)
 const visible = computed(() => mounted.value && props.modelValue)
 const text = useLocale()
 const themeStyle = useThemeStyle()
-const style = computed<CSSProperties>(() => ({ ...themeStyle.value, zIndex: props.zIndex, [props.position.startsWith('top') ? 'top' : 'bottom']: `${Math.max(0, props.offset)}px`, [props.position.endsWith('left') ? 'left' : 'right']: '16px' }))
+const style = computed<CSSProperties>(() => ({ ...themeStyle.value, zIndex: props.zIndex, [props.position.startsWith('top') ? 'top' : 'bottom']: `${Math.max(0, props.offset)}px`, [props.position.endsWith('left') ? 'left' : 'right']: `${NOTIFICATION_DEFAULTS.offset}px` }))
+watch(() => [props.duration, props.offset, props.zIndex], () => validateFeedbackOptions(props, 'Notification'), { immediate: true, flush: 'sync' })
 let timer: ReturnType<typeof setTimeout> | undefined
 let remaining = props.duration
 let started = 0
@@ -53,6 +55,6 @@ const click = (event: MouseEvent) => { emit('click', event); if (props.closeOnCl
 watch(visible, (value) => { requested = false; remaining = props.duration; hovered = false; focused = false; if (value) emit('open'); schedule() })
 watch(() => [props.duration, props.message, props.title], () => { remaining = props.duration; schedule() })
 onMounted(() => { mounted.value = true })
-onBeforeUnmount(stop)
+onBeforeUnmount(() => { mounted.value = false; stop() })
 defineExpose({ close })
 </script>

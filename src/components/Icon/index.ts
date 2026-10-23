@@ -18,3 +18,4 @@ _Icon.install = (app: App): void => {
 export default _Icon
 export { iconNames, iconPaths, solidIconNames, solidIconPaths }
 export type { IconName, IconVariant } from './icons'
+export type { IconProps } from './Icon.vue'

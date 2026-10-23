@@ -32,6 +32,7 @@ const componentStyles = {
         type: 'asset',
         fileName,
         source: [
+          "@import '../../styles/tokens.css';",
           `@import '../../styles/${styleName}.css';`,
           ...[...styles].map((style) => `@import '${posix.relative(posix.dirname(fileName), style)}';`),
           '',

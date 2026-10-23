@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqDropdown, ScqTag, type DropdownItem, type MenuKey } from '../../../../src/index'
+import ScqDropdown from '../../../../src/components/Dropdown'
+import ScqTag from '../../../../src/components/Tag'
+import type { DropdownItem, MenuKey } from '../../../../src/index'
 
 const archived = ref(false)
 const result = ref('')
@@ -14,7 +16,7 @@ const command = async (key: MenuKey) => {
 }
 </script>
 
-<template><div class="dropdown-example"><strong>团队工作台</strong><ScqTag :type="archived ? 'info' : 'success'">{{ archived ? '已归档' : '进行中' }}</ScqTag><ScqDropdown label="项目操作" :items="items" @command="command" /></div><p class="dropdown-example__result" role="status">{{ result }}</p></template>
+<template><div class="dropdown-example"><strong>团队工作台</strong><ScqTag :type="archived ? 'info' : 'success'">{{ archived ? '已归档' : '进行中' }}</ScqTag><ScqDropdown split label="复制项目链接" :items="items" @primary-click="command('copy')" @command="command" /></div><p class="dropdown-example__result" role="status">{{ result }}</p></template>
 
 <style scoped>
 .dropdown-example { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; color: var(--scq-text); }

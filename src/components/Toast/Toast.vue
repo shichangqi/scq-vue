@@ -37,6 +37,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import Icon from '../Icon/Icon.vue'
 import type { IconName } from '../Icon/icons'
 import { useLocale, useThemeStyle } from '../ConfigProvider/context'
+import { TOAST_DEFAULTS, validateFeedbackOptions } from '../../utils/feedback'
 
 export type ToastType = 'text' | 'success' | 'fail' | 'loading'
 export type ToastPosition = 'top' | 'middle' | 'bottom'
@@ -66,7 +67,7 @@ const props = withDefaults(defineProps<{
   closeOnClick: false,
   closeOnClickOverlay: false,
   teleport: true,
-  zIndex: 4000,
+  zIndex: TOAST_DEFAULTS.zIndex,
 })
 
 const emit = defineEmits<{
@@ -80,6 +81,7 @@ const visible = ref(props.modelValue)
 const themeStyle = useThemeStyle()
 const text = useLocale()
 const layerStyle = computed(() => ({ ...themeStyle.value, zIndex: props.zIndex }))
+watch(() => [props.duration, props.zIndex], () => validateFeedbackOptions(props, 'Toast'), { immediate: true, flush: 'sync' })
 let timer: ReturnType<typeof setTimeout> | undefined
 
 const clearTimer = () => {
@@ -89,7 +91,7 @@ const clearTimer = () => {
 
 const close = () => {
   clearTimer()
-  if (!visible.value) return
+  if (!mounted.value || !visible.value) return
   visible.value = false
   emit('update:modelValue', false)
   emit('close')
@@ -97,7 +99,7 @@ const close = () => {
 
 const startTimer = () => {
   clearTimer()
-  const duration = props.duration ?? (props.type === 'loading' ? 0 : 2000)
+  const duration = props.duration ?? (props.type === 'loading' ? 0 : TOAST_DEFAULTS.duration)
   if (mounted.value && visible.value && Number.isFinite(duration) && duration > 0) {
     timer = setTimeout(close, duration)
   }
@@ -118,7 +120,7 @@ onMounted(() => {
   if (visible.value) emit('open')
   startTimer()
 })
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(() => { mounted.value = false; clearTimer() })
 
 defineExpose({ close })
 </script>

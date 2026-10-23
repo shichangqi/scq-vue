@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqButton, ScqIcon, ScqPopconfirm } from '../../../../src/index'
+import ScqButton from '../../../../src/components/Button'
+import ScqIcon from '../../../../src/components/Icon'
+import ScqPopconfirm from '../../../../src/components/Popconfirm'
 
 const exists = ref(true)
 const confirm = (signal: AbortSignal) => new Promise<void>((resolve, reject) => {

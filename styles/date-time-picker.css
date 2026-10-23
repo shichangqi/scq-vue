@@ -1,0 +1,124 @@
+@import './tokens.css';
+@import './field.css';
+@import './calendar.css';
+@import './time-picker.css';
+@import './popover.css';
+
+.scq-date-time-picker {
+  display: inline-block;
+  width: 280px;
+  max-width: 100%;
+  vertical-align: middle;
+}
+.scq-date-time-picker.is-range { width: 460px; }
+.scq-date-time-picker > .scq-floating-reference { display: block; }
+.scq-date-time-picker .scq-field.is-open:not(.is-disabled) { --scq-field-border-color: var(--scq-primary); }
+.scq-date-time-picker .scq-field.is-invalid:not(.is-disabled) { --scq-field-border-color: var(--scq-danger); }
+.scq-date-time-picker .is-readonly .scq-field__trigger { cursor: default; }
+.scq-date-time-picker .scq-icon { flex-shrink: 0; }
+
+.scq-floating-panel:has(> .scq-date-time-picker__panel) {
+  padding: 0;
+  max-height: none;
+  overflow: hidden;
+}
+.scq-date-time-picker__panel {
+  --scq-date-time-picker-gap: var(--scq-picker-gap);
+  --scq-date-time-picker-time-width: var(--scq-picker-time-width);
+  --scq-date-time-picker-time-height: 180px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - var(--scq-picker-viewport-gap) * 2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--scq-surface);
+  color: var(--scq-text);
+  font-size: var(--scq-picker-font-size);
+  border-radius: inherit;
+}
+.scq-date-time-picker__panel button { font: inherit; cursor: pointer; }
+.scq-date-time-picker__panel button:disabled { cursor: not-allowed; opacity: .45; }
+.scq-date-time-picker__panel button:focus-visible { outline: 2px solid var(--scq-primary); outline-offset: -2px; }
+.scq-date-time-picker__shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--scq-date-time-picker-gap) / 2);
+  padding: var(--scq-date-time-picker-gap);
+  border-bottom: 1px solid var(--scq-border);
+}
+.scq-date-time-picker__shortcuts button {
+  padding: calc(var(--scq-date-time-picker-gap) / 2) var(--scq-date-time-picker-gap);
+  border: 1px solid var(--scq-border);
+  border-radius: var(--scq-radius-sm);
+  color: var(--scq-text);
+  background: var(--scq-fill);
+}
+.scq-date-time-picker__shortcuts button:hover:not(:disabled) { color: var(--scq-primary); border-color: var(--scq-primary); }
+.scq-date-time-picker__endpoints { display: flex; border-bottom: 1px solid var(--scq-border); }
+.scq-date-time-picker__endpoints button {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--scq-date-time-picker-gap) / 2);
+  padding: var(--scq-date-time-picker-gap);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--scq-muted);
+  background: var(--scq-fill);
+  text-align: left;
+}
+.scq-date-time-picker__endpoints button[aria-selected="true"] {
+  color: var(--scq-primary);
+  border-bottom-color: var(--scq-primary);
+  background: var(--scq-surface);
+}
+.scq-date-time-picker__endpoints strong { font-weight: 500; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.scq-date-time-picker__body { display: flex; min-height: 0; flex-shrink: 0; }
+.scq-date-time-picker__date { flex: 1; min-width: 0; padding: var(--scq-date-time-picker-gap); }
+.scq-date-time-picker__day { display: grid; place-items: center; width: 100%; height: 100%; border-radius: inherit; }
+.scq-date-time-picker__day.is-in-range { background: color-mix(in srgb, var(--scq-primary) 14%, transparent); }
+.scq-date-time-picker__panel .scq-calendar__cell.is-selected button { background: var(--scq-primary); color: var(--scq-on-primary); }
+.scq-date-time-picker__time {
+  display: flex;
+  flex-direction: column;
+  width: var(--scq-date-time-picker-time-width);
+  min-width: 0;
+  min-height: 0;
+  border-left: 1px solid var(--scq-border);
+}
+.scq-date-time-picker__time-title { display: flex; align-items: center; flex-wrap: wrap; gap: calc(var(--scq-date-time-picker-gap) / 2); padding: var(--scq-date-time-picker-gap); }
+.scq-date-time-picker__time-title strong { margin-left: auto; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--scq-primary); }
+.scq-date-time-picker__time .scq-time-picker__columns { flex: 1 1 0; height: 0; min-height: var(--scq-date-time-picker-time-height); }
+.scq-date-time-picker__time .scq-time-picker__cell { height: var(--scq-picker-control-size); }
+.scq-date-time-picker__status { margin: 0; padding: var(--scq-picker-gap); color: var(--scq-muted); font-size: 12px; overflow-wrap: anywhere; }
+.scq-date-time-picker__status.is-error { color: var(--scq-danger); }
+.scq-date-time-picker__extra { padding: var(--scq-date-time-picker-gap); border-top: 1px solid var(--scq-border); }
+.scq-date-time-picker__footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--scq-date-time-picker-gap);
+  padding: var(--scq-date-time-picker-gap);
+  border-top: 1px solid var(--scq-border);
+  background: var(--scq-surface);
+}
+.scq-date-time-picker__actions { display: flex; gap: var(--scq-date-time-picker-gap); margin-left: auto; }
+.scq-date-time-picker__footer button { min-height: var(--scq-picker-control-size); padding: calc(var(--scq-date-time-picker-gap) / 2) var(--scq-date-time-picker-gap); border: 1px solid var(--scq-border); border-radius: var(--scq-radius-sm); background: var(--scq-surface); color: var(--scq-text); }
+.scq-date-time-picker__footer .scq-date-time-picker__now { color: var(--scq-primary); border-color: transparent; }
+.scq-date-time-picker__footer .scq-date-time-picker__confirm { background: var(--scq-primary); border-color: var(--scq-primary); color: var(--scq-on-primary); }
+.scq-date-time-picker__footer button:hover:not(:disabled) { filter: brightness(.95); }
+
+@media (max-width: 600px) {
+  .scq-date-time-picker__body { flex-direction: column; }
+  .scq-date-time-picker__time { width: 100%; border-left: 0; border-top: 1px solid var(--scq-border); }
+  .scq-date-time-picker__time .scq-time-picker__columns { flex: auto; height: var(--scq-date-time-picker-time-height); }
+  .scq-date-time-picker__endpoints button { font-size: 12px; }
+}
+@media (pointer: coarse) {
+  .scq-date-time-picker__footer button,
+  .scq-date-time-picker__shortcuts button,
+  .scq-date-time-picker__panel .scq-time-picker__cell { min-height: var(--scq-picker-touch-target); }
+}

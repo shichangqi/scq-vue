@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqButton, ScqSteps, type StepItem } from '../../../../src/index'
+import ScqButton from '../../../../src/components/Button'
+import ScqSteps from '../../../../src/components/Steps'
+import type { StepItem } from '../../../../src/index'
 
 const active = ref(0)
 const items: StepItem[] = [{ title: '填写资料', description: '基本信息与负责人' }, { title: '校验文件', description: '格式与完整性' }, { title: '团队确认', description: '项目成员审核' }, { title: '完成交付', description: '文件归档与通知' }]

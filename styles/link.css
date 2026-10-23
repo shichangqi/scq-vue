@@ -1,4 +1,5 @@
 @import './icon.css';
+@import './loading.css';
 .scq-link {
   display: inline-flex;
   align-items: center;
@@ -27,4 +28,8 @@
   background: var(--scq-color-primary-soft-bg, #eff6ff);
 }
 .scq-link.is-disabled { opacity: .45; cursor: not-allowed; }
+.scq-link.is-loading { cursor: wait; }
+.scq-link.is-active { color: var(--scq-primary, #2563eb); font-weight: 600; }
+.scq-link__loading { display: inline-flex; align-items: center; flex: none; }
+.scq-link__external-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .scq-link:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: 2px; }

@@ -6,24 +6,30 @@
       @after-leave="handleAfterLeave"
     >
       <div
-        v-if="visible"
+        v-if="visible || (rendered && !destroyOnClose)"
+        v-show="visible"
         class="scq-popup__overlay"
         :class="[`is-${position}`, `is-overlay-${overlayTheme}`, hasSize ? 'is-size-fixed' : 'is-size-auto']"
         :style="overlayStyle"
         @click.self="handleOverlayClick"
       >
         <div
+          ref="panel"
           class="scq-popup"
           :class="[`is-${position}`, { 'is-round': round, 'has-size': hasSize }]"
           :style="popupStyle"
           role="dialog"
           aria-modal="true"
+          :aria-label="ariaLabelledby ? undefined : ariaLabel || text('panel')"
+          :aria-labelledby="ariaLabelledby || undefined"
+          :aria-busy="isClosing || undefined"
+          tabindex="-1"
         >
           <button
             v-if="showClose"
             type="button"
             class="scq-popup__close"
-            aria-label="Close popup"
+            :aria-label="text('closePopup')"
             @click="handleCloseIcon"
           >
             <slot name="close-icon">
@@ -46,7 +52,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch, type Component } from 'vue'
+import { computed, onMounted, ref, watch, type Component } from 'vue'
+import { useLocale, useThemeStyle } from '../ConfigProvider/context'
+import { useAsyncGuard, type AsyncGuard } from '../../utils/async'
+import { MODAL_DEFAULTS, useModal, type InitialFocus } from '../../utils/modal'
+import { toCssLength } from '../../utils/layout'
+import { useUpdateFocus } from '../../utils/focus'
 
 defineOptions({
   name: 'Popup',
@@ -70,10 +81,15 @@ const props = withDefaults(
     closeOnClickOverlay?: boolean
     closeOnPressEscape?: boolean
     teleport?: boolean | string
+    beforeClose?: AsyncGuard<PopupCloseReason>
+    lockScroll?: boolean
+    destroyOnClose?: boolean
+    initialFocus?: InitialFocus
+    ariaLabel?: string
+    ariaLabelledby?: string
   }>(),
   {
     modelValue: false,
-    zIndex: 2100,
     position: 'center',
     size: undefined,
     showClose: false,
@@ -84,6 +100,9 @@ const props = withDefaults(
     closeOnClickOverlay: true,
     closeOnPressEscape: true,
     teleport: true,
+    lockScroll: true,
+    destroyOnClose: true,
+    initialFocus: undefined,
   },
 )
 
@@ -93,10 +112,22 @@ const emit = defineEmits<{
   (e: 'opened'): void
   (e: 'close', reason: PopupCloseReason): void
   (e: 'closed'): void
+  (e: 'error', error: unknown, reason: PopupCloseReason): void
 }>()
 
 const visible = ref(Boolean(props.modelValue))
-const isClosing = ref(false)
+const rendered = ref(visible.value)
+const panel = ref<HTMLElement>()
+useUpdateFocus(() => visible.value ? panel.value : undefined)
+const closeGuard = useAsyncGuard(() => props.beforeClose, (error, reason) => emit('error', error, reason))
+const isClosing = closeGuard.pending
+const { zIndex: layerZIndex } = useModal(() => visible.value, panel, {
+  closeOnPressEscape: () => props.closeOnPressEscape, lockScroll: () => props.lockScroll,
+  onEscape: () => { void closePopup('esc') }, zIndex: () => props.zIndex,
+  defaultZIndex: MODAL_DEFAULTS.legacyZIndex, initialFocus: () => props.initialFocus,
+})
+const text = useLocale()
+const themeStyle = useThemeStyle()
 
 const closeIconComponent = computed<Component | null>(() => {
   if (!props.closeIcon || typeof props.closeIcon === 'string') {
@@ -125,7 +156,8 @@ const teleportTarget = computed(() => {
 
 const overlayStyle = computed(() => {
   return {
-    zIndex: String(props.zIndex),
+    ...themeStyle.value,
+    zIndex: String(layerZIndex.value),
   }
 })
 
@@ -140,12 +172,8 @@ const hasSize = computed(() => {
 })
 
 const popupStyle = computed(() => {
-  const normalizedSize = typeof props.size === 'number'
-    ? `${props.size}px`
-    : (props.size || '').trim()
-  const normalizedRadius = typeof props.roundRadius === 'number'
-    ? `${props.roundRadius}px`
-    : props.roundRadius
+  const normalizedSize = toCssLength(props.size ?? '').trim()
+  const normalizedRadius = toCssLength(props.roundRadius)
 
   let borderRadius = '0'
   if (props.round) {
@@ -182,25 +210,20 @@ const transitionName = computed(() => {
 })
 
 const openPopup = () => {
+  rendered.value = true
   if (!visible.value) {
     visible.value = true
     emit('open')
   }
 }
 
-const closePopup = async (reason: PopupCloseReason) => {
-  if (!visible.value || isClosing.value) {
-    return
-  }
-
-  isClosing.value = true
-  try {
+const closePopup = (reason: PopupCloseReason) => {
+  if (!visible.value) return Promise.resolve(false)
+  return closeGuard.run(reason, () => {
     visible.value = false
     emit('update:modelValue', false)
     emit('close', reason)
-  } finally {
-    isClosing.value = false
-  }
+  })
 }
 
 const handleAfterEnter = () => {
@@ -221,19 +244,10 @@ const handleCloseIcon = () => {
   void closePopup('close-icon')
 }
 
-const handleEsc = (event: KeyboardEvent) => {
-  if (event.key !== 'Escape') {
-    return
-  }
-  if (!visible.value || !props.closeOnPressEscape) {
-    return
-  }
-  void closePopup('esc')
-}
-
 watch(
   () => props.modelValue,
   (next: boolean) => {
+    closeGuard.cancel()
     if (next) {
       openPopup()
       return
@@ -249,19 +263,11 @@ onMounted(() => {
   if (visible.value) {
     emit('open')
   }
-  if (typeof window !== 'undefined') {
-    window.addEventListener('keydown', handleEsc)
-  }
-})
-
-onUnmounted(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('keydown', handleEsc)
-  }
 })
 
 defineExpose({
   close: () => closePopup('api'),
+  pending: isClosing,
 })
 </script>
 

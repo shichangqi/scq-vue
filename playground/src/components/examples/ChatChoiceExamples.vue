@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import ScqChatChoice from '../../../../src/components/ChatChoice'
 import { computed, ref } from 'vue'
 import { locale } from '../../i18n'
 import type { ChatChoiceAnswer } from '../../../../src/components/ChatChoice'

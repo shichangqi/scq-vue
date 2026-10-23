@@ -1,5 +1,8 @@
+@import './loading.css';
 @import './badge.css';
 @import './icon.css';
+.scq-tabbar .scq-loading { color: inherit; }
+.scq-tabbar .scq-loading__indicator { min-height: 0; }
 .scq-tabbar-wrapper { --scq-tabbar-safe-bottom: 0px; min-width: 0; }
 .scq-tabbar-wrapper.has-safe-area { --scq-tabbar-safe-bottom: env(safe-area-inset-bottom); }
 .scq-tabbar-wrapper.is-fixed { min-height: calc(56px + var(--scq-tabbar-safe-bottom)); }

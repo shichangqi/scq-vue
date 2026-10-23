@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqTimePicker, type TimePickerValue } from '../../../../src/index'
+import ScqTimePicker from '../../../../src/components/TimePicker'
+import type { TimePickerValue } from '../../../../src/index'
 
 const meeting = ref<TimePickerValue>('09:30')
 const hours = ref<TimePickerValue>(['09:00', '18:00'])

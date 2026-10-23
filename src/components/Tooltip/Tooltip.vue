@@ -4,6 +4,6 @@
 import FloatingPanel from '../../utils/FloatingPanel.vue'
 import type { FloatingProps } from '../../utils/floating'
 defineOptions({ name: 'Tooltip' })
-const props = withDefaults(defineProps<FloatingProps>(), { modelValue: undefined, disabled: false, teleport: true, trigger: 'hover' })
+const props = withDefaults(defineProps<FloatingProps>(), { modelValue: undefined, disabled: undefined, teleport: true, trigger: 'hover' })
 const emit = defineEmits<{ (event: 'update:modelValue', value: boolean): void; (event: 'show' | 'hide'): void }>()
 </script>

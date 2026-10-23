@@ -3,5 +3,6 @@
 .scq-loading.has-content.is-loading > .scq-loading__indicator { position: absolute; inset: 0; z-index: 1; background: color-mix(in srgb, var(--scq-surface, #fff) 85%, transparent); backdrop-filter: blur(2px); border-radius: inherit; }
 .scq-loading__spinner { display: inline-block; flex-shrink: 0; box-sizing: border-box; border: 2.5px solid color-mix(in srgb, currentColor 20%, transparent); border-top-color: currentColor; border-radius: 50%; animation: scq-loading-spin 0.75s linear infinite; }
 .scq-loading__text { overflow-wrap: anywhere; }
+.scq-loading.is-nonblocking > .scq-loading__indicator { pointer-events: none; }
 @keyframes scq-loading-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .scq-loading__spinner { animation: none; } }

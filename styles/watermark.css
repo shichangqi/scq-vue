@@ -23,3 +23,8 @@
 .scq-watermark__layer.is-fullscreen {
   position: fixed;
 }
+
+@media print {
+  .scq-watermark__layer { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .scq-watermark__layer.is-print-hidden { display: none !important; }
+}

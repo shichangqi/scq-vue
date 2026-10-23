@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ScqGrid, ScqImage } from '../../../../src/index'
+import ScqGrid from '../../../../src/components/Grid'
+import ScqImage from '../../../../src/components/Image'
 
 const photos = [
   'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=900&auto=format&fit=crop&q=85',

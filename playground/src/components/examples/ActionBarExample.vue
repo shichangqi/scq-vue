@@ -1,11 +1,25 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { ScqActionBar, ScqCell, ScqImage, ScqNavBar, Toast, type ActionBarItem } from '../../../../src/index'
+import ScqActionBar from '../../../../src/components/ActionBar'
+import ScqCell from '../../../../src/components/Cell'
+import ScqImage from '../../../../src/components/Image'
+import ScqNavBar from '../../../../src/components/NavBar'
+import Toast from '../../../../src/components/Toast'
+import type { ActionBarItem } from '../../../../src/index'
 import PhonePreview from '../PhonePreview.vue'
 
 const favorite = ref(false)
 const cart = ref(0)
 const order = ref('待选择')
+const ACTION_DELAY = 500
+const PRODUCT_PRICE = 5999
+const price = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', maximumFractionDigits: 0 }).format(PRODUCT_PRICE)
+const beforeAction = (action: ActionBarItem, signal: AbortSignal) => action.key === 'favorite' ? true : new Promise<boolean>(resolve => {
+  const abort = () => { clearTimeout(timer); resolve(false) }
+  const timer = setTimeout(() => { signal.removeEventListener('abort', abort); resolve(true) }, ACTION_DELAY)
+  signal.addEventListener('abort', abort, { once: true })
+  if (signal.aborted) abort()
+})
 const actions = computed<ActionBarItem[]>(() => [
   { key: 'favorite', label: favorite.value ? '已收藏' : '收藏', icon: 'heart', type: 'icon' },
   { key: 'cart', label: '加入购物车', type: 'default' },
@@ -20,7 +34,7 @@ onBeforeUnmount(() => Toast.clear('#action-bar-product-preview'))
 </script>
 
 <template>
-  <PhonePreview screen-id="action-bar-product-preview"><ScqNavBar title="商品详情" /><ScqImage src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=85" alt="打开的轻薄笔记本电脑" :height="190" loading="eager" /><div class="action-bar-example__details"><strong class="action-bar-example__price">¥ 5,999</strong><h3>轻薄便携笔记本</h3><p>银色 · 16 GB + 512 GB</p></div><ScqCell title="购物车" :value="`${cart} 件`" /><ScqCell title="订单状态" :value="order" /><ScqActionBar :actions="actions" fixed @click="act" /></PhonePreview>
+  <PhonePreview screen-id="action-bar-product-preview"><ScqNavBar title="商品详情" /><ScqImage src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=85" alt="打开的轻薄笔记本电脑" :height="190" loading="eager" /><div class="action-bar-example__details"><strong class="action-bar-example__price">{{ price }}</strong><h3>轻薄便携笔记本</h3><p>银色 · 16 GB + 512 GB</p></div><ScqCell title="购物车" :value="`${cart} 件`" /><ScqCell title="订单状态" :value="order" /><ScqActionBar :actions="actions" :before-action="beforeAction" fixed @click="act"><template #summary>合计 {{ price }}</template></ScqActionBar></PhonePreview>
 </template>
 
 <style scoped>

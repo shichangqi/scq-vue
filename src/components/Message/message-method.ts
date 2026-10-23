@@ -1,5 +1,7 @@
-import { TransitionGroup, createVNode, defineComponent, h, reactive, render } from 'vue'
+import { TransitionGroup, createVNode, defineComponent, h, onScopeDispose, render, shallowReactive, type AppContext } from 'vue'
 import type { MessagePlacement, MessageType } from './Message.vue'
+import { getConfigFromContext, getLocaleMessage, getThemeStyle, resolveMethodContext, useConfigContext } from '../ConfigProvider/context'
+import { MESSAGE_DEFAULTS, validateFeedbackOptions } from '../../utils/feedback'
 
 export interface MessageApiOptions {
   type?: MessageType
@@ -25,15 +27,16 @@ type MessageRecord = Required<Pick<MessageApiOptions, 'type' | 'duration' | 'sho
   description: string
   timer: ReturnType<typeof window.setTimeout> | null
   onClose?: () => void
+  appContext?: AppContext
 }
 
 let messageSeed = 0
-let messageZIndexSeed = 10000
+let messageZIndexSeed: number = MESSAGE_DEFAULTS.zIndex
 let container: HTMLDivElement | null = null
 
-const state = reactive({
-  items: [] as MessageRecord[],
-})
+const state = {
+  items: shallowReactive<MessageRecord[]>([]),
+}
 
 const placements: MessagePlacement[] = ['top', 'top-left', 'top-right', 'bottom', 'bottom-left', 'bottom-right']
 
@@ -91,14 +94,14 @@ const MessageHost = defineComponent({
           tag: 'div',
           name: transitionName,
           class: ['scq-message-stack', `is-${placement}`],
-          style: { '--scq-message-offset': `${items[0]?.offset ?? 24}px` },
+          style: { '--scq-message-offset': `${items[0]?.offset ?? MESSAGE_DEFAULTS.offset}px` },
         },
         () => items.map((item) => h(
           'div',
           {
             key: item.id,
             class: ['scq-message', `is-${item.type}`, { 'is-closable': item.closable }],
-            style: { zIndex: item.zIndex },
+            style: { ...getThemeStyle(getConfigFromContext(item.appContext)), zIndex: item.zIndex },
             role: 'status',
           },
           [
@@ -107,7 +110,7 @@ const MessageHost = defineComponent({
               h('span', { class: 'scq-message__message' }, item.message),
               item.description ? h('span', { class: 'scq-message__description' }, item.description) : null,
             ]),
-            item.closable ? h('button', { type: 'button', class: 'scq-message__close', 'aria-label': '关闭', onClick: () => closeMessage(item.id) }, '×') : null,
+            item.closable ? h('button', { type: 'button', class: 'scq-message__close', 'aria-label': getLocaleMessage(getConfigFromContext(item.appContext), 'close'), onClick: () => closeMessage(item.id) }, '×') : null,
           ],
         )),
       )
@@ -115,14 +118,16 @@ const MessageHost = defineComponent({
   },
 })
 
-export const openMessage = (options: MessageApiOptions | string): MessageInstance => {
-  if (!ensureContainer()) {
+export const openMessage = (options: MessageApiOptions | string, appContext?: AppContext): MessageInstance => {
+  if (typeof document === 'undefined') {
     return { close: () => undefined }
   }
 
   const normalizedOptions: MessageApiOptions = typeof options === 'string' ? { message: options } : options
+  validateFeedbackOptions(normalizedOptions, 'Message')
+  ensureContainer()
   const id = ++messageSeed
-  const duration = normalizedOptions.duration ?? 3000
+  const duration = normalizedOptions.duration ?? MESSAGE_DEFAULTS.duration
   const item: MessageRecord = {
     id,
     type: normalizedOptions.type ?? 'info',
@@ -132,10 +137,11 @@ export const openMessage = (options: MessageApiOptions | string): MessageInstanc
     showIcon: normalizedOptions.showIcon ?? true,
     closable: normalizedOptions.closable ?? false,
     placement: normalizedOptions.placement ?? 'top',
-    offset: normalizedOptions.offset ?? 24,
+    offset: normalizedOptions.offset ?? MESSAGE_DEFAULTS.offset,
     zIndex: normalizedOptions.zIndex ?? ++messageZIndexSeed,
     timer: null,
     onClose: normalizedOptions.onClose,
+    appContext,
   }
 
   state.items.push(item)
@@ -149,29 +155,31 @@ export const openMessage = (options: MessageApiOptions | string): MessageInstanc
   }
 }
 
-const createTypeMethod = (type: MessageType) => {
-  return (options: MessageApiOptions | string) => openMessage(typeof options === 'string' ? { type, message: options } : { ...options, type })
+const createMessage = (appContext?: AppContext) => {
+  const open = (options: MessageApiOptions | string, context = appContext) => openMessage(options, resolveMethodContext(appContext, context))
+  const typed = (type: MessageType) => (options: MessageApiOptions | string, context = appContext) =>
+    open(typeof options === 'string' ? { type, message: options } : { ...options, type }, context)
+  return {
+    open,
+    info: typed('info'),
+    success: typed('success'),
+    warning: typed('warning'),
+    error: typed('error'),
+    loading: typed('loading'),
+    destroyAll: () => {
+      for (const item of [...state.items]) {
+        if (!appContext || item.appContext === appContext) closeMessage(item.id)
+      }
+    },
+    setGlobalZIndex: (value: number) => {
+      if (Number.isFinite(value)) messageZIndexSeed = Math.max(0, Math.floor(value))
+    },
+  }
 }
 
-export const message = {
-  open: openMessage,
-  info: createTypeMethod('info'),
-  success: createTypeMethod('success'),
-  warning: createTypeMethod('warning'),
-  error: createTypeMethod('error'),
-  loading: createTypeMethod('loading'),
-  destroyAll: () => {
-    state.items.forEach((item) => {
-      if (item.timer) {
-        window.clearTimeout(item.timer)
-      }
-      item.onClose?.()
-    })
-    state.items.splice(0)
-  },
-  setGlobalZIndex: (value: number) => {
-    if (Number.isFinite(value)) {
-      messageZIndexSeed = Math.max(0, Math.floor(value))
-    }
-  },
+export const message = createMessage()
+export const useMessage = () => {
+  const api = createMessage(useConfigContext('useMessage'))
+  onScopeDispose(api.destroyAll)
+  return api
 }

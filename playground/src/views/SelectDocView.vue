@@ -2,14 +2,12 @@
   <section class="doc-block">
     <h1>Select 下拉框</h1>
     <p class="lead">支持单选/多选、搜索过滤、本地或远程数据加载，以及可配置分页。</p>
-
-    <h2>单选（含动效样式）</h2>
-    <DocExample :code="singleCode" lang="vue">
+    <OnDemandExample :code="singleCode">
       <div class="select-demo-grid">
         <scq-select v-model="singleValue" :options="cityOptions" placeholder="请选择城市" />
         <div class="select-demo-result">当前值：{{ singleValue }}</div>
       </div>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>多选</h2>
     <DocExample :code="multipleCode" lang="vue">
@@ -133,7 +131,9 @@
         <tr><td>pagination</td><td>是否启用分页</td><td>boolean</td><td>false</td></tr>
         <tr><td>pageSize</td><td>每页条数</td><td>number</td><td>8</td></tr>
         <tr><td>debounce</td><td>远程搜索防抖时间（毫秒）</td><td>number</td><td>300</td></tr>
-        <tr><td>size</td><td>尺寸</td><td>large | default | small</td><td>default</td></tr>
+        <tr><td>size</td><td>尺寸；未设置时继承 ConfigProvider</td><td>large | default | small</td><td>provider / default</td></tr>
+        <tr><td>disabled</td><td>禁用；显式 false 可覆盖 ConfigProvider</td><td>boolean</td><td>provider / false</td></tr>
+        <tr><td>placeholder</td><td>占位文本；未设置时随 ConfigProvider 语言变化</td><td>string</td><td>locale</td></tr>
       </tbody>
     </table>
 
@@ -172,12 +172,16 @@
         <tr><td>blur</td><td>让内部输入框失焦（filterable 时）</td><td>-</td></tr>
       </tbody>
     </table>
+    <ComponentDocView slug="select" supplement />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScqSelect from '../../../src/components/Select'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
+import ComponentDocView from './ComponentDocView.vue'
 
 const cityOptions = [
   { label: '北京', value: 'beijing' },

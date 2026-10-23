@@ -1,0 +1,16 @@
+export const WATERMARK_DEFAULTS = {
+  content: 'SCQ VUE',
+  color: 'rgba(0, 0, 0, 0.12)',
+  gap: 120,
+  size: 16,
+  rotate: -22,
+  zIndex: 9,
+  fontFamily: 'Arial, sans-serif',
+  fontWeight: 500,
+  lineHeightRatio: 1.4,
+  minimumWidthRatio: 8,
+  minimumHeightRatio: 5,
+  imageSize: [48, 32],
+  imageGap: 8,
+  imageOpacity: 1,
+} as const

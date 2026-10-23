@@ -1,4 +1,6 @@
 @import './icon.css';
+.scq-pagination__jumper { width: 5em; min-width: 0; height: 32px; box-sizing: border-box; border: 1px solid var(--scq-border); border-radius: 4px; color: inherit; background: var(--scq-surface); padding: 0 6px; font: inherit; }
+.scq-pagination .scq-pagination__counter.is-unknown { display: inline-flex; }
 
 .scq-pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; max-width: 100%; color: var(--scq-text, #0f172a); font-size: 14px; }
 .scq-pagination__pages { display: flex; align-items: center; gap: 6px; }
@@ -11,13 +13,12 @@
   height: 34px;
   padding: 0 10px;
   border: 1px solid var(--scq-border, #e2e8f0);
-  border-radius: var(--scq-radius-md, 8px);
+  border-radius: var(--scq-control-radius, 4px);
   background: var(--scq-surface, #ffffff);
   color: var(--scq-text, #0f172a);
   font: inherit;
   font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .scq-pagination__button:hover:not(:disabled):not(.is-active) {
@@ -33,24 +34,22 @@
   color: #ffffff;
   background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
   border-color: #2563eb;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
   font-weight: 600;
 }
 .scq-pagination__button:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
-.scq-pagination__button:focus-visible, .scq-pagination__size:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: 2px; }
+.scq-pagination__button:focus-visible:not(:disabled), .scq-pagination__size:focus-visible, .scq-pagination__jumper:focus-visible { outline: none; box-shadow: 0 0 0 var(--scq-control-border-width, 1px) currentColor inset; }
 .scq-pagination__ellipsis { padding: 0 4px; color: var(--scq-muted, #94a3b8); }
 .scq-pagination__counter { display: none; min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; font-weight: 500; }
 .scq-pagination__size {
   max-width: 100%;
   min-height: 34px;
   border: 1px solid var(--scq-border, #e2e8f0);
-  border-radius: var(--scq-radius-md, 8px);
+  border-radius: var(--scq-control-radius, 4px);
   background: var(--scq-surface, #ffffff);
   color: var(--scq-text, #0f172a);
   padding: 4px 10px;
   font: inherit;
   font-size: 13px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   cursor: pointer;
   transition: all 0.2s ease;
 }

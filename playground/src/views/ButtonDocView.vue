@@ -2,9 +2,7 @@
   <section class="doc-block">
     <h1>{{ t('button.title') }}</h1>
     <p class="lead">{{ t('button.lead') }}</p>
-
-    <h2>{{ t('button.basic') }}</h2>
-    <DocExample :code="basicCode" lang="vue">
+    <OnDemandExample :code="basicCode">
       <div class="demo-panel">
         <scq-button>Default</scq-button>
         <scq-button type="primary">Primary</scq-button>
@@ -13,7 +11,7 @@
         <scq-button type="info">Info</scq-button>
         <scq-button type="danger">Danger</scq-button>
       </div>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('button.plain') }}</h2>
     <DocExample :code="plainCode" lang="vue">
@@ -32,6 +30,7 @@
         <scq-button round type="success">Round</scq-button>
         <scq-button circle type="danger">+</scq-button>
         <scq-button loading type="primary">Loading</scq-button>
+        <scq-button circle loading type="primary">保存中</scq-button>
         <scq-button disabled>Disabled</scq-button>
         <scq-button text>Text</scq-button>
         <scq-button link>Link</scq-button>
@@ -71,12 +70,12 @@
       </thead>
       <tbody>
         <tr><td>type</td><td>{{ t('button.type.desc') }}</td><td>default | primary | success | warning | info | danger</td><td>default</td></tr>
-        <tr><td>size</td><td>{{ t('button.size.desc') }}</td><td>large | default | small</td><td>default</td></tr>
+        <tr><td>size</td><td>{{ t('button.size.desc') }}</td><td>large | default | small</td><td>provider / default</td></tr>
         <tr><td>plain</td><td>{{ t('button.plain.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>round</td><td>{{ t('button.round.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>circle</td><td>{{ t('button.circle.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>loading</td><td>{{ t('button.loading.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>disabled</td><td>{{ t('button.disabled.desc') }}</td><td>boolean</td><td>false</td></tr>
+        <tr><td>disabled</td><td>{{ t('button.disabled.desc') }}</td><td>boolean</td><td>provider / false</td></tr>
         <tr><td>text</td><td>{{ t('button.text.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>link</td><td>{{ t('button.link.desc') }}</td><td>boolean</td><td>false</td></tr>
         <tr><td>bg</td><td>{{ t('button.bg.desc') }}</td><td>boolean</td><td>false</td></tr>
@@ -88,7 +87,10 @@
 </template>
 
 <script setup lang="ts">
+import ScqButton from '../../../src/components/Button'
+import ScqIcon from '../../../src/components/Icon'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
 import { t } from '../i18n'
 
 const basicCode = `<template>
@@ -123,6 +125,7 @@ const stateCode = `<template>
     <scq-button round type="success">Round</scq-button>
     <scq-button circle type="danger">+</scq-button>
     <scq-button loading type="primary">Loading</scq-button>
+    <scq-button circle loading type="primary">保存中</scq-button>
     <scq-button disabled>Disabled</scq-button>
     <scq-button text>Text</scq-button>
     <scq-button link>Link</scq-button>

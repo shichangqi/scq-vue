@@ -31,6 +31,7 @@ export const componentDocs: DocEntry[] = [
   { slug: 'checkbox', name: 'Checkbox', title: '多选框', group: 'form', platform: 'both' },
   { slug: 'select', name: 'Select', title: '选择器', group: 'form', platform: 'both' },
   { slug: 'date-picker', name: 'DatePicker', title: '日期选择器', group: 'form', platform: 'both' },
+  { slug: 'date-time-picker', name: 'DateTimePicker', title: '日期时间选择器', group: 'form', platform: 'both' },
   { slug: 'time-picker', name: 'TimePicker', title: '时间选择器', group: 'form', platform: 'both' },
   { slug: 'slider', name: 'Slider', title: '滑块', group: 'form', platform: 'both' },
   { slug: 'rate', name: 'Rate', title: '评分', group: 'form', platform: 'both' },

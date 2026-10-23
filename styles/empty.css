@@ -5,3 +5,4 @@
 .scq-empty__image img { width: 100%; height: 100%; object-fit: contain; }
 .scq-empty__description { max-width: 100%; overflow-wrap: anywhere; font-weight: 500; }
 .scq-empty__actions { margin-top: 6px; max-width: 100%; }
+.scq-empty--small { gap: 8px; padding: 16px 12px; }

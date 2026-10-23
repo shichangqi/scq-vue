@@ -5,7 +5,7 @@
         v-if="visible"
         class="scq-message"
         :class="[`is-${type}`, `is-${resolvedPlacement}`, { 'is-closable': closable, 'is-standalone': standalone }]"
-        :style="messageStyle"
+        :style="[themeStyle, messageStyle]"
         role="status"
       >
         <span v-if="showIcon" class="scq-message__icon" aria-hidden="true">{{ iconText }}</span>
@@ -13,14 +13,16 @@
           <span class="scq-message__message"><slot>{{ message }}</slot></span>
           <span v-if="description" class="scq-message__description">{{ description }}</span>
         </span>
-        <button v-if="closable" type="button" class="scq-message__close" aria-label="关闭" @click="close">×</button>
+        <button v-if="closable" type="button" class="scq-message__close" :aria-label="text('close')" @click="close">×</button>
       </div>
     </Transition>
   </Teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useLocale, useThemeStyle } from '../ConfigProvider/context'
+import { MESSAGE_DEFAULTS, validateFeedbackOptions } from '../../utils/feedback'
 
 defineOptions({
   name: 'Message',
@@ -49,12 +51,12 @@ const props = withDefaults(
     type: 'info',
     message: '',
     description: '',
-    duration: 3000,
+    duration: MESSAGE_DEFAULTS.duration,
     showIcon: true,
     closable: false,
     placement: 'top',
-    offset: 24,
-    zIndex: 10000,
+    offset: MESSAGE_DEFAULTS.offset,
+    zIndex: MESSAGE_DEFAULTS.zIndex,
     teleport: true,
     standalone: true,
   },
@@ -67,7 +69,11 @@ const emit = defineEmits<{
 }>()
 
 const visible = ref(props.modelValue)
+const text = useLocale()
+const themeStyle = useThemeStyle()
 let closeTimer: ReturnType<typeof window.setTimeout> | null = null
+let mounted = false
+watch(() => [props.duration, props.offset, props.zIndex], () => validateFeedbackOptions(props, 'Message'), { immediate: true, flush: 'sync' })
 
 const iconMap: Record<MessageType, string> = {
   info: 'i',
@@ -125,7 +131,7 @@ const clearCloseTimer = () => {
 
 const startCloseTimer = () => {
   clearCloseTimer()
-  if (props.duration > 0) {
+  if (mounted && visible.value && props.duration > 0) {
     closeTimer = window.setTimeout(() => {
       close()
     }, props.duration)
@@ -134,6 +140,7 @@ const startCloseTimer = () => {
 
 const close = () => {
   clearCloseTimer()
+  if (!mounted || !visible.value) return
   visible.value = false
   emit('update:modelValue', false)
   emit('close')
@@ -143,16 +150,13 @@ watch(
   () => props.modelValue,
   (value) => {
     visible.value = value
-    if (value) {
-      startCloseTimer()
-    } else {
-      clearCloseTimer()
-    }
   },
   { immediate: true },
 )
 
-onBeforeUnmount(clearCloseTimer)
+watch([visible, () => props.duration, () => props.message, () => props.description], startCloseTimer)
+onMounted(() => { mounted = true; startCloseTimer() })
+onBeforeUnmount(() => { mounted = false; clearCloseTimer() })
 </script>
 
 <style scoped>

@@ -12,7 +12,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqAvatar, ScqButton, ScqSpace } from '../../../../src/index'
+import ScqAvatar from '../../../../src/components/Avatar'
+import ScqButton from '../../../../src/components/Button'
+import ScqSpace from '../../../../src/components/Space'
 
 const useImage = ref(true)
 const imageUrl = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=128&h=128&q=80'

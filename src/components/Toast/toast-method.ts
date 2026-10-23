@@ -1,6 +1,8 @@
-import { createVNode, render, type AppContext } from 'vue'
+import { createVNode, onScopeDispose, render, type AppContext } from 'vue'
 import Toast, { type ToastPosition, type ToastType } from './Toast.vue'
 import type { IconName } from '../Icon/icons'
+import { resolveMethodContext, useConfigContext } from '../ConfigProvider/context'
+import { FEEDBACK_CLEANUP_DELAY, resolveFeedbackTarget, validateFeedbackOptions } from '../../utils/feedback'
 
 export interface ToastApiOptions {
   message?: string
@@ -23,15 +25,15 @@ export interface ToastInstance {
   update: (options: Omit<Partial<ToastApiOptions>, 'teleport'>) => void
 }
 
-const activeToasts = new Map<Element, { dispose: () => void }>()
+const activeToasts = new Map<Element, Map<AppContext | undefined, { dispose: () => void }>>()
 const emptyInstance: ToastInstance = { close: () => {}, update: () => {} }
 
 export const showToast = (input: string | ToastApiOptions = {}, appContext?: AppContext): ToastInstance => {
   if (typeof document === 'undefined') return emptyInstance
   let options: ToastApiOptions = typeof input === 'string' ? { message: input } : { ...input }
-  const target = options.teleport ? document.querySelector(options.teleport) : document.body
-  if (!target) return emptyInstance
-  activeToasts.get(target)?.dispose()
+  validateFeedbackOptions(options, 'Toast')
+  const target = resolveFeedbackTarget(options.teleport, 'Toast')
+  activeToasts.get(target)?.get(appContext)?.dispose()
 
   const container = document.createElement('div')
   container.className = 'scq-toast-host'
@@ -48,7 +50,11 @@ export const showToast = (input: string | ToastApiOptions = {}, appContext?: App
     if (cleanupTimer !== undefined) clearTimeout(cleanupTimer)
     render(null, container)
     container.remove()
-    if (activeToasts.get(target) === record) activeToasts.delete(target)
+    const records = activeToasts.get(target)
+    if (records?.get(appContext) === record) {
+      records.delete(appContext)
+      if (!records.size) activeToasts.delete(target)
+    }
     try {
       if (notifyClose) options.onClose?.()
     } finally {
@@ -59,7 +65,7 @@ export const showToast = (input: string | ToastApiOptions = {}, appContext?: App
   const handleClose = () => {
     if (closing || disposed) return
     closing = true
-    cleanupTimer = setTimeout(dispose, 250)
+    cleanupTimer = setTimeout(dispose, FEEDBACK_CLEANUP_DELAY)
     options.onClose?.()
   }
 
@@ -76,7 +82,9 @@ export const showToast = (input: string | ToastApiOptions = {}, appContext?: App
   }
 
   const record = { dispose }
-  activeToasts.set(target, record)
+  const records = activeToasts.get(target) ?? new Map<AppContext | undefined, { dispose: () => void }>()
+  records.set(appContext, record)
+  activeToasts.set(target, records)
   renderToast()
 
   return {
@@ -86,28 +94,36 @@ export const showToast = (input: string | ToastApiOptions = {}, appContext?: App
     },
     update: (nextOptions) => {
       if (closing || disposed) return
-      options = { ...options, ...nextOptions }
+      const next = { ...options, ...nextOptions }
+      validateFeedbackOptions(next, 'Toast')
+      options = next
       renderToast()
     },
   }
 }
 
-const createTypeMethod = (type: ToastType) => (options: string | ToastApiOptions = {}, appContext?: AppContext) => {
-  return showToast(typeof options === 'string' ? { message: options, type } : { ...options, type }, appContext)
-}
-
-const clear = (teleport?: string) => {
+const clear = (teleport?: string, appContext?: AppContext) => {
   if (typeof document === 'undefined') return
-  for (const [target, record] of [...activeToasts]) {
-    if (!teleport || target.matches(teleport)) record.dispose()
+  for (const [target, records] of [...activeToasts]) {
+    if (!teleport || target.matches(teleport)) {
+      for (const [context, record] of [...records]) {
+        if (!appContext || context === appContext) record.dispose()
+      }
+    }
   }
 }
 
-export const toast = {
-  show: showToast,
-  success: createTypeMethod('success'),
-  fail: createTypeMethod('fail'),
-  loading: createTypeMethod('loading'),
-  clear,
-  destroyAll: clear,
+const createToast = (appContext?: AppContext) => {
+  const show = (input: string | ToastApiOptions = {}, context = appContext) => showToast(input, resolveMethodContext(appContext, context))
+  const typed = (type: ToastType) => (input: string | ToastApiOptions = {}, context = appContext) =>
+    show(typeof input === 'string' ? { message: input, type } : { ...input, type }, context)
+  const clearScope = (selector?: string) => clear(selector, appContext)
+  return { show, success: typed('success'), fail: typed('fail'), loading: typed('loading'), clear: clearScope, destroyAll: clearScope }
+}
+
+export const toast = createToast()
+export const useToast = () => {
+  const api = createToast(useConfigContext('useToast'))
+  onScopeDispose(api.destroyAll)
+  return api
 }

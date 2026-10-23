@@ -1,20 +1,26 @@
 @import './icon.css';
 .scq-swipe { position: relative; min-width: 0; background: var(--scq-fill, #f8fafc); color: var(--scq-text, #0f172a); border-radius: var(--scq-radius-lg, 12px); overflow: hidden; }
 .scq-swipe__viewport { overflow: hidden; height: var(--scq-swipe-height, 180px); border-radius: inherit; }
-.scq-swipe__track { display: flex; height: 100%; touch-action: pan-y pinch-zoom; }
+.scq-swipe__track { display: flex; height: 100%; gap: var(--scq-swipe-gap, 0px); touch-action: pan-y pinch-zoom; }
+.scq-swipe.is-vertical .scq-swipe__track { flex-direction: column; touch-action: pan-x pinch-zoom; }
+.scq-swipe.is-vertical .scq-swipe__slide { min-height: 0; }
 .scq-swipe__slide { flex: 0 0 100%; min-width: 0; height: 100%; position: relative; display: grid; place-items: center; overflow: hidden; }
 .scq-swipe__content { display: grid; place-items: center; width: 100%; height: 100%; min-width: 0; opacity: .65; transform: scale(1.05); transition: transform .6s cubic-bezier(0.16, 1, 0.3, 1), opacity .45s ease; }
 .scq-swipe__slide[aria-hidden="false"] > .scq-swipe__content { opacity: 1; transform: none; }
 .scq-swipe__slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .scq-swipe__viewport:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: -2px; }
 .scq-swipe__indicators { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; max-width: 100%; overflow: auto; padding: 4px 8px; border-radius: 9999px; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-.scq-swipe__indicators button { display: grid; place-items: center; flex: 0 0 18px; width: 18px; height: 6px; border: 0; background: transparent; padding: 0; cursor: pointer; }
-.scq-swipe__indicators button::after { content: ''; display: block; width: 6px; height: 6px; border-radius: 9999px; background: rgba(255, 255, 255, 0.6); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-.scq-swipe__indicators button[aria-current]::after { width: 18px; background: #ffffff; }
+.scq-swipe__indicators:not(.is-custom) button { display: grid; place-items: center; flex: 0 0 18px; width: 18px; height: 6px; border: 0; background: transparent; padding: 0; cursor: pointer; }
+.scq-swipe__indicators:not(.is-custom) button::after { content: ''; display: block; width: 6px; height: 6px; border-radius: 9999px; background: rgba(255, 255, 255, 0.6); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+.scq-swipe__indicators:not(.is-custom) button[aria-current]::after { width: 18px; background: #ffffff; }
 .scq-swipe__arrow { position: absolute; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: white; cursor: pointer; transition: all 0.2s ease; }
 .scq-swipe__arrow:hover:not(:disabled) { background: rgba(15, 23, 42, 0.75); transform: translateY(-50%) scale(1.08); }
 .scq-swipe__arrow--previous { left: 10px; }
 .scq-swipe__arrow--next { right: 10px; }
+.scq-swipe.is-vertical .scq-swipe__arrow { left: 50%; right: auto; transform: translateX(-50%); }
+.scq-swipe.is-vertical .scq-swipe__arrow--previous { top: 10px; }
+.scq-swipe.is-vertical .scq-swipe__arrow--next { top: auto; bottom: 10px; }
+.scq-swipe.is-vertical .scq-swipe__indicators { left: auto; right: 8px; transform: none; }
 .scq-swipe button:disabled { opacity: .3; cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
 	.scq-swipe__content { opacity: 1; transform: none; }

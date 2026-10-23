@@ -3,6 +3,8 @@
 @import './popover.css';
 .scq-tree-select { display: inline-block; width: 280px; max-width: 100%; vertical-align: middle; }
 .scq-tree-select > .scq-floating-reference { display: block; }
-.scq-tree-select__filter { width: 100%; box-sizing: border-box; margin-bottom: 8px; padding: 8px 12px; border: 1px solid var(--scq-border, #e2e8f0); border-radius: var(--scq-radius-md, 8px); color: var(--scq-text, #0f172a); background: var(--scq-surface, #ffffff); font: inherit; transition: all 0.2s ease; }
-.scq-tree-select__filter:focus { border-color: var(--scq-primary, #2563eb); outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16); }
+.scq-tree-select__filter { --scq-filter-border-color: var(--scq-border, #dcdfe6); width: 100%; box-sizing: border-box; margin-bottom: 8px; padding: calc(8px + var(--scq-control-border-width, 1px)) calc(12px + var(--scq-control-border-width, 1px)); border: 0; border-radius: var(--scq-control-radius, 4px); color: var(--scq-text, #0f172a); background: var(--scq-surface, #ffffff); font: inherit; box-shadow: 0 0 0 var(--scq-control-border-width, 1px) var(--scq-filter-border-color) inset; transition: box-shadow var(--scq-transition-fast, 0.2s ease); }
+.scq-tree-select__filter:hover { --scq-filter-border-color: var(--scq-border-hover, #a8abb2); }
+.scq-tree-select__filter:focus { --scq-filter-border-color: var(--scq-primary, #2563eb); outline: none; }
 .scq-tree-select__options { max-height: 280px; overflow-y: auto; overscroll-behavior: contain; }
+.scq-tree-select__options--virtual { max-height: none; overflow: visible; }

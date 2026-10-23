@@ -2,9 +2,7 @@
   <section class="doc-block">
     <h1>{{ t('icon.title') }}</h1>
     <p class="lead">{{ t('icon.lead') }}</p>
-
-    <h2>{{ t('icon.basic') }}</h2>
-    <DocExample :code="basicCode" lang="vue">
+    <OnDemandExample :code="basicCode">
       <div class="demo-panel">
         <scq-icon name="copy" :size="22" />
         <scq-icon name="refresh" variant="solid" :size="22" color="#2563eb" />
@@ -12,7 +10,7 @@
         <scq-icon name="warning" variant="solid" :size="22" color="#d97706" />
         <scq-icon name="error" variant="solid" :size="22" color="#dc2626" />
       </div>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('icon.library') }}</h2>
     <DocExample :code="libraryCode" lang="vue">
@@ -61,13 +59,17 @@
         <tr><td>color</td><td>{{ t('icon.color.desc') }}</td><td>string</td><td>-</td></tr>
       </tbody>
     </table>
+    <ComponentDocView slug="icon" supplement />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScqIcon from '../../../src/components/Icon'
 import { ref } from 'vue'
 import { type IconName, type IconVariant } from 'scq-vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
+import ComponentDocView from './ComponentDocView.vue'
 import { t } from '../i18n'
 
 let copyTimer: ReturnType<typeof window.setTimeout> | undefined
@@ -174,6 +176,11 @@ const solidCode = `<template>
   <scq-icon name="copy" variant="solid" />
   <scq-icon name="success" variant="solid" />
   <scq-icon name="wechat" variant="solid" />
+  <scq-icon name="file" variant="solid" />
+  <scq-icon name="file-pdf" variant="solid" />
+  <scq-icon name="file-word" variant="solid" />
+  <scq-icon name="file-excel" variant="solid" />
+  <scq-icon name="file-zip" variant="solid" />
 </template>`
 
 const libraryCode = `<template>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqCell, ScqEmpty, ScqNavBar, ScqSwipeCell } from '../../../../src/index'
+import ScqCell from '../../../../src/components/Cell'
+import ScqEmpty from '../../../../src/components/Empty'
+import ScqNavBar from '../../../../src/components/NavBar'
+import ScqSwipeCell from '../../../../src/components/SwipeCell'
 import PhonePreview from '../PhonePreview.vue'
 
 const initial = [{ id: 1, title: '设计评审', description: '明天 14:00 · 会议室 A', pinned: false }, { id: 2, title: '开发周报', description: '周五前提交本周进展', pinned: false }, { id: 3, title: '项目资料', description: '新的参考文件已到达', pinned: false }]

@@ -53,6 +53,12 @@
 .scq-tag--small { min-height: 20px; padding: 0 6px; font-size: 11px; line-height: 16px; border-radius: 4px; }
 .scq-tag--large { min-height: 32px; padding: 4px 14px; font-size: 14px; border-radius: var(--scq-radius-md, 8px); }
 .scq-tag__text { overflow-wrap: anywhere; min-width: 0; }
+.scq-tag__select { display: inline-flex; align-items: center; gap: inherit; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: inherit; }
+.scq-tag__select:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.scq-tag.is-selected { box-shadow: inset 0 0 0 1px currentColor; }
+.scq-tag.is-disabled { opacity: var(--scq-disabled-opacity, .5); }
+.scq-tag button:disabled { cursor: not-allowed; }
+.scq-tag.is-round { border-radius: 999px; }
 .scq-tag__close {
   display: grid;
   place-items: center;

@@ -15,3 +15,4 @@ _Select.install = (app: App): void => {
 }
 
 export default _Select
+export type { SelectValue, SelectSize, SelectOption, SelectRemoteResult, RemoteResult, SelectRemoteMethod } from './types'

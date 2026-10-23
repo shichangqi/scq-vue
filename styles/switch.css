@@ -20,6 +20,7 @@
 .scq-switch--large { --scq-switch-height: 28px; --scq-switch-width: 52px; font-size: 15px; }
 .scq-switch__input { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .scq-switch__track {
+  --scq-switch-focus-color: var(--scq-primary, #2563eb);
   position: relative;
   flex: none;
   width: var(--scq-switch-width);
@@ -50,8 +51,9 @@
   width: calc(var(--scq-switch-height) + 1px);
 }
 .scq-switch.is-checked .scq-switch__track {
+  --scq-switch-focus-color: var(--scq-on-primary, #ffffff);
   background: var(--scq-primary, #2563eb);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  box-shadow: none;
 }
 .scq-switch.is-checked:hover:not(.is-disabled) .scq-switch__track {
   background: var(--scq-primary-hover, #3b82f6);
@@ -64,7 +66,7 @@
 }
 .scq-switch__input:focus-visible + .scq-switch__track {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.24);
+  box-shadow: 0 0 0 var(--scq-control-border-width, 1px) var(--scq-switch-focus-color) inset;
 }
 .scq-switch.is-disabled { opacity: 0.45; cursor: not-allowed; }
 .scq-switch__label { overflow-wrap: anywhere; }

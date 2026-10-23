@@ -1,6 +1,6 @@
 {
   "name": "scq-vue",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "A Vue 3 component library made by Chauncy",
   "main": "./dist/scq-vue.umd.js",
   "module": "./dist/scq-vue.es.js",
@@ -65,7 +65,7 @@
     "watermark"
   ],
   "author": "Chauncy",
-  "license": "ISC",
+  "license": "MIT",
   "packageManager": "pnpm@10.33.3",
   "peerDependencies": {
     "vue": "^3.3.0"

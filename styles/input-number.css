@@ -2,29 +2,31 @@
 
 .scq-input-number {
   --scq-number-height: 36px;
+  --scq-number-border-color: var(--scq-border, #dcdfe6);
   display: inline-flex;
   height: var(--scq-number-height);
   width: 160px;
   max-width: 100%;
-  border: 1px solid var(--scq-border, #e2e8f0);
-  border-radius: var(--scq-radius-md, 8px);
+  border: 0;
+  padding: var(--scq-control-border-width, 1px);
+  border-radius: var(--scq-control-radius, 4px);
   overflow: hidden;
   background: var(--scq-surface, #ffffff);
   color: var(--scq-text, #0f172a);
   vertical-align: middle;
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 0 var(--scq-control-border-width, 1px) var(--scq-number-border-color) inset;
+  transition: box-shadow var(--scq-transition-fast, 0.2s ease), background-color var(--scq-transition-fast, 0.2s ease);
 }
 .scq-input-number:hover:not(.is-disabled) {
-  border-color: var(--scq-border-hover, #cbd5e1);
+  --scq-number-border-color: var(--scq-border-hover, #a8abb2);
 }
-.scq-input-number:focus-within {
-  border-color: var(--scq-primary, #2563eb);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+.scq-input-number:focus-within:not(.is-disabled) {
+  --scq-number-border-color: var(--scq-primary, #2563eb);
   outline: none;
 }
-.scq-input-number--small { --scq-number-height: 28px; width: 130px; border-radius: var(--scq-radius-sm, 6px); }
-.scq-input-number--large { --scq-number-height: 42px; width: 180px; border-radius: var(--scq-radius-lg, 10px); }
+.scq-input-number.is-invalid:not(.is-disabled) { --scq-number-border-color: var(--scq-danger, #ef4444); }
+.scq-input-number--small { --scq-number-height: 28px; width: 130px; }
+.scq-input-number--large { --scq-number-height: 42px; width: 180px; }
 .scq-input-number__input { width: 100%; min-width: 0; border: 0; outline: 0; padding: 0 8px; color: inherit; font: inherit; font-size: 14px; font-weight: 500; text-align: center; background: transparent; appearance: textfield; -moz-appearance: textfield; }
 .scq-input-number__input::-webkit-inner-spin-button, .scq-input-number__input::-webkit-outer-spin-button { appearance: none; margin: 0; }
 .scq-input-number__control {

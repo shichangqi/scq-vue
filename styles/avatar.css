@@ -21,3 +21,4 @@
 .scq-avatar--circle { border-radius: 50%; }
 .scq-avatar--square { border-radius: var(--scq-radius-md, 8px); }
 .scq-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.scq-avatar__text { display: inline-block; flex: none; white-space: nowrap; transform-origin: center; }

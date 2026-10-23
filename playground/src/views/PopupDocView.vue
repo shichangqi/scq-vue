@@ -2,25 +2,18 @@
   <section class="doc-block">
     <h1>{{ t('popup.title') }}</h1>
     <p class="lead">{{ t('popup.lead') }}</p>
-
-    <h2>{{ t('popup.basic') }}</h2>
-    <DocExample :code="basicCode" lang="vue">
+    <OnDemandExample :code="basicCode">
       <div class="demo-panel">
         <scq-button type="primary" @click="openCenter">{{ t('popup.openBasic') }}</scq-button>
       </div>
-      <scq-popup
-        v-model="visible"
-        position="center"
-        :show-close="true"
-        overlay-theme="dialog"
-      >
+      <scq-popup v-model="visible" position="center" :show-close="true" overlay-theme="dialog">
         <div class="popup-content">
           <h4>SCQ Popup</h4>
           <p>{{ t('popup.desc.basic') }}</p>
           <p>position = center / overlay = dialog</p>
         </div>
       </scq-popup>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('popup.placement') }}</h2>
     <DocExample :code="placementCode" lang="vue">
@@ -122,12 +115,17 @@
         <tr><td>@closed</td><td>{{ t('popup.onClosed.desc') }}</td><td>() =&gt; void</td><td>-</td></tr>
       </tbody>
     </table>
+    <ComponentDocView slug="popup" supplement />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScqButton from '../../../src/components/Button'
+import ScqPopup from '../../../src/components/Popup'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
+import ComponentDocView from './ComponentDocView.vue'
 import { t } from '../i18n'
 import type { PopupPosition } from 'scq-vue'
 

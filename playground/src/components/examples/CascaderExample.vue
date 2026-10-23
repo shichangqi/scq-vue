@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqCascader, ScqSwitch, type CascaderOption, type CascaderValue } from '../../../../src/index'
+import ScqCascader from '../../../../src/components/Cascader'
+import ScqSwitch from '../../../../src/components/Switch'
+import type { CascaderOption, CascaderValue } from '../../../../src/index'
 
-const value = ref<CascaderValue>(['engineering', 'platform'])
+const value = ref<CascaderValue>(['engineering', 'platform', 'frontend'])
 const changeOnSelect = ref(false)
 const options: CascaderOption[] = [
   { value: 'engineering', label: '研发中心', children: [{ value: 'platform', label: '平台开发', children: [{ value: 'frontend', label: '前端小组' }, { value: 'backend', label: '服务端小组' }] }, { value: 'quality', label: '质量保障' }] },
@@ -16,8 +18,9 @@ const options: CascaderOption[] = [
 </template>
 
 <style scoped>
-.cascader-example { display: grid; gap: 16px; }
-.cascader-example label { display: grid; gap: 8px; font-size: 13px; color: var(--scq-text); }
+.cascader-example { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+.cascader-example label { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; font-size: 13px; color: var(--scq-text); }
+.cascader-example .scq-cascader { min-width: 0; max-width: 100%; }
 .cascader-example .cascader-example__toggle { display: flex; align-items: center; }
 .cascader-example output { color: var(--scq-muted); font-size: 13px; overflow-wrap: anywhere; }
 </style>

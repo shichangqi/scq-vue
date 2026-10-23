@@ -1,5 +1,6 @@
 import type { App, Plugin } from 'vue'
 import Watermark from './Watermark.vue'
+export type { WatermarkProps, WatermarkRenderEvent } from './types'
 
 type SFCWithInstall<T> = T & Plugin
 

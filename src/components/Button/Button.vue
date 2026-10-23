@@ -3,7 +3,7 @@
     :class="[
       'my-btn',
       `my-btn--${type}`,
-      `my-btn--${size}`,
+      `my-btn--${resolvedSize}`,
       {
         'is-disabled': isDisabled,
         'is-loading': loading,
@@ -38,6 +38,8 @@
 
 <script setup>
 import { computed } from 'vue'
+import { componentSizes, useConfig } from '../ConfigProvider/context'
+import { useFormDisabled } from '../Form/useFormControl'
 
 defineOptions({
   name: 'Button'
@@ -53,9 +55,9 @@ const props = defineProps({
   },
   size: {
     type: String,
-    default: 'default',
+    default: undefined,
     validator: (value) => {
-      return ['large', 'default', 'small'].includes(value)
+      return componentSizes.includes(value)
     }
   },
   plain: {
@@ -103,18 +105,20 @@ const props = defineProps({
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: undefined
   }
 })
 
 const emit = defineEmits(['click'])
 
-const isDisabled = computed(() => props.disabled || props.loading)
+const config = useConfig()
+const disabled = useFormDisabled(() => props.disabled)
+const resolvedSize = computed(() => props.size ?? config.value.size)
+const isDisabled = computed(() => disabled.value || props.loading)
 
 const handleClick = (event) => {
-  if (!isDisabled.value) {
-    emit('click', event)
-  }
+  if (isDisabled.value) { event.preventDefault(); event.stopPropagation(); return }
+  emit('click', event)
 }
 </script>
 
@@ -158,7 +162,7 @@ const handleClick = (event) => {
   --btn-hover-border-color: var(--scq-primary-hover, #93c5fd);
   --btn-active-bg-color: var(--scq-fill-hover, #f1f5f9);
   --btn-active-border-color: var(--scq-primary-active, #2563eb);
-  --btn-focus-ring-color: rgba(37, 99, 235, 0.22);
+  --btn-focus-ring-color: var(--scq-primary, #2563eb);
 
   position: relative;
   display: inline-flex;
@@ -180,30 +184,31 @@ const handleClick = (event) => {
   font-size: 14px;
   color: var(--btn-default-text-color);
   border: 1px solid var(--btn-default-border-color);
-  border-radius: var(--scq-radius-md, 8px);
+  border-radius: var(--scq-control-radius, 4px);
   background-color: var(--btn-default-bg-color);
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  box-shadow: none;
   cursor: pointer;
   outline: none;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.my-btn:not(.is-disabled):not(.is-loading):hover {
+.my-btn:where(:not(.is-disabled, .is-loading)):hover {
   color: var(--btn-hover-text-color);
   border-color: var(--btn-hover-border-color);
   background-color: var(--btn-hover-bg-color);
+}
+
+.my-btn:not(.is-disabled):not(.is-loading):hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
 .my-btn:not(.is-disabled):not(.is-loading):active {
   transform: translateY(0) scale(0.98);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
 .my-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px var(--btn-focus-ring-color);
+  box-shadow: 0 0 0 var(--scq-control-border-width, 1px) var(--btn-focus-ring-color) inset;
 }
 
 .my-btn--primary {
@@ -212,7 +217,7 @@ const handleClick = (event) => {
   --btn-type-active-color: var(--btn-primary-active-color);
   --btn-type-soft-border: var(--btn-primary-soft-border);
   --btn-type-soft-bg: var(--btn-primary-soft-bg);
-  --btn-focus-ring-color: rgba(37, 99, 235, 0.26);
+  --btn-focus-ring-color: currentColor;
 }
 
 .my-btn--success {
@@ -221,7 +226,7 @@ const handleClick = (event) => {
   --btn-type-active-color: var(--btn-success-active-color);
   --btn-type-soft-border: var(--btn-success-soft-border);
   --btn-type-soft-bg: var(--btn-success-soft-bg);
-  --btn-focus-ring-color: rgba(16, 185, 129, 0.26);
+  --btn-focus-ring-color: currentColor;
 }
 
 .my-btn--warning {
@@ -230,7 +235,7 @@ const handleClick = (event) => {
   --btn-type-active-color: var(--btn-warning-active-color);
   --btn-type-soft-border: var(--btn-warning-soft-border);
   --btn-type-soft-bg: var(--btn-warning-soft-bg);
-  --btn-focus-ring-color: rgba(245, 158, 11, 0.26);
+  --btn-focus-ring-color: currentColor;
 }
 
 .my-btn--info {
@@ -239,7 +244,7 @@ const handleClick = (event) => {
   --btn-type-active-color: var(--btn-info-active-color);
   --btn-type-soft-border: var(--btn-info-soft-border);
   --btn-type-soft-bg: var(--btn-info-soft-bg);
-  --btn-focus-ring-color: rgba(100, 116, 139, 0.26);
+  --btn-focus-ring-color: currentColor;
 }
 
 .my-btn--danger {
@@ -248,7 +253,7 @@ const handleClick = (event) => {
   --btn-type-active-color: var(--btn-danger-active-color);
   --btn-type-soft-border: var(--btn-danger-soft-border);
   --btn-type-soft-bg: var(--btn-danger-soft-bg);
-  --btn-focus-ring-color: rgba(239, 68, 68, 0.26);
+  --btn-focus-ring-color: currentColor;
 }
 
 .my-btn--primary:not(.is-plain):not(.is-text):not(.is-link),
@@ -283,7 +288,6 @@ const handleClick = (event) => {
 
 .my-btn.is-plain {
   background-color: var(--scq-surface, #ffffff);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .my-btn--primary.is-plain,
@@ -310,7 +314,6 @@ const handleClick = (event) => {
   height: 42px;
   padding: 10px 22px;
   font-size: 15px;
-  border-radius: var(--scq-radius-lg, 10px);
 }
 
 .my-btn--default {
@@ -323,7 +326,6 @@ const handleClick = (event) => {
   height: 28px;
   padding: 4px 12px;
   font-size: 12px;
-  border-radius: var(--scq-radius-sm, 6px);
 }
 
 .my-btn.is-round {
@@ -353,7 +355,6 @@ const handleClick = (event) => {
 .my-btn.is-link {
   border-color: transparent;
   background-color: transparent;
-  box-shadow: none;
   padding-left: 8px;
   padding-right: 8px;
 }
@@ -381,7 +382,7 @@ const handleClick = (event) => {
 }
 
 .my-btn.is-text.is-bg {
-  border-radius: var(--scq-radius-sm, 6px);
+  border-radius: var(--scq-control-radius, 4px);
   background-color: var(--scq-fill, #f1f5f9);
 }
 
@@ -417,7 +418,12 @@ const handleClick = (event) => {
 }
 
 .my-btn__content.is-hidden {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .my-btn__loading {
@@ -455,7 +461,6 @@ const handleClick = (event) => {
   .my-btn:not(.is-disabled):not(.is-loading):hover,
   .my-btn:active {
     transform: none;
-    box-shadow: none;
   }
 }
 </style>

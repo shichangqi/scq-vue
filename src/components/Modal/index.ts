@@ -23,4 +23,5 @@ _Modal.install = (app: App): void => {
 }
 
 export type { ModalApiOptions, ModalInstance }
+export { useModal } from './modal-method'
 export default _Modal

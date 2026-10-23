@@ -1,4 +1,6 @@
 import Grid from './Grid.vue'
 import { withInstall } from '../../utils/install'
-export type { GridBreakpoints } from './Grid.vue'
+export type { GridBreakpoints, GridProps } from './Grid.vue'
+export type { LayoutBreakpoint, LayoutBreakpoints, ResponsiveValue, SpacingToken, SpacingValue } from '../../utils/layout'
+export { LAYOUT_BREAKPOINTS, SPACING_TOKENS } from '../../utils/layout'
 export default withInstall(Grid)

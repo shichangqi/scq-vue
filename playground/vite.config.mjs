@@ -2,6 +2,10 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 
+// Shared runtime dependencies must not pull lazy documentation back into the entry graph.
+const SHARED_RUNTIME_MODULES = ['vite/preload-helper', 'vite/modulepreload-polyfill', 'commonjsHelpers']
+const VUE_FRAMEWORK_MODULE = /\/node_modules\/(?:@vue\/|vue\/|vue-router\/)/
+
 export default defineConfig({
   root: fileURLToPath(new URL('./', import.meta.url)),
   base: process.env.GITHUB_ACTIONS ? '/scq-vue/' : '/',
@@ -12,6 +16,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (SHARED_RUNTIME_MODULES.some((module) => id.includes(module))) return 'runtime'
+          if (VUE_FRAMEWORK_MODULE.test(id)) return 'framework'
           if (id.includes('node_modules') && id.includes('highlight.js')) return 'syntax'
           if (id.includes('node_modules') && /markdown-it|linkify-it|uc\.micro|mdurl|entities/.test(id)) return 'markdown'
           if (id.includes('node_modules') && id.includes('date-fns')) return 'dates'

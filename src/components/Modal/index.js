@@ -12,3 +12,4 @@ modalWithApi.install = (app) => {
 }
 
 export default modalWithApi
+export { useModal } from './modal-method'

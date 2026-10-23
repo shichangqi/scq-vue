@@ -2,21 +2,14 @@
   <section class="doc-block">
     <h1>{{ t('dialog.title') }}</h1>
     <p class="lead">{{ t('dialog.lead') }}</p>
-
-    <h2>{{ t('dialog.sec.template.basic') }}</h2>
-    <DocExample :code="basicCode" lang="vue">
+    <OnDemandExample :code="basicCode">
       <div class="demo-panel">
         <scq-button type="primary" @click="basicVisible = true">{{ t('dialog.openBasic') }}</scq-button>
       </div>
-      <scq-dialog
-        v-model="basicVisible"
-        :title="t('dialog.basicTitle')"
-        type="info"
-        :show-cancel-button="true"
-      >
+      <scq-dialog v-model="basicVisible" :title="t('dialog.basicTitle')" type="info" :show-cancel-button="true">
         <p>{{ t('dialog.basicContent') }}</p>
       </scq-dialog>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('dialog.sec.template.type') }}</h2>
     <DocExample :code="typeCode" lang="vue">
@@ -251,6 +244,7 @@
     </table>
 
     <h2>{{ t('dialog.sec.api.methods') }}</h2>
+    <p><code>useDialog()</code> — {{ t('config.scopedFeedback') }}</p>
     <table class="prop-table">
       <thead>
         <tr>
@@ -261,7 +255,7 @@
       </thead>
       <tbody>
         <tr>
-          <td>Dialog.open(options)</td>
+          <td>Dialog.open(options, appContext?)</td>
           <td>{{ t('dialog.method.open.usage') }}</td>
           <td>{{ t('dialog.method.open.scene') }}</td>
         </tr>
@@ -300,14 +294,20 @@
         </tr>
       </tbody>
     </table>
+    <ComponentDocView slug="dialog" supplement />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScqButton from '../../../src/components/Button'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
+import ComponentDocView from './ComponentDocView.vue'
 import { t } from '../i18n'
-import { Dialog } from 'scq-vue'
+import Dialog from '../../../src/components/Dialog'
+
+const ScqDialog = Dialog
 
 type ExampleDialogType = 'info' | 'success' | 'warning' | 'error' | 'confirm'
 

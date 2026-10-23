@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqSwitch, ScqUpload, type UploadFile, type UploadRequestOptions } from '../../../../src/index'
+import ScqSwitch from '../../../../src/components/Switch'
+import ScqUpload from '../../../../src/components/Upload'
+import type { UploadFile, UploadRequestOptions } from '../../../../src/index'
 
 const files = ref<UploadFile[]>([])
 const offline = ref(false)

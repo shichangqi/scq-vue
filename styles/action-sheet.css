@@ -1,6 +1,10 @@
 @import './drawer.css';
 @import './loading.css';
 @import './icon.css';
+.scq-action-sheet__actions { display: grid; }
+.scq-action-sheet__action.is-grid { flex-direction: column; min-width: 0; padding-inline: 8px; }
+.scq-action-sheet__group { grid-column: 1 / -1; margin: 0; padding: 12px 20px 8px; color: var(--scq-muted); font-size: 13px; text-align: start; }
+.scq-action-sheet__error { padding: 12px 20px; color: var(--scq-danger); overflow-wrap: anywhere; }
 
 .scq-action-sheet {
   position: relative;

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqSlider, ScqSwitch, type SliderValue } from '../../../../src/index'
+import ScqSlider from '../../../../src/components/Slider'
+import ScqSwitch from '../../../../src/components/Switch'
+import type { SliderValue } from '../../../../src/index'
 
 const volume = ref<SliderValue>(35)
 const range = ref<SliderValue>([20, 75])

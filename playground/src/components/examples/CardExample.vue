@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqButton, ScqCard, ScqGrid, ScqImage, ScqTag } from '../../../../src/index'
+import ScqButton from '../../../../src/components/Button'
+import ScqCard from '../../../../src/components/Card'
+import ScqGrid from '../../../../src/components/Grid'
+import ScqImage from '../../../../src/components/Image'
+import ScqTag from '../../../../src/components/Tag'
 
 const saved = ref<string[]>([])
 const projects = [{ id: 'mountain', title: '山地路线', image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=900&auto=format&fit=crop&q=85', detail: '周六出发 · 12 公里' }, { id: 'lake', title: '湖畔路线', image: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=900&auto=format&fit=crop&q=85', detail: '周日出发 · 6 公里' }]

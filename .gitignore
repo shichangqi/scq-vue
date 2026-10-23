@@ -5,6 +5,9 @@ node_modules/
 dist/
 playground/dist/
 docs/
+!/docs/
+/docs/*
+!/docs/component-enhancement-roadmap.md
 !playground/src/docs/
 # logs
 *.log

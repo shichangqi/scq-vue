@@ -1,4 +1,5 @@
 @import './icon.css';
+@import './loading.css';
 
 .scq-nav-bar-wrapper { --scq-nav-safe-top: 0px; min-width: 0; }
 .scq-nav-bar-wrapper.has-safe-area { --scq-nav-safe-top: env(safe-area-inset-top); }
@@ -84,3 +85,6 @@
 .scq-nav-bar button .scq-icon {
   flex-shrink: 0;
 }
+.scq-nav-bar button:disabled { opacity: .5; cursor: not-allowed; }
+.scq-nav-bar .scq-loading { color: inherit; }
+.scq-nav-bar .scq-loading__indicator { min-height: 0; }

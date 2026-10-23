@@ -1,5 +1,6 @@
 <template>
   <label
+    v-bind="field.rootAttrs.value"
     class="scq-checkbox"
     :class="[
       `scq-checkbox--${resolvedSize}`,
@@ -18,7 +19,10 @@
         :name="resolvedName"
         :value="String(value)"
         :checked="isChecked"
+        :indeterminate="isIndeterminate"
         :disabled="isDisabled"
+        v-bind="field.attrs.value"
+        @blur="field.touch"
         @change="handleChange"
       />
       <span class="scq-checkbox__inner">
@@ -32,11 +36,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, watch } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { checkboxGroupKey, type CheckboxSize, type CheckboxValue } from './context'
+import { useConfig } from '../ConfigProvider/context'
+import { useFormControl } from '../Form/useFormControl'
 
 defineOptions({
   name: 'Checkbox',
+  inheritAttrs: false,
 })
 
 const props = withDefaults(
@@ -54,8 +61,7 @@ const props = withDefaults(
     value: true,
     text: '',
     name: '',
-    disabled: false,
-    size: 'default',
+    disabled: undefined,
     indeterminate: false,
   },
 )
@@ -67,11 +73,13 @@ const emit = defineEmits<{
 
 const inputRef = ref<HTMLInputElement>()
 const checkboxGroup = inject(checkboxGroupKey, null)
+const config = useConfig()
+const field = useFormControl({ element: () => inputRef.value, disabled: () => checkboxGroup?.disabled.value || (props.disabled ?? checkboxGroup?.disabled.value) })
 
 const isGroup = computed(() => checkboxGroup !== null)
 
 const resolvedSize = computed(() => {
-  return checkboxGroup?.size.value || props.size
+  return checkboxGroup?.size.value ?? props.size ?? config.value.size
 })
 
 const resolvedName = computed(() => {
@@ -79,7 +87,7 @@ const resolvedName = computed(() => {
 })
 
 const isDisabled = computed(() => {
-  return Boolean(checkboxGroup?.disabled.value || props.disabled)
+  return field.disabled.value
 })
 
 const isChecked = computed(() => {
@@ -93,17 +101,10 @@ const isIndeterminate = computed(() => {
   return !isGroup.value && props.indeterminate && !isChecked.value
 })
 
-watch(
-  () => isIndeterminate.value,
-  (next: boolean) => {
-    if (inputRef.value) {
-      inputRef.value.indeterminate = next
-    }
-  },
-  { immediate: true },
-)
-
-const handleChange = () => {
+const handleChange = (event: Event) => {
+  const input = event.target as HTMLInputElement
+  input.checked = isChecked.value
+  input.indeterminate = isIndeterminate.value
   if (isDisabled.value) {
     return
   }

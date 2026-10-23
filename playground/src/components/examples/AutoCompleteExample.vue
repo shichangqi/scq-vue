@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqAutoComplete, type AutoCompleteOption } from '../../../../src/index'
+import ScqAutoComplete from '../../../../src/components/AutoComplete'
+import type { AutoCompleteOption } from '../../../../src/index'
 
 const query = ref('')
 const selected = ref('')
@@ -24,8 +25,9 @@ const search = (value: string, signal: AbortSignal) => new Promise<AutoCompleteO
 </template>
 
 <style scoped>
-.autocomplete-example { display: grid; gap: 16px; }
-.autocomplete-example > label { display: grid; gap: 8px; font-size: 13px; color: var(--scq-text); }
+.autocomplete-example { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; min-width: 0; }
+.autocomplete-example > label { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; min-width: 0; font-size: 13px; color: var(--scq-text); }
+.autocomplete-example .scq-auto-complete { min-width: 0; max-width: 100%; }
 .autocomplete-example output { color: var(--scq-muted); font-size: 13px; overflow-wrap: anywhere; }
 .autocomplete-example__option { display: grid; gap: 4px; }
 .autocomplete-example__option strong { font-size: 14px; font-weight: 500; }

@@ -1,32 +1,32 @@
 .scq-field {
+  --scq-field-border-color: var(--scq-border, #dcdfe6);
   display: flex;
   align-items: center;
   min-width: 0;
   min-height: 36px;
   width: 100%;
-  border: 1px solid var(--scq-border, #e2e8f0);
-  border-radius: var(--scq-radius-md, 8px);
+  border: 0;
+  padding: var(--scq-control-border-width, 1px);
+  border-radius: var(--scq-control-radius, 4px);
   background: var(--scq-surface, #ffffff);
   color: var(--scq-text, #0f172a);
   box-sizing: border-box;
   font-size: 14px;
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 0 var(--scq-control-border-width, 1px) var(--scq-field-border-color) inset;
+  transition: box-shadow var(--scq-transition-fast, 0.2s ease), background-color var(--scq-transition-fast, 0.2s ease);
 }
 .scq-field:hover:not(.is-disabled) {
-  border-color: var(--scq-border-hover, #cbd5e1);
+  --scq-field-border-color: var(--scq-border-hover, #a8abb2);
 }
-.scq-field:focus-within {
-  border-color: var(--scq-primary, #2563eb);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+.scq-field:focus-within:not(.is-disabled) {
+  --scq-field-border-color: var(--scq-primary, #2563eb);
   outline: none;
 }
 .scq-field.is-disabled {
+  --scq-field-border-color: var(--scq-border, #dcdfe6);
   background: var(--scq-fill, #f8fafc);
-  border-color: var(--scq-border, #e2e8f0);
   opacity: 0.65;
   cursor: not-allowed;
-  box-shadow: none;
 }
 .scq-field__trigger {
   flex: 1;
@@ -78,9 +78,10 @@
   color: var(--scq-primary, #2563eb);
   background: rgba(37, 99, 235, 0.08);
 }
-.scq-field__clear:focus-visible, .scq-field__trigger:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: -2px; }
-.scq-field--small { min-height: 28px; font-size: 12px; border-radius: var(--scq-radius-sm, 6px); }
+.scq-field__clear:focus-visible { outline: none; box-shadow: 0 0 0 var(--scq-control-border-width, 1px) var(--scq-primary, #2563eb) inset; }
+.scq-field__trigger:focus-visible { outline: none; }
+.scq-field--small { min-height: 28px; font-size: 12px; }
 .scq-field--small input, .scq-field--small .scq-field__trigger { min-height: 26px; padding: 4px 10px; }
-.scq-field--large { min-height: 42px; font-size: 15px; border-radius: var(--scq-radius-lg, 10px); }
+.scq-field--large { min-height: 42px; font-size: 15px; }
 .scq-field--large input, .scq-field--large .scq-field__trigger { min-height: 40px; padding: 8px 14px; }
 @media (pointer: coarse) { .scq-field input { font-size: 16px; min-height: 42px; } .scq-field__clear { min-height: 44px; flex-basis: 44px; } }

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqGrid, ScqIcon, ScqInputNumber, ScqTag } from '../../../../src/index'
+import ScqGrid from '../../../../src/components/Grid'
+import ScqIcon from '../../../../src/components/Icon'
+import ScqInputNumber from '../../../../src/components/InputNumber'
+import ScqTag from '../../../../src/components/Tag'
 
 const gap = ref<number | undefined>(16)
 const projects = [{ name: '团队空间', status: '进行中' }, { name: '设计系统', status: '已完成' }, { name: '客户门户', status: '进行中' }, { name: '数据报告', status: '已完成' }, { name: '开发工具', status: '进行中' }, { name: '移动应用', status: '进行中' }]

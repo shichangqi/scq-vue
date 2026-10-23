@@ -20,17 +20,16 @@
 .scq-time-picker__field {
   display: flex;
   align-items: center;
-  padding: 0 8px 0 10px;
+  padding: var(--scq-control-border-width, 1px) calc(8px + var(--scq-control-border-width, 1px)) var(--scq-control-border-width, 1px) calc(10px + var(--scq-control-border-width, 1px));
   cursor: pointer;
 }
 
-.scq-time-picker__field.is-open {
-  border-color: var(--scq-primary, #2563eb);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+.scq-time-picker__field.is-open:not(.is-disabled) {
+  --scq-field-border-color: var(--scq-primary, #2563eb);
 }
 
-.scq-time-picker__field.is-invalid {
-  border-color: var(--scq-danger, #ef4444);
+.scq-time-picker__field.is-invalid:not(.is-disabled) {
+  --scq-field-border-color: var(--scq-danger, #ef4444);
 }
 
 .scq-time-picker__field.is-invalid .scq-time-picker__input,
@@ -171,7 +170,6 @@
   white-space: nowrap;
   border-radius: var(--scq-radius, 6px);
   cursor: pointer;
-  transition: all 0.15s ease;
 }
 
 .scq-time-picker__cell:hover:not(:disabled) {
@@ -254,8 +252,12 @@
   flex-shrink: 0;
   cursor: pointer;
   border-radius: var(--scq-radius-sm, 4px);
-  transition: all 0.15s ease;
   padding: 4px 10px;
+}
+
+.scq-time-picker__cell,
+.scq-time-picker__btn {
+  transition: background-color var(--scq-transition-fast), color var(--scq-transition-fast), opacity var(--scq-transition-fast);
 }
 
 .scq-time-picker__btn--now {

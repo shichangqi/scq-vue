@@ -1,5 +1,6 @@
 @import './skeleton.css';
 .scq-card {
+  position: relative;
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
@@ -21,3 +22,15 @@
   box-shadow: 0 16px 32px -4px rgba(15, 23, 42, 0.1), 0 6px 12px -6px rgba(15, 23, 42, 0.06);
 }
 @media (prefers-reduced-motion: reduce) { .scq-card { transition: none; transform: none !important; } }
+.scq-card__title { min-width: 0; }
+.scq-card.is-interactive:not(.is-disabled) { cursor: pointer; }
+.scq-card.is-selected { border-color: var(--scq-primary, #2563eb); }
+.scq-card.is-focused { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: 2px; }
+.scq-card__control { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; padding: 0; opacity: 0; pointer-events: none; }
+.scq-card__media.has-ratio { overflow: hidden; }
+.scq-card__media.has-ratio > * { width: 100%; height: 100%; object-fit: cover; }
+.scq-card--small .scq-card__header, .scq-card--small .scq-card__footer { padding: 12px; }
+.scq-card--large .scq-card__header, .scq-card--large .scq-card__footer { padding-inline: 24px; }
+.scq-card__actions { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; opacity: 0; pointer-events: none; }
+.scq-card:hover .scq-card__actions, .scq-card:focus-within .scq-card__actions { opacity: 1; pointer-events: auto; }
+@media (hover: none) { .scq-card__actions { opacity: 1; pointer-events: auto; } }

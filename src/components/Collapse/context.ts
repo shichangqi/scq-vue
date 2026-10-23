@@ -7,4 +7,4 @@ export interface CollapseContext {
   isExpanded: (name: CollapseName) => boolean
   toggle: (name: CollapseName) => void
 }
-export const collapseKey: InjectionKey<CollapseContext> = Symbol('scq-collapse')
+export const collapseKey: InjectionKey<CollapseContext> = Symbol.for('scq-vue.collapse')

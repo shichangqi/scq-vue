@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { ScqCell, ScqCellGroup, ScqDrawer, ScqNavBar, ScqPicker, type PickerOption, type PickerSelection, type PickerValue } from '../../../../src/index'
+import ScqCell from '../../../../src/components/Cell'
+import ScqCellGroup from '../../../../src/components/CellGroup'
+import ScqDrawer from '../../../../src/components/Drawer'
+import ScqNavBar from '../../../../src/components/NavBar'
+import ScqPicker from '../../../../src/components/Picker'
+import type { PickerOption, PickerSelection, PickerValue } from '../../../../src/index'
 import PhonePreview from '../PhonePreview.vue'
 
+const props = withDefaults(defineProps<{ screenId?: string }>(), { screenId: 'picker-shipping-preview' })
 const ready = ref(false)
 const opened = ref(false)
 const selected = ref<PickerValue[]>(['zhejiang', 'hangzhou', 'xihu'])
@@ -24,10 +30,10 @@ onMounted(() => { ready.value = true })
 </script>
 
 <template>
-  <PhonePreview screen-id="picker-shipping-preview">
+  <PhonePreview :screen-id="props.screenId">
     <ScqNavBar title="配送地址" />
     <div class="picker-example__content"><ScqCellGroup inset><ScqCell title="收件人" value="林一" /><ScqCell title="联系电话" value="138 0000 8264" /><ScqCell title="所在地区" :label="address" is-link @click="edit" /><ScqCell title="详细地址" label="文三路 18 号，A 座 402" /></ScqCellGroup></div>
-    <ScqDrawer v-if="ready" v-model="opened" position="bottom" size="auto" :show-close="false" teleport="#picker-shipping-preview" aria-label="所在地区"><ScqPicker v-model="draft" title="所在地区" :columns="columns" @confirm="confirm" @cancel="opened = false" /></ScqDrawer>
+    <ScqDrawer v-if="ready" v-model="opened" position="bottom" size="auto" :show-close="false" :teleport="`#${props.screenId}`" aria-label="所在地区"><ScqPicker v-model="draft" title="所在地区" :columns="columns" @confirm="confirm" @cancel="opened = false" /></ScqDrawer>
   </PhonePreview>
 </template>
 

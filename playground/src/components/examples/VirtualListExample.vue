@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqButton, ScqInputNumber, ScqVirtualList } from '../../../../src/index'
+import ScqButton from '../../../../src/components/Button'
+import ScqInputNumber from '../../../../src/components/InputNumber'
+import ScqVirtualList from '../../../../src/components/VirtualList'
 
 const items = Array.from({ length: 10000 }, (_, index) => ({ id: index + 1, title: `工作记录 ${String(index + 1).padStart(5, '0')}`, owner: ['林一', 'Ada', 'Grace'][index % 3] }))
 const listRef = ref<{ scrollToIndex: (index: number) => void }>()

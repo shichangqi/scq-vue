@@ -2,14 +2,12 @@
   <section class="doc-block">
     <h1>{{ t('chat.title') }}</h1>
     <p class="lead">{{ t('chat.lead') }}</p>
-
-    <h2>{{ t('chat.basic') }}</h2>
-    <DocExample :code="basicCode" lang="vue">
+    <OnDemandExample :code="basicCode">
       <div class="demo-grid">
         <scq-chat-message :message="plainText" role="ai" name="SCQ Assistant" :timestamp="messageTime" />
         <scq-chat-message :message="plainText" role="user" name="Chauncy" :show-time="false" />
       </div>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('chat.profile') }}</h2>
     <DocExample :code="profileCode" lang="vue">
@@ -212,7 +210,7 @@
     <DocExample :code="complexMarkdownCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
-          :message="vueComparePayload"
+          :message="markdownTablePayload"
           role="ai"
           content-type="markdown"
           :timestamp="messageTime"
@@ -234,7 +232,7 @@
         <scq-chat-message
           message=""
           role="ai"
-          :status="{ type: 'tool', text: '正在调用 pnpm run build' }"
+          :status="{ type: 'tool', text: '正在查询资料' }"
           :show-time="false"
         />
         <scq-chat-message
@@ -244,19 +242,19 @@
           :show-time="false"
         />
         <scq-chat-message
-          message="检查完成，当前变更可以进入下一步。"
+          message="资料已整理完成，请查看下方摘要。"
           role="ai"
           :show-time="false"
         />
         <scq-chat-message
-          message="检测到还有未提交的 Select 相关改动，请确认是否属于本次发布。"
+          message="部分资料尚未提供，请补充后继续。"
           role="ai"
           :show-time="false"
         />
         <scq-chat-message
           message=""
           role="ai"
-          :status="{ type: 'error', text: '处理失败', loading: false }"
+          :status="{ type: 'error', text: '暂时无法处理，请稍后重试', loading: false }"
           :show-time="false"
         />
       </div>
@@ -383,14 +381,17 @@
 </template>
 
 <script setup lang="ts">
+import ScqChatMessage from '../../../src/components/ChatMessage'
+import ScqIcon from '../../../src/components/Icon'
+import Message from '../../../src/components/Message'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
 import { t } from '../i18n'
-import {
-  Message,
-  type ChatMessageSelection,
-  type ChatMessageSelectionPayload,
-  type ChatMessageSelectionValue,
+import type {
+  ChatMessageSelection,
+  ChatMessageSelectionPayload,
+  ChatMessageSelectionValue,
 } from 'scq-vue'
 
 const plainText = '这是普通字符串消息，适合展示接口直接返回的文本。'
@@ -673,9 +674,28 @@ const handleOtherSubmit = (payload: ChatMessageSelectionPayload) => {
 }
 <\/style>`
 
+const markdownTablePayload = `# 项目协作计划
+
+以下为示例数据，用于展示表格、列表、强调文字和行内代码。
+
+| 阶段 | 任务 | 负责人 | 状态 | 交付内容 |
+| :--- | :--- | :--- | :--- | :--- |
+| **需求整理** | 收集使用场景，明确功能范围 | 林然 | 已完成 | 需求说明与优先级列表 |
+| **界面设计** | 梳理页面结构和操作流程 | 陈晨 | 进行中 | 页面草图、交互说明和视觉稿 |
+| **功能开发** | 按模块实现页面与数据交互 | 周宁 | 待开始 | 可运行的功能示例 |
+| **使用反馈** | 收集体验建议并整理改进项 | 项目小组 | 待开始 | 反馈清单与后续计划 |
+
+## 协作说明
+
+- 任务按阶段排列，便于查看负责人和交付内容。
+- 状态字段可使用 \`pending\`、\`in-progress\` 和 \`completed\` 等值。
+- **待办事项**：确认设计稿后安排下一次评审。
+
+> 表格中的成员、任务和状态均为示例，不代表实际项目进度。`
+
 const complexMarkdownCode = `<template>
   <scq-chat-message
-    :message="vueComparePayload"
+    :message="markdownTablePayload"
     role="ai"
     content-type="markdown"
     :timestamp="messageTime"
@@ -684,7 +704,7 @@ const complexMarkdownCode = `<template>
 </template>
 
 <script setup lang="ts">
-const vueComparePayload = '| 对比维度 | Vue 2 | Vue 3 |\\n|---|---|---|\\n| 响应式 | defineProperty | Proxy |\\n| 组合能力 | Mixin 为主 | Composition API |'
+const markdownTablePayload = ${JSON.stringify(markdownTablePayload)}
 const messageTime = Date.now()
 
 const formatTime = (value: string | number | Date | null | undefined): string => {
@@ -863,7 +883,7 @@ const statusCode = `<template>
   <scq-chat-message
     message=""
     role="ai"
-    :status="{ type: 'tool', text: '正在调用 pnpm run build' }"
+    :status="{ type: 'tool', text: '正在查询资料' }"
   />
 
   <scq-chat-message
@@ -873,19 +893,19 @@ const statusCode = `<template>
   />
 
   <scq-chat-message
-    message="检查完成，当前变更可以进入下一步。"
+    message="资料已整理完成，请查看下方摘要。"
     role="ai"
   />
 
   <scq-chat-message
-    message="检测到还有未提交的 Select 相关改动，请确认是否属于本次发布。"
+    message="部分资料尚未提供，请补充后继续。"
     role="ai"
   />
 
   <scq-chat-message
     message=""
     role="ai"
-    :status="{ type: 'error', text: '处理失败', loading: false }"
+    :status="{ type: 'error', text: '暂时无法处理，请稍后重试', loading: false }"
   />
 </template>`
 
@@ -1729,35 +1749,6 @@ const jsonPayload = {
 }
 
 const markdownPayload = `# 接口返回 Markdown\n\n第一行\n第二行\n\n- 第一项\n- 第二项\n\n这是一个带代码块的消息：\n\n\`\`\`ts\ninterface User {\n  id: number\n  name: string\n}\n\nconst user: User = { id: 1, name: 'SCQ' }\nconsole.log(user)\n\`\`\``
-
-const vueComparePayload = `以下是 Vue 2 与 Vue 3 的核心特性对比表格（基于官方文档、RFC 及主流实践，截至 2024 年）：
-
-| 对比维度             | Vue 2（v2.7 LTS）                                  | Vue 3（v3.4+，当前稳定主力版本）                     | 说明与影响 |
-|----------------------|---------------------------------------------------|--------------------------------------------------------|------------|
-| **架构设计**         | Options API（选项式 API）为主                    | **Composition API（组合式 API）为推荐方式**，同时兼容 Options API | Vue 3 提供更灵活的逻辑复用与类型推导能力；Options API 仍完全支持（含 \`setup()\` 中使用） |
-| **响应式系统**       | 基于 \`Object.defineProperty\`（无法检测新增/删除属性、数组索引赋值等） | 基于 **Proxy + Reflect**（深度监听、支持 Map/Set/WeakMap/WeakSet、无响应式陷阱） | Vue 3 响应式更强大、更语义化，性能更优，消除了 Vue 2 的诸多限制（如 \`vm.$set\` 不再必需） |
-| **模板编译器**       | 运行时编译（需 \`vue-template-compiler\`）         | **编译时优化**：静态提升（hoist static）、Patch flag 标记、Block tree 优化 | 渲染性能显著提升（尤其首次渲染和更新），更小的运行时体积 |
-| **组件写法**         | 单文件组件（SFC）中 \`<script>\` 写 \`export default { data() {…} }\` | 支持 \`<script setup>\`（语法糖，推荐）：<br>\`\`\`&lt;script setup lang="ts"&gt;<br>const count = ref(0)<br>const increment = () => count.value++<br>&lt;/script&gt;\`\`\` | \`<script setup>\` 更简洁、自动暴露、天然支持 TypeScript，是 Vue 3 SFC 的首选范式 |
-| **TypeScript 支持**  | 类型支持较弱（需 \`Vue.extend\` / \`ComponentOptions\` 等复杂声明） | **一级 TypeScript 支持**：Composition API + \`<script setup>\` 天然类型推导，无需额外配置即可获得完整类型提示 | 开发体验大幅提升，尤其在大型项目中 |
-| **生命周期钩子**     | \`beforeCreate\`, \`created\`, \`beforeMount\`, \`mounted\`, \`beforeUpdate\`, \`updated\`, \`beforeDestroy\`, \`destroyed\` | \`setup()\` 替代前两个；新钩子：<br>\`onBeforeMount\`, \`onMounted\`, \`onBeforeUpdate\`, \`onUpdated\`, \`onBeforeUnmount\`, \`onUnmounted\`<br>（\`destroyed\` → \`unmounted\`） | 钩子全部改为 \`onXXX\` 形式，统一命名规范；\`beforeDestroy\`/\`destroyed\` 已废弃（Vue 2.7 中标记为 deprecated） |
-| **全局 API**         | \`Vue.use()\`, \`Vue.component()\`, \`Vue.directive()\`, \`Vue.set()\` 等 | **全局 API 被重构为应用实例方法**：<br>\`app.use()\`, \`app.component()\`, \`app.directive()\`, \`app.config.globalProperties.xxx\`<br>\`Vue.createApp()\` 创建独立应用实例 | 支持**多个 Vue 应用共存**（微前端友好），避免全局污染；\`new Vue()\` 被 \`createApp()\` 替代 |
-| **Teleport & Suspense** | ❌ 不支持                                         | ✅ 内置 \`<Teleport>\`（跨 DOM 移动内容，如 Modal）<br>✅ 内置 \`<Suspense>\`（异步组件加载状态处理） | 原生支持现代 UI 模式，无需插件或 hack |
-| **自定义渲染器（Renderer）** | 无官方抽象层                                     | ✅ 官方提供可扩展的 \`@vue/runtime-core\` 和 \`@vue/runtime-dom\`，支持自定义渲染器（如 Canvas、WebGL、小程序） | 极大拓展 Vue 生态边界（如 [Vue Native](https://github.com/GeekyAnts/vue-native-core)、[Weex](https://weex.apache.org/)、[Taro](https://taro.jd.com/) 等） |
-| **性能与体积**       | 运行时约 20–25 KB（gzip）                         | 运行时约 **12–16 KB（gzip）**，Tree-shaking 更彻底，按需引入 | 更小体积 + 更快 diff + 更少内存占用，尤其利于移动端与低网速场景 |
-| **兼容性与迁移**     | Vue 2.7 是最后一个版本（LTS 至 2023.12，现已结束官方支持） | **Vue 3.3+ 提供 \`@vue/compat\`（迁移构建模式）**，可渐进升级 Vue 2 项目 | 推荐新项目直接使用 Vue 3；存量 Vue 2 项目可通过 \`@vue/compat\` + \`migration build\` 辅助平滑升级 |
-
-✅ **补充说明**：
-- **Vue 2.7** 是兼容 Vue 3 的“桥接版本”，支持部分 Vue 3 特性（如 Composition API、\`<script setup>\` 实验性支持），但**不包含 Proxy 响应式、编译优化等核心升级**。
-- **Vue 3 的默认构建**已移除 IE11 支持（需 polyfill 或使用 \`@vue/compat\`）。
-- **状态管理**：Vuex 4 适配 Vue 3，但官方推荐 **Pinia**（轻量、TypeScript 友好、无 mutations、支持 SSR 和 DevTools）作为首选。
-- **构建工具**：Vue CLI（Vue 2） vs **Vite**（Vue 3 官方推荐，默认构建工具，冷启动极快）。
-
-📌 **总结建议**：
-- ✅ **新项目务必选择 Vue 3（+ Vite + Pinia + \`<script setup>\` + TS）**
-- ⚠️ Vue 2 仅限维护旧项目，**不再接收新功能，安全补丁也已停止**
-- 🔄 迁移路径：Vue 2.7 → 启用 \`@vue/compat\` → 逐步替换为 Composition API → 移除 compat 模式
-
-如需我为你生成一份 **Vue 2 → Vue 3 迁移检查清单** 或 **一个最小可运行的 Vue 3 + TS + Vite 示例结构**，欢迎随时提出！`
 
 const imageUrl = 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=900&q=80'
 

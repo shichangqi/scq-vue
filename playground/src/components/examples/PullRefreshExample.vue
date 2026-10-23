@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
-import { ScqCell, ScqNavBar, ScqPullRefresh } from '../../../../src/index'
+import ScqCell from '../../../../src/components/Cell'
+import ScqNavBar from '../../../../src/components/NavBar'
+import ScqPullRefresh from '../../../../src/components/PullRefresh'
 import PhonePreview from '../PhonePreview.vue'
 
 const refreshRef = ref<InstanceType<typeof ScqPullRefresh>>()

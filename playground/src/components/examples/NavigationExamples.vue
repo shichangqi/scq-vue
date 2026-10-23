@@ -6,6 +6,10 @@
 </template>
 
 <script setup lang="ts">
+import ScqInput from '../../../../src/components/Input'
+import ScqPagination from '../../../../src/components/Pagination'
+import ScqTabs from '../../../../src/components/Tabs'
+import ScqTag from '../../../../src/components/Tag'
 import { computed, ref } from 'vue'
 import { locale } from '../../i18n'
 const props = defineProps<{ kind: string; variant?: string }>()

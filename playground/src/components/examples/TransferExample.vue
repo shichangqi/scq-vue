@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqTransfer, type TransferItem, type TransferKey } from '../../../../src/index'
+import ScqTransfer from '../../../../src/components/Transfer'
+import type { TransferItem, TransferKey } from '../../../../src/index'
 
 const selected = ref<TransferKey[]>(['ada'])
 const status = ref('')

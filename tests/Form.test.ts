@@ -2,7 +2,7 @@
 
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { defineComponent, reactive } from 'vue'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import Form from '../src/components/Form/Form.vue'
 import FormItem from '../src/components/Form/FormItem.vue'
 import Input from '../src/components/Input/Input.vue'
@@ -23,6 +23,18 @@ const mountForm = (rules: FormRules, initial = 'Ada') => {
 }
 
 describe('Form', () => {
+  it('clears stale blur errors on editing without eagerly running blur-only rules', async () => {
+    const validator = vi.fn((_rule: unknown, value: unknown) => value ? Promise.resolve() : Promise.reject(new Error('Required')))
+    const { wrapper, form } = mountForm({ 'user.name': { trigger: 'blur', asyncValidator: validator } }, '')
+    expect(await form.vm.validate()).toBe(false)
+    expect(wrapper.get('[role="alert"]').text()).toBe('Required')
+    await wrapper.get('input').setValue('Corrected')
+    await flushPromises()
+    expect(validator).toHaveBeenCalledTimes(1)
+    expect(wrapper.find('[role="alert"]').exists()).toBe(false)
+    expect(await form.vm.validate()).toBe(true)
+    expect(validator).toHaveBeenCalledTimes(2)
+  })
   it('validates existing Input without changing its model or events', async () => {
     const { wrapper, model, form } = mountForm({ 'user.name': { required: true, message: 'Name is required' } }, '')
     expect(await form.vm.validate()).toBe(false)
@@ -69,6 +81,26 @@ describe('Form', () => {
     await flushPromises()
     expect(wrapper.find('[role="alert"]').exists()).toBe(false)
     expect(wrapper.find('.is-validating').exists()).toBe(false)
+  })
+
+  it('does not report successful validation after the owning form is unmounted', async () => {
+    let finish!: () => void
+    const pending = new Promise<void>(resolve => { finish = resolve })
+    const { wrapper, form } = mountForm({ 'user.name': { asyncValidator: () => pending } })
+    const validation = form.vm.validate()
+    wrapper.unmount()
+    wrappers.splice(wrappers.indexOf(wrapper), 1)
+    finish()
+    expect(await validation).toBe(false)
+    expect(form.emitted('validate')).toBeUndefined()
+    expect(await form.vm.validateField()).toBe(false)
+  })
+
+  it('uses finite normalized label widths', () => {
+    const wrapper = mount(Form, { props: { model: {}, labelWidth: -1 } })
+    wrappers.push(wrapper)
+    expect(wrapper.attributes('style')).toContain('--scq-form-label-width: 0px')
+    expect(() => mount(Form, { props: { model: {}, labelWidth: Infinity } })).toThrow('must be finite')
   })
 
   it('reports submit validity and supports selected field validation', async () => {

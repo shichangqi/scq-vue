@@ -27,4 +27,5 @@ _Dialog.install = (app: App): void => {
 }
 
 export type { DialogApiOptions, DialogInstance }
+export { useDialog } from './dialog-method'
 export default _Dialog

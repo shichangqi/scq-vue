@@ -17,8 +17,14 @@ h5.scq-typography, h6.scq-typography { font-size: 16px; font-weight: 600; }
 .scq-typography.is-mark .scq-typography__content { background: color-mix(in srgb, var(--scq-warning, #f59e0b) 20%, transparent); padding-inline: 4px; border-radius: 3px; }
 .scq-typography.is-ellipsis { display: inline-flex; min-width: 0; vertical-align: bottom; }
 .scq-typography.is-ellipsis .scq-typography__content { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scq-typography.is-expandable { display: inline-block; min-width: 0; vertical-align: bottom; }
+.scq-typography.is-expandable .scq-typography__content { display: block; }
 .scq-typography.is-clamped .scq-typography__content { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--scq-typography-lines); overflow: hidden; }
+.scq-typography__toggle { padding: 0; border: 0; border-radius: var(--scq-radius-sm, 6px); background: transparent; color: var(--scq-primary, #2563eb); font: inherit; cursor: pointer; }
+.scq-typography__toggle:hover { text-decoration: underline; text-underline-offset: .2em; }
+.scq-typography__toggle:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: 2px; }
 .scq-typography__copy { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 28px; height: 28px; margin-left: 6px; padding: 0; color: var(--scq-muted, #64748b); border: 1px solid transparent; border-radius: var(--scq-radius-sm, 6px); background: transparent; cursor: pointer; vertical-align: middle; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .scq-typography__copy:hover { color: var(--scq-primary, #2563eb); background: var(--scq-fill, #f8fafc); border-color: var(--scq-border, #e2e8f0); transform: translateY(-1px); }
 .scq-typography__copy:active { transform: translateY(0) scale(0.95); }
 .scq-typography__copy:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: -2px; }
+.scq-typography__copy:disabled { cursor: wait; }

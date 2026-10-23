@@ -2,9 +2,7 @@
   <section class="doc-block">
     <h1>{{ t('message.title') }}</h1>
     <p class="lead">{{ t('message.lead') }}</p>
-
-    <h2>{{ t('message.template') }}</h2>
-    <DocExample :code="templateCode" lang="vue">
+    <OnDemandExample :code="templateCode">
       <div class="message-template-demo">
         <div class="message-template-demo__preview">
           <scq-message v-model="templateVisible" type="success" message="保存成功" description="模板方式适合页面局部或受控提示。" :teleport="false" :duration="0" closable />
@@ -14,9 +12,10 @@
           <scq-button type="success" @click="templateVisible = true">{{ t('message.showTemplate') }}</scq-button>
         </div>
       </div>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('message.api') }}</h2>
+    <p><code>useMessage()</code> — {{ t('config.scopedFeedback') }}</p>
     <DocExample :code="apiCode" lang="vue">
       <div class="chat-demo-actions">
         <scq-button size="small" @click="openInfo">Message.info</scq-button>
@@ -58,10 +57,14 @@
 </template>
 
 <script setup lang="ts">
+import ScqButton from '../../../src/components/Button'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
 import { t } from '../i18n'
-import { Message, type MessagePlacement } from 'scq-vue'
+import Message, { type MessagePlacement } from '../../../src/components/Message'
+
+const ScqMessage = Message
 
 const templateVisible = ref(false)
 const placements: MessagePlacement[] = ['top', 'top-left', 'top-right', 'bottom', 'bottom-left', 'bottom-right']

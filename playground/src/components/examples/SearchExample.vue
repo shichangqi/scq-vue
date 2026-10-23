@@ -14,10 +14,16 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { ScqCell, ScqCellGroup, ScqEmpty, ScqNavBar, ScqSearch, Toast } from '../../../../src/index'
+import ScqCell from '../../../../src/components/Cell'
+import ScqCellGroup from '../../../../src/components/CellGroup'
+import ScqEmpty from '../../../../src/components/Empty'
+import ScqNavBar from '../../../../src/components/NavBar'
+import ScqSearch from '../../../../src/components/Search'
+import Toast from '../../../../src/components/Toast'
 import PhonePreview from '../PhonePreview.vue'
 
-const previewId = 'search-documents-preview'
+const props = withDefaults(defineProps<{ screenId?: string }>(), { screenId: 'search-documents-preview' })
+const previewId = props.screenId
 const keyword = ref('')
 const status = ref('')
 const files = [

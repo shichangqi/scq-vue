@@ -2,3 +2,4 @@
 .scq-space > * { max-width: 100%; }
 .scq-space.is-vertical { flex-direction: column; }
 .scq-space.is-fill { display: flex; width: 100%; }
+.scq-space__separator { display: inline-flex; align-items: center; flex: none; color: var(--scq-muted, #64748b); }

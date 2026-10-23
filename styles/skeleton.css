@@ -1,10 +1,14 @@
 .scq-skeleton { display: flex; width: 100%; gap: 16px; }
+.scq-skeleton.has-image { flex-wrap: wrap; }
 .scq-skeleton__lines { flex: 1; min-width: 0; }
-.scq-skeleton__row, .scq-skeleton__avatar { background: var(--scq-fill, #f1f5f9); border-radius: var(--scq-radius-md, 8px); }
+.scq-skeleton__row, .scq-skeleton__avatar, .scq-skeleton__title, .scq-skeleton__image, .scq-skeleton__button { background: var(--scq-fill, #f1f5f9); border-radius: var(--scq-radius-md, 8px); }
 .scq-skeleton__row { height: 16px; margin-bottom: 12px; }
 .scq-skeleton__row:first-child { width: 35%; }
 .scq-skeleton__row:last-child { width: 65%; margin-bottom: 0; }
 .scq-skeleton__avatar { flex: 0 0 44px; height: 44px; border-radius: 50%; }
-.scq-skeleton.is-animated .scq-skeleton__row, .scq-skeleton.is-animated .scq-skeleton__avatar { background: linear-gradient(90deg, var(--scq-fill, #f1f5f9) 25%, var(--scq-border, #e2e8f0) 50%, var(--scq-fill, #f1f5f9) 75%); background-size: 300% 100%; animation: scq-skeleton-wave 1.6s ease infinite; }
+.scq-skeleton__title { width: 45%; height: 20px; margin-bottom: 16px; }
+.scq-skeleton__image { flex: 0 0 100%; aspect-ratio: 16 / 9; }
+.scq-skeleton__button { width: 96px; height: 32px; margin-top: 16px; }
+.scq-skeleton.is-animated :is(.scq-skeleton__row, .scq-skeleton__avatar, .scq-skeleton__title, .scq-skeleton__image, .scq-skeleton__button) { background: linear-gradient(90deg, var(--scq-fill, #f1f5f9) 25%, var(--scq-border, #e2e8f0) 50%, var(--scq-fill, #f1f5f9) 75%); background-size: 300% 100%; animation: scq-skeleton-wave 1.6s ease infinite; }
 @keyframes scq-skeleton-wave { from { background-position: 100% 50%; } to { background-position: 0 50%; } }
-@media (prefers-reduced-motion: reduce) { .scq-skeleton.is-animated .scq-skeleton__row, .scq-skeleton.is-animated .scq-skeleton__avatar { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .scq-skeleton.is-animated :is(.scq-skeleton__row, .scq-skeleton__avatar, .scq-skeleton__title, .scq-skeleton__image, .scq-skeleton__button) { animation: none; } }

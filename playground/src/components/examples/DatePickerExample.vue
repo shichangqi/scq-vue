@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqDatePicker, ScqSwitch, type DatePickerValue } from '../../../../src/index'
+import ScqDatePicker from '../../../../src/components/DatePicker'
+import ScqSwitch from '../../../../src/components/Switch'
+import type { DatePickerValue } from '../../../../src/index'
 
 const day = ref<DatePickerValue>('2026-10-09')
 const range = ref<DatePickerValue>([])

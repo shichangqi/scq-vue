@@ -2,14 +2,12 @@
   <section class="doc-block">
     <h1>{{ t('checkbox.title') }}</h1>
     <p class="lead">{{ t('checkbox.lead') }}</p>
-
-    <h2>{{ t('checkbox.basic') }}</h2>
-    <DocExample :code="basicCode" lang="vue">
+    <OnDemandExample :code="basicCode">
       <div class="demo-grid">
         <scq-checkbox v-model="singleChecked">{{ t('checkbox.singleLabel') }}</scq-checkbox>
         <div>{{ t('checkbox.current') }}{{ singleChecked ? 'true' : 'false' }}</div>
       </div>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('checkbox.group') }}</h2>
     <DocExample :code="groupCode" lang="vue">
@@ -57,18 +55,23 @@
         <tr><td>value</td><td>{{ t('checkbox.value.desc') }}</td><td>string | number | boolean</td><td>true</td></tr>
         <tr><td>text</td><td>{{ t('checkbox.text.desc') }}</td><td>string</td><td>''</td></tr>
         <tr><td>name</td><td>{{ t('checkbox.name.desc') }}</td><td>string</td><td>''</td></tr>
-        <tr><td>disabled</td><td>{{ t('checkbox.disabled.desc') }}</td><td>boolean</td><td>false</td></tr>
-        <tr><td>size</td><td>{{ t('checkbox.size.desc') }}</td><td>small | default | large</td><td>default</td></tr>
+        <tr><td>disabled</td><td>{{ t('checkbox.disabled.desc') }}</td><td>boolean</td><td>provider / false</td></tr>
+        <tr><td>size</td><td>{{ t('checkbox.size.desc') }}</td><td>small | default | large</td><td>provider / default</td></tr>
         <tr><td>direction</td><td>{{ t('checkbox.direction.desc') }}</td><td>horizontal | vertical</td><td>horizontal</td></tr>
         <tr><td>indeterminate</td><td>{{ t('checkbox.indeterminate.desc') }}</td><td>boolean</td><td>false</td></tr>
       </tbody>
     </table>
+    <ComponentDocView slug="checkbox" supplement />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScqCheckbox from '../../../src/components/Checkbox'
+import ScqCheckboxGroup from '../../../src/components/CheckboxGroup'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
+import ComponentDocView from './ComponentDocView.vue'
 import { t } from '../i18n'
 
 const singleChecked = ref(true)

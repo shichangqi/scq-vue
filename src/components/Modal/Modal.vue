@@ -6,12 +6,14 @@
       @after-leave="emit('closed')"
     >
       <div
-        v-if="visible"
+        v-if="visible || (rendered && !destroyOnClose)"
+        v-show="visible"
         class="scq-modal__overlay"
         :style="overlayStyle"
         @click.self="handleOverlayClick"
       >
         <div
+          ref="panel"
           class="scq-modal"
           :class="[
             `is-${type}`,
@@ -22,7 +24,9 @@
           :style="modalStyle"
           role="dialog"
           aria-modal="true"
-          :aria-label="title || 'Modal'"
+          :aria-label="title || text('modal')"
+          :aria-busy="isClosing || confirmLoading || cancelLoading || undefined"
+          tabindex="-1"
         >
           <header class="scq-modal__header" v-if="hasHeader">
             <slot name="header" :close="handleCloseIcon" :title="title">
@@ -35,7 +39,7 @@
                 v-if="showClose"
                 type="button"
                 class="scq-modal__close"
-                aria-label="Close modal"
+                :aria-label="text('closeModal')"
                 @click="handleCloseIcon"
               >
                 &times;
@@ -62,20 +66,22 @@
                 v-if="resolvedShowCancelButton"
                 type="button"
                 class="scq-modal__action scq-modal__action--cancel"
+                :disabled="isClosing || cancelLoading"
+                :aria-busy="cancelLoading || undefined"
                 @click="handleCancel"
               >
-                {{ cancelButtonText }}
+                {{ cancelButtonText ?? text('cancel') }}
               </button>
               <button
                 v-if="resolvedShowConfirmButton"
                 type="button"
                 class="scq-modal__action scq-modal__action--confirm"
                 :class="`is-${resolvedConfirmButtonType}`"
-                :disabled="confirmLoading"
-                :aria-busy="confirmLoading ? 'true' : 'false'"
+                :disabled="confirmLoading || cancelLoading || isClosing"
+                :aria-busy="confirmLoading || isClosing ? 'true' : 'false'"
                 @click="handleConfirm"
               >
-                {{ confirmButtonText }}
+                {{ confirmButtonText ?? text('confirm') }}
               </button>
             </slot>
           </footer>
@@ -86,7 +92,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, useSlots, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
+import { useLocale, useThemeStyle } from '../ConfigProvider/context'
+import { useAsyncGuard, type AsyncGuard } from '../../utils/async'
+import { toCssLength } from '../../utils/layout'
+import { useContentFocus } from '../../utils/focus'
+import { getPointerOrigin, MODAL_DEFAULTS, resolveOrigin, retainPointerOrigin, useModal as useModalLayer, type InitialFocus, type OriginPoint, type OverlayOrigin } from '../../utils/modal'
 
 defineOptions({
   name: 'Modal',
@@ -94,71 +105,17 @@ defineOptions({
 
 export type ModalType = 'info' | 'confirm'
 export type ModalCloseReason = 'cancel' | 'confirm' | 'close-icon' | 'mask' | 'esc' | 'api'
-type BeforeCloseHandler = (reason: ModalCloseReason) => boolean | void | Promise<boolean | void>
-type ModalOriginPoint = { x: number; y: number }
-type ModalOrigin = ModalOriginPoint | MouseEvent | HTMLElement | null
+type BeforeCloseHandler = AsyncGuard<ModalCloseReason>
+type ModalOriginPoint = OriginPoint
+type ModalOrigin = OverlayOrigin
 type ModalButtonType = 'default' | 'primary' | 'success' | 'warning' | 'info' | 'danger'
 
 const slots = useSlots()
+const text = useLocale()
+const themeStyle = useThemeStyle()
+const modalThemeTokens = ['surface', 'text', 'muted', 'fill', 'border', 'primary', 'success', 'warning', 'danger', 'radius'] as const
 
-let pointerTrackerBound = false
-let lastPointerOrigin: (ModalOriginPoint & { time: number }) | null = null
-
-const bindPointerTracker = () => {
-  if (pointerTrackerBound || typeof window === 'undefined') {
-    return
-  }
-
-  const updatePointerOrigin = (event: PointerEvent) => {
-    const target = event.target as HTMLElement | null
-    if (target && typeof target.getBoundingClientRect === 'function') {
-      const rect = target.getBoundingClientRect()
-      lastPointerOrigin = {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2,
-        time: Date.now(),
-      }
-      return
-    }
-
-    lastPointerOrigin = {
-      x: event.clientX,
-      y: event.clientY,
-      time: Date.now(),
-    }
-  }
-
-  window.addEventListener('pointerdown', updatePointerOrigin, true)
-  pointerTrackerBound = true
-}
-
-const normalizeOrigin = (origin: ModalOrigin | undefined): ModalOriginPoint | null => {
-  if (!origin) {
-    return null
-  }
-
-  if (typeof MouseEvent !== 'undefined' && origin instanceof MouseEvent) {
-    return { x: origin.clientX, y: origin.clientY }
-  }
-
-  if (typeof HTMLElement !== 'undefined' && origin instanceof HTMLElement) {
-    const rect = origin.getBoundingClientRect()
-    return {
-      x: rect.left + rect.width / 2,
-      y: rect.top + rect.height / 2,
-    }
-  }
-
-  const maybePoint = origin as ModalOriginPoint
-  if (typeof maybePoint.x === 'number' && typeof maybePoint.y === 'number') {
-    return {
-      x: maybePoint.x,
-      y: maybePoint.y,
-    }
-  }
-
-  return null
-}
+let releasePointer: (() => void) | undefined
 
 const props = withDefaults(
   defineProps<{
@@ -176,6 +133,7 @@ const props = withDefaults(
     confirmButtonText?: string
     confirmButtonType?: ModalButtonType
     confirmLoading?: boolean
+    cancelLoading?: boolean
     closeOnClickModal?: boolean
     closeOnPressEscape?: boolean
     openFromTrigger?: boolean
@@ -184,22 +142,23 @@ const props = withDefaults(
     beforeClose?: BeforeCloseHandler
     autoCloseOnCancel?: boolean
     autoCloseOnConfirm?: boolean
+    lockScroll?: boolean
+    destroyOnClose?: boolean
+    initialFocus?: InitialFocus
   }>(),
   {
     modelValue: false,
     title: '',
     type: 'info',
     width: 270,
-    zIndex: 2100,
     fullscreen: false,
     showClose: false,
     showFooter: true,
     showCancelButton: false,
     showConfirmButton: true,
-    cancelButtonText: '取消',
-    confirmButtonText: '确定',
     confirmButtonType: undefined,
     confirmLoading: false,
+    cancelLoading: false,
     closeOnClickModal: true,
     closeOnPressEscape: true,
     openFromTrigger: false,
@@ -208,6 +167,9 @@ const props = withDefaults(
     beforeClose: undefined,
     autoCloseOnCancel: true,
     autoCloseOnConfirm: true,
+    lockScroll: true,
+    destroyOnClose: true,
+    initialFocus: undefined,
   },
 )
 
@@ -217,12 +179,22 @@ const emit = defineEmits<{
   (e: 'opened'): void
   (e: 'close', reason: ModalCloseReason): void
   (e: 'closed'): void
+  (e: 'error', error: unknown, reason: ModalCloseReason): void
   (e: 'cancel'): void
   (e: 'confirm'): void
 }>()
 
 const visible = ref(Boolean(props.modelValue))
-const isClosing = ref(false)
+const rendered = ref(visible.value)
+const panel = ref<HTMLElement>()
+const closeGuard = useAsyncGuard(() => props.beforeClose, (error, reason) => emit('error', error, reason))
+const isClosing = closeGuard.pending
+useContentFocus(() => panel.value, () => isClosing.value, () => panel.value)
+const { zIndex: layerZIndex } = useModalLayer(() => visible.value, panel, {
+  closeOnPressEscape: () => props.closeOnPressEscape, lockScroll: () => props.lockScroll,
+  onEscape: () => { void closeModal('esc') }, zIndex: () => props.zIndex,
+  defaultZIndex: MODAL_DEFAULTS.legacyZIndex, initialFocus: () => props.initialFocus,
+})
 const originPoint = ref<ModalOriginPoint | null>(null)
 
 const resolvedShowCancelButton = computed(() => {
@@ -274,7 +246,9 @@ const resolvedConfirmButtonType = computed<ModalButtonType>(() => {
 
 const overlayStyle = computed(() => {
   return {
-    zIndex: String(props.zIndex),
+    ...themeStyle.value,
+    ...Object.fromEntries(modalThemeTokens.map((key) => [`--scq-modal-${key}`, themeStyle.value[`--scq-${key}`]])),
+    zIndex: String(layerZIndex.value),
   }
 })
 
@@ -301,7 +275,7 @@ const modalStyle = computed(() => {
     return originStyle
   }
 
-  const normalizedWidth = typeof props.width === 'number' ? `${props.width}px` : props.width
+  const normalizedWidth = toCssLength(props.width)
   return {
     ...originStyle,
     '--scq-modal-width': normalizedWidth,
@@ -309,17 +283,15 @@ const modalStyle = computed(() => {
 })
 
 const updateOriginPoint = () => {
-  const explicitOrigin = normalizeOrigin(props.origin)
+  const explicitOrigin = resolveOrigin(props.origin)
   if (explicitOrigin) {
     originPoint.value = explicitOrigin
     return
   }
 
-  if (props.openFromTrigger && lastPointerOrigin && Date.now() - lastPointerOrigin.time < 1800) {
-    originPoint.value = {
-      x: lastPointerOrigin.x,
-      y: lastPointerOrigin.y,
-    }
+  const pointer = props.openFromTrigger ? getPointerOrigin(typeof document === 'undefined' ? undefined : document) : null
+  if (pointer) {
+    originPoint.value = pointer
     return
   }
 
@@ -332,39 +304,20 @@ const updateOriginPoint = () => {
 }
 
 const openModal = () => {
+  rendered.value = true
   if (!visible.value) {
     visible.value = true
     emit('open')
   }
 }
 
-const shouldClose = async (reason: ModalCloseReason): Promise<boolean> => {
-  if (typeof props.beforeClose !== 'function') {
-    return true
-  }
-
-  const result = await props.beforeClose(reason)
-  return result !== false
-}
-
-const closeModal = async (reason: ModalCloseReason) => {
-  if (!visible.value || isClosing.value) {
-    return
-  }
-
-  isClosing.value = true
-  try {
-    const allowClose = await shouldClose(reason)
-    if (!allowClose) {
-      return
-    }
-
+const closeModal = (reason: ModalCloseReason) => {
+  if (!visible.value) return Promise.resolve(false)
+  return closeGuard.run(reason, () => {
     visible.value = false
     emit('update:modelValue', false)
     emit('close', reason)
-  } finally {
-    isClosing.value = false
-  }
+  })
 }
 
 const handleOverlayClick = () => {
@@ -378,6 +331,7 @@ const handleCloseIcon = () => {
 }
 
 const handleCancel = () => {
+  if (!visible.value || isClosing.value || props.cancelLoading) return
   emit('cancel')
   if (props.autoCloseOnCancel) {
     void closeModal('cancel')
@@ -385,26 +339,17 @@ const handleCancel = () => {
 }
 
 const handleConfirm = () => {
+  if (!visible.value || isClosing.value || props.confirmLoading || props.cancelLoading) return
   emit('confirm')
   if (props.autoCloseOnConfirm) {
     void closeModal('confirm')
   }
 }
 
-const handleEsc = (event: KeyboardEvent) => {
-  if (event.key !== 'Escape') {
-    return
-  }
-  if (!visible.value || !props.closeOnPressEscape) {
-    return
-  }
-
-  void closeModal('esc')
-}
-
 watch(
   () => props.modelValue,
   (next: boolean) => {
+    closeGuard.cancel()
     if (next) {
       updateOriginPoint()
       openModal()
@@ -418,19 +363,13 @@ watch(
 )
 
 onMounted(() => {
-  bindPointerTracker()
+  releasePointer = retainPointerOrigin(document)
   updateOriginPoint()
   if (visible.value) {
     emit('open')
   }
-  if (typeof window !== 'undefined') {
-    window.addEventListener('keydown', handleEsc)
-  }
 })
 
-onUnmounted(() => {
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('keydown', handleEsc)
-  }
-})
+onBeforeUnmount(() => releasePointer?.())
+defineExpose({ close: () => closeModal('api'), pending: isClosing })
 </script>

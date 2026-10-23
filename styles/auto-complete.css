@@ -1,6 +1,7 @@
 @import './field.css';
 @import './icon.css';
 @import './popover.css';
+@import './virtual-list.css';
 .scq-auto-complete { display: inline-block; width: 280px; max-width: 100%; vertical-align: middle; }
 .scq-auto-complete > .scq-floating-reference { display: block; }
 .scq-auto-complete__options { list-style: none; margin: -6px; padding: 4px; max-height: 260px; overflow-y: auto; overscroll-behavior: contain; color: var(--scq-text, #0f172a); }
@@ -11,3 +12,11 @@
 .scq-auto-complete__status { padding: 16px; text-align: center; color: var(--scq-muted, #64748b); font-size: 14px; }
 .scq-auto-complete__status button { border: 0; padding: 6px 12px; font: inherit; font-weight: 500; background: var(--scq-color-primary-soft-bg, #eff6ff); border-radius: var(--scq-radius-sm, 6px); color: var(--scq-primary, #2563eb); cursor: pointer; transition: all 0.15s ease; }
 .scq-auto-complete__status button:hover { background: var(--scq-primary, #2563eb); color: #ffffff; }
+.scq-auto-complete__options.is-virtual { max-height: none; overflow: visible; }
+.scq-auto-complete__options.is-virtual .scq-auto-complete__option { height: 100%; min-height: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.scq-auto-complete__group { display: flex; align-items: center; height: 100%; box-sizing: border-box; padding: 8px 12px; color: var(--scq-muted, #64748b); font-size: 12px; font-weight: 600; }
+.scq-auto-complete__match { color: var(--scq-primary, #2563eb); background: var(--scq-color-primary-soft-bg, #eff6ff); font-weight: 600; }
+.scq-auto-complete__pager { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; font-size: 12px; color: var(--scq-muted, #64748b); }
+.scq-auto-complete__pager button { padding: 4px 8px; border: 1px solid var(--scq-border, #e2e8f0); border-radius: var(--scq-radius-sm, 6px); background: var(--scq-surface, #ffffff); color: var(--scq-text, #0f172a); font: inherit; cursor: pointer; }
+.scq-auto-complete__pager button:disabled { opacity: .45; cursor: not-allowed; }
+.scq-auto-complete__pager button:focus-visible { outline: 2px solid var(--scq-primary, #2563eb); outline-offset: 2px; }

@@ -2,9 +2,7 @@
   <section class="doc-block">
     <h1>{{ t('watermark.title') }}</h1>
     <p class="lead">{{ t('watermark.lead') }}</p>
-
-    <h2>{{ t('watermark.basic') }}</h2>
-    <DocExample :code="basicCode" lang="vue">
+    <OnDemandExample :code="basicCode">
       <scq-watermark content="SCQ VUE" color="rgba(15, 23, 42, 0.24)">
         <div class="watermark-demo">
           <h3>Watermark Demo</h3>
@@ -15,7 +13,7 @@
           </div>
         </div>
       </scq-watermark>
-    </DocExample>
+    </OnDemandExample>
 
     <h2>{{ t('watermark.custom') }}</h2>
     <DocExample :code="customCode" lang="vue">
@@ -75,12 +73,17 @@
         <tr><td>fullscreen</td><td>{{ t('watermark.fullscreen.desc') }}</td><td>boolean</td><td>false</td></tr>
       </tbody>
     </table>
+    <ComponentDocView slug="watermark" supplement />
   </section>
 </template>
 
 <script setup lang="ts">
+import ScqButton from '../../../src/components/Button'
+import ScqWatermark from '../../../src/components/Watermark'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
+import ComponentDocView from './ComponentDocView.vue'
 import { t } from '../i18n'
 
 const isTopLayerFullscreen = ref(false)

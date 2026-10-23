@@ -1,3 +1,5 @@
+@import './virtual-list.css';
+
 .scq-select {
   position: relative;
   width: 240px;
@@ -28,36 +30,40 @@
 }
 
 .scq-select__control {
+  --scq-select-border-color: var(--scq-border, #dcdfe6);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   min-height: var(--scq-select-height);
-  padding: 4px 12px;
-  border-radius: var(--scq-radius-md, 8px);
-  border: 1px solid var(--scq-border, #e2e8f0);
+  padding: calc(4px + var(--scq-control-border-width, 1px)) calc(12px + var(--scq-control-border-width, 1px));
+  border-radius: var(--scq-control-radius, 4px);
+  border: 0;
   background: var(--scq-surface, #ffffff);
-  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  box-shadow: 0 0 0 var(--scq-control-border-width, 1px) var(--scq-select-border-color) inset;
   box-sizing: border-box;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: box-shadow var(--scq-transition-fast, 0.2s ease), background-color var(--scq-transition-fast, 0.2s ease);
 }
 
-.scq-select__control:hover:not(.is-disabled) {
-  border-color: var(--scq-border-hover, #cbd5e1);
+.scq-select__control:hover {
+  --scq-select-border-color: var(--scq-border-hover, #a8abb2);
 }
 
+.scq-select__control:focus-within,
 .scq-select.is-open .scq-select__control {
-  border-color: var(--scq-primary, #2563eb);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+  --scq-select-border-color: var(--scq-primary, #2563eb);
+  outline: none;
 }
+.scq-select__option.is-active { background: var(--scq-fill-hover, #f1f5f9); outline: 1px solid var(--scq-primary); outline-offset: -1px; }
+.scq-select__list.is-virtual { max-height: none; padding: 0; overflow: hidden; }
+.scq-select__list.is-virtual .scq-select__option { height: 100%; min-height: 0; box-sizing: border-box; }
 
 .scq-select.is-disabled .scq-select__control {
+  --scq-select-border-color: var(--scq-border, #dcdfe6);
   cursor: not-allowed;
   background: var(--scq-fill, #f8fafc);
-  border-color: var(--scq-border, #e2e8f0);
   opacity: 0.65;
-  box-shadow: none;
 }
 
 .scq-select__value {

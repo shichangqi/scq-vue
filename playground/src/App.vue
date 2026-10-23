@@ -1,6 +1,6 @@
 <template>
   <div class="docs-layout">
-    <a class="docs-skip-link" href="#docs-content">{{ label('跳至内容', 'Skip to content') }}</a>
+    <a class="docs-skip-link" :href="`#${route.path}#docs-content`" @click.prevent="skipToContent">{{ label('跳至内容', 'Skip to content') }}</a>
     <header class="docs-header">
       <button class="docs-icon-button docs-menu-toggle" type="button" :aria-label="label('打开导航', 'Open navigation')" :aria-expanded="menuOpen" @click="menuOpen = true"><Icon name="menu" :size="22" /></button>
       <RouterLink class="brand" to="/guide" aria-label="SCQ VUE"><BrandLogo class="brand-mark" /><span class="brand-text"><span class="brand-text__main">SCQ VUE</span><span class="brand-text__sub">Design System</span></span></RouterLink>
@@ -59,6 +59,10 @@ const collectHeadings = () => {
 const jumpTo = (id: string) => {
   void router.replace({ path: route.path, hash: `#${id}` })
   document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
+}
+const skipToContent = () => {
+  jumpTo('docs-content')
+  mainRef.value?.focus({ preventScroll: true })
 }
 watch(() => route.path, () => { menuOpen.value = false; void nextTick(collectHeadings) })
 watch(pageTitle, (title) => { document.title = `${title} | SCQ VUE`; document.documentElement.lang = locale.value; void nextTick(collectHeadings) })

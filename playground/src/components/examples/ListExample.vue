@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from 'vue'
-import { ScqCell, ScqList, ScqNavBar, ScqSwitch } from '../../../../src/index'
+import ScqCell from '../../../../src/components/Cell'
+import ScqList from '../../../../src/components/List'
+import ScqNavBar from '../../../../src/components/NavBar'
+import ScqSwitch from '../../../../src/components/Switch'
 import PhonePreview from '../PhonePreview.vue'
 
 const items = ref(Array.from({ length: 8 }, (_, index) => index + 1))

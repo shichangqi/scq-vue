@@ -2,13 +2,15 @@
   <section class="doc-block">
     <h1>{{ t('modal.title') }}</h1>
     <p class="lead">{{ t('modal.lead') }}</p>
+    <OnDemandExample :code="basicCode">
+      <scq-button type="primary" @click="basicVisible = true">{{ t('modal.openBasic') }}</scq-button>
+      <scq-modal v-model="basicVisible" :title="t('modal.basicTitle')" type="info">
+        <p>{{ t('modal.basicDesc') }}</p>
+      </scq-modal>
+    </OnDemandExample>
 
     <div class="modal-lab">
       <div class="modal-lab__left">
-        <h2>{{ t('modal.sec.template.basic') }}</h2>
-        <p class="modal-lab__desc">{{ t('modal.basicDesc') }}</p>
-        <DocExample :code="basicCode" lang="vue" :default-expanded="true" :collapsible="false" :show-demo="false" />
-
         <h2>{{ t('modal.sec.template.footerSlot') }}</h2>
         <p class="modal-lab__desc">{{ t('modal.slotDesc') }}</p>
         <DocExample :code="slotCode" lang="vue" :default-expanded="true" :collapsible="false" :show-demo="false" />
@@ -31,10 +33,6 @@
                     <div class="phone-demo__sheet-desc">{{ t('modal.phoneDesc') }}</div>
 
                     <div class="phone-demo__examples">
-                      <button type="button" class="phone-demo__example-item" @click="openBasicDemo">
-                        <span>{{ t('modal.sec.template.basic') }}</span>
-                        <span class="phone-demo__example-arrow">›</span>
-                      </button>
                       <button type="button" class="phone-demo__example-item" @click="openSlotDemo">
                         <span>{{ t('modal.sec.template.footerSlot') }}</span>
                         <span class="phone-demo__example-arrow">›</span>
@@ -58,15 +56,6 @@
         </PhonePreview>
       </aside>
     </div>
-
-    <scq-modal
-      v-model="basicVisible"
-      :title="t('modal.basicTitle')"
-      type="info"
-      :teleport="previewTeleport"
-    >
-      <p>{{ t('modal.basicDesc') }}</p>
-    </scq-modal>
 
     <scq-modal
       v-model="slotVisible"
@@ -128,11 +117,15 @@
 </template>
 
 <script setup lang="ts">
+import ScqButton from '../../../src/components/Button'
 import { onMounted, ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
+import OnDemandExample from '../components/OnDemandExample.vue'
 import PhonePreview from '../components/PhonePreview.vue'
 import { t } from '../i18n'
-import { Modal } from 'scq-vue'
+import Modal from '../../../src/components/Modal'
+
+const ScqModal = Modal
 
 const basicVisible = ref(false)
 const slotVisible = ref(false)
@@ -153,7 +146,7 @@ const resolvePreviewTeleport = (): boolean | string => {
 const basicCode = `<template>
   <scq-button type="primary" @click="basicVisible = true">打开基础 Modal</scq-button>
 
-  <scq-modal v-model="basicVisible" title="基础提示" type="info" teleport="#phone-screen">
+  <scq-modal v-model="basicVisible" title="基础提示" type="info">
     <p>默认按移动端系统提示框的方式展示，标题与内容都可以直接通过模板控制。</p>
   </scq-modal>
 </template>
@@ -270,14 +263,9 @@ const openApi = (type: 'info' | 'confirm') => {
   })
 }
 
-const runTemplateDemo = (key: 'basic' | 'slot' | 'confirm') => {
+const runTemplateDemo = (key: 'slot' | 'confirm') => {
   closeAllTemplateModals()
   Modal.destroyAll()
-
-  if (key === 'basic') {
-    basicVisible.value = true
-    return
-  }
 
   if (key === 'slot') {
     slotVisible.value = true
@@ -287,7 +275,6 @@ const runTemplateDemo = (key: 'basic' | 'slot' | 'confirm') => {
   confirmVisible.value = true
 }
 
-const openBasicDemo = () => runTemplateDemo('basic')
 const openSlotDemo = () => runTemplateDemo('slot')
 const openConfirmDemo = () => runTemplateDemo('confirm')
 

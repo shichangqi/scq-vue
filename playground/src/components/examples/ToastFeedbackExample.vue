@@ -23,10 +23,17 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount } from 'vue'
-import { ScqAvatar, ScqCell, ScqCellGroup, ScqIcon, ScqNavBar, Toast, type ToastPosition } from '../../../../src/index'
+import ScqAvatar from '../../../../src/components/Avatar'
+import ScqCell from '../../../../src/components/Cell'
+import ScqCellGroup from '../../../../src/components/CellGroup'
+import ScqIcon from '../../../../src/components/Icon'
+import ScqNavBar from '../../../../src/components/NavBar'
+import Toast from '../../../../src/components/Toast'
+import type { ToastPosition } from '../../../../src/index'
 import PhonePreview from '../PhonePreview.vue'
 
-const previewId = 'toast-feedback-preview'
+const props = withDefaults(defineProps<{ screenId?: string }>(), { screenId: 'toast-feedback-preview' })
+const previewId = props.screenId
 const teleport = `#${previewId}`
 const showText = () => Toast.show({ message: '已加入稍后阅读', teleport })
 const showSuccess = () => Toast.success({ message: '保存成功', teleport })

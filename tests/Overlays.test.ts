@@ -13,7 +13,8 @@ import Popconfirm from '../src/components/Popconfirm/Popconfirm.vue'
 import Notification from '../src/components/Notification/Notification.vue'
 import NotificationApi from '../src/components/Notification'
 import Result from '../src/components/Result/Result.vue'
-import { h } from 'vue'
+import { h, nextTick, ref } from 'vue'
+import { shift } from '@floating-ui/dom'
 
 vi.mock('@floating-ui/dom', () => ({
   computePosition: async () => ({ x: 12, y: 20, strategy: 'fixed' }),
@@ -26,7 +27,265 @@ vi.mock('@floating-ui/dom', () => ({
 const wrappers: VueWrapper[] = []
 afterEach(() => { NotificationApi.destroyAll(); wrappers.splice(0).forEach((wrapper) => wrapper.unmount()); vi.useRealTimers(); vi.restoreAllMocks() })
 
+describe('Popover reference lifecycle', () => {
+  it('opens text-only references with Enter/Space and restores the wrapper from panel Escape', async () => {
+    const wrapper = mount(Popover, { attachTo: document.body, props: { teleport: false }, slots: { reference: 'Open', default: '<input />' } })
+    wrappers.push(wrapper)
+    const reference = wrapper.get<HTMLElement>('.scq-floating-reference')
+    reference.element.focus()
+    await reference.trigger('keydown', { key: 'Enter', ctrlKey: true })
+    expect(wrapper.find('.scq-floating-panel').exists()).toBe(false)
+    await reference.trigger('keydown', { key: 'Enter' })
+    await flushPromises()
+    wrapper.get<HTMLInputElement>('input').element.focus()
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await flushPromises()
+    expect(document.activeElement).toBe(reference.element)
+    await reference.trigger('keydown', { key: ' ' })
+    expect(wrapper.find('.scq-floating-panel').exists()).toBe(true)
+  })
+
+  describe('Tooltip hover and description lifecycle', () => {
+    it('stays open while either focus or hover remains and closes after both leave', async () => {
+      vi.useFakeTimers()
+      const wrapper = mount(Tooltip, { attachTo: document.body, props: { teleport: false, showDelay: 0, hideDelay: 100 }, slots: { default: '<button>Help</button>' } })
+      wrappers.push(wrapper)
+      const button = wrapper.get<HTMLButtonElement>('button')
+      button.element.focus()
+      await flushPromises()
+      await wrapper.trigger('mouseenter')
+      await wrapper.trigger('mouseleave')
+      await vi.advanceTimersByTimeAsync(100)
+      expect(wrapper.find('[role="tooltip"]').exists()).toBe(true)
+      await wrapper.trigger('mouseenter')
+      button.element.blur()
+      await nextTick()
+      expect(wrapper.find('[role="tooltip"]').exists()).toBe(true)
+      await wrapper.trigger('mouseleave')
+      await vi.advanceTimersByTimeAsync(100)
+      expect(wrapper.find('[role="tooltip"]').exists()).toBe(false)
+    })
+
+    it('moves owned description IDs to replacement triggers and preserves external edits', async () => {
+      const key = ref(0)
+      const wrapper = mount(Tooltip, { attachTo: document.body, props: { modelValue: true, teleport: false }, slots: {
+        default: () => h('button', { key: key.value, 'aria-describedby': 'original' }, 'Help'),
+      } })
+      wrappers.push(wrapper)
+      await flushPromises()
+      const original = wrapper.get('button').element
+      const id = wrapper.get('[role="tooltip"]').attributes('id')
+      key.value++
+      await nextTick()
+      expect(original.getAttribute('aria-describedby')).toBe('original')
+      const current = wrapper.get('button').element
+      expect(current.getAttribute('aria-describedby')).toBe(`original ${id}`)
+      current.setAttribute('aria-describedby', `original ${id} added`)
+      await wrapper.setProps({ modelValue: false })
+      expect(current.getAttribute('aria-describedby')).toBe('original added')
+    })
+  })
+
+  it('updates fallback tab stops when reference content changes without counting panel controls', async () => {
+    const button = ref(true)
+    const wrapper = mount(Popover, { props: { teleport: false }, slots: { reference: () => button.value ? h('button', 'Open') : 'Open', default: '<button>Inside</button>' } })
+    wrappers.push(wrapper)
+    await nextTick()
+    expect(wrapper.attributes('tabindex')).toBeUndefined()
+    button.value = false
+    await nextTick()
+    await nextTick()
+    expect(wrapper.attributes('tabindex')).toBe('0')
+    await wrapper.trigger('keydown', { key: 'Enter' })
+    await flushPromises()
+    expect(wrapper.attributes('tabindex')).toBe('0')
+  })
+
+  it('cancels delayed opens on trigger changes and does not reopen uncontrolled content after disabling', async () => {
+    vi.useFakeTimers()
+    const wrapper = mount(Popover, { props: { trigger: 'hover', teleport: false, showDelay: 100 }, slots: { reference: 'Open' } })
+    wrappers.push(wrapper)
+    await wrapper.trigger('mouseenter')
+    await wrapper.setProps({ trigger: 'click' })
+    await vi.advanceTimersByTimeAsync(100)
+    expect(wrapper.find('.scq-floating-panel').exists()).toBe(false)
+    await wrapper.trigger('click')
+    expect(wrapper.find('.scq-floating-panel').exists()).toBe(true)
+    await wrapper.setProps({ disabled: true })
+    await wrapper.setProps({ disabled: false })
+    expect(wrapper.find('.scq-floating-panel').exists()).toBe(false)
+  })
+})
+
+describe('Result', () => {
+  it.each([
+    ['success', 'Success'], ['warning', 'Review required'], ['error', 'Operation failed'], ['info', 'Pending'],
+    ['403', 'Access denied'], ['404', 'Not found'], ['500', 'Service unavailable'],
+  ] as const)('renders the localized %s preset and preserves action content', (status, title) => {
+    const wrapper = mount(ConfigProvider, { props: { locale: 'en-US' }, slots: {
+      default: () => h(Result, { status, preset: true }, { extra: () => h('button', { type: 'button' }, 'Continue') }),
+    } })
+    wrappers.push(wrapper)
+    expect(wrapper.get('h2').text()).toBe(title)
+    expect(wrapper.get('.scq-result__subtitle').text()).not.toBe('')
+    expect(wrapper.get('.scq-result__extra button').text()).toBe('Continue')
+    if (['403', '404', '500'].includes(status)) expect(wrapper.get('.scq-result__code').text()).toBe(status)
+    else expect(wrapper.find('.scq-result__code').exists()).toBe(false)
+  })
+
+  it.each(['constructor', 'unknown'])('reports unsupported result states instead of malformed preset text: %s', status => {
+    expect(() => mount(Result, { attrs: { status }, props: { preset: true } })).toThrow('Unknown Result status')
+    expect(() => mount(Result, { attrs: { status } })).toThrow('Unknown Result status')
+  })
+})
+
 describe('Extended feedback', () => {
+  it('restores ActionSheet focus after a veto and after deleting a focused action', async () => {
+    let finish!: (value: boolean) => void
+    const actions = [{ name: 'Save', value: 'save' }] as const
+    const wrapper = mount(ActionSheet, { attachTo: document.body, props: {
+      actions, modelValue: true, teleport: false, beforeSelect: () => new Promise<boolean>(resolve => { finish = resolve }),
+    } })
+    wrappers.push(wrapper)
+    await flushPromises()
+    const action = wrapper.get<HTMLButtonElement>('.scq-action-sheet__action')
+    action.element.focus()
+    await action.trigger('click')
+    document.body.setAttribute('tabindex', '-1')
+    document.body.focus()
+    finish(false)
+    await flushPromises()
+    expect(document.activeElement).toBe(action.element)
+    await wrapper.setProps({ actions: [] })
+    expect(wrapper.get('.scq-drawer').element.contains(document.activeElement)).toBe(true)
+    expect(wrapper.emitted('select')).toBeUndefined()
+    document.body.removeAttribute('tabindex')
+  })
+
+  it.each([Infinity, NaN])('reports non-finite ActionSheet columns: %s', columns => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(() => mount(ActionSheet, { props: { columns } })).toThrow('columns must be finite')
+  })
+
+  it('cancels replaced Popconfirm guards and restores focus after a veto', async () => {
+    let finish!: (value: boolean) => void
+    let signal!: AbortSignal
+    const beforeConfirm = (current: AbortSignal) => { signal = current; return new Promise<boolean>(resolve => { finish = resolve }) }
+    const wrapper = mount(Popconfirm, { attachTo: document.body, props: { modelValue: true, teleport: false, beforeConfirm }, slots: { default: '<button>Open</button>' } })
+    wrappers.push(wrapper)
+    await flushPromises()
+    const confirm = wrapper.get<HTMLButtonElement>('.scq-popconfirm__confirm')
+    confirm.element.focus()
+    await confirm.trigger('click')
+    await wrapper.setProps({ beforeConfirm: () => false })
+    expect(signal.aborted).toBe(true)
+    finish(true)
+    await flushPromises()
+    expect(wrapper.emitted('confirm')).toBeUndefined()
+    await confirm.trigger('click')
+    document.body.setAttribute('tabindex', '-1')
+    document.body.focus()
+    await flushPromises()
+    expect(document.activeElement).toBe(confirm.element)
+    expect(confirm.element.disabled).toBe(false)
+    document.body.removeAttribute('tabindex')
+  })
+
+  it('logs an unhandled Popconfirm error while preserving the retry UI', async () => {
+    const error = new Error('Failed confirmation')
+    const log = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const wrapper = mount(Popconfirm, { props: { modelValue: true, teleport: false, beforeConfirm: () => { throw error } } })
+    wrappers.push(wrapper)
+    await flushPromises()
+    await wrapper.get('.scq-popconfirm__confirm').trigger('click')
+    await flushPromises()
+    expect(wrapper.emitted('error')).toEqual([[error]])
+    expect(log).toHaveBeenCalledWith('[scq-vue] Async guard failed', error)
+    expect(wrapper.find('[role="alert"]').exists()).toBe(true)
+  })
+
+  it('guards action-sheet selections, keeps failures retryable and cancels external closes', async () => {
+    let done!: (value: boolean) => void
+    let signal!: AbortSignal
+    const actions = [{ name: 'Save', value: 'save', group: 'Files' }]
+    const beforeSelect = vi.fn((_action, _index, value: AbortSignal) => { signal = value; return new Promise<boolean>(resolve => { done = resolve }) })
+    const wrapper = mount(ActionSheet, { props: { modelValue: true, teleport: false, actions, beforeSelect, columns: 2 }, attachTo: document.body })
+    wrappers.push(wrapper)
+    await flushPromises()
+    expect(wrapper.get('.scq-action-sheet__group').text()).toBe('Files')
+    await wrapper.get('.scq-action-sheet__action').trigger('click')
+    await wrapper.get('.scq-action-sheet__action').trigger('click')
+    expect(beforeSelect).toHaveBeenCalledTimes(1)
+    done(false)
+    await flushPromises()
+    expect(wrapper.emitted('select')).toBeUndefined()
+    await wrapper.get('.scq-action-sheet__action').trigger('click')
+    await wrapper.setProps({ modelValue: false })
+    expect(signal.aborted).toBe(true)
+    done(true)
+    await flushPromises()
+    expect(wrapper.emitted('select')).toBeUndefined()
+    await wrapper.setProps({ modelValue: true, beforeSelect: () => { throw new Error('Private') }, onError: () => {} })
+    await flushPromises()
+    await wrapper.get('.scq-action-sheet__action').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('[role="alert"]').exists()).toBe(true)
+    expect(wrapper.text()).not.toContain('Private')
+    await wrapper.setProps({ beforeSelect: () => true })
+    await wrapper.get('.scq-action-sheet__action').trigger('click')
+    await flushPromises()
+    expect(wrapper.emitted('select')).toEqual([[actions[0], 0]])
+  })
+  it('only enables result presets explicitly and preserves explicit empty text across locales', async () => {
+    const wrapper = mount(Result)
+    wrappers.push(wrapper)
+    expect(wrapper.find('h2').exists()).toBe(false)
+    await wrapper.setProps({ preset: true, status: '404', size: 'small' })
+    expect(wrapper.find('h2').exists()).toBe(true)
+    expect(wrapper.classes()).toContain('scq-result--small')
+    await wrapper.setProps({ title: '', subtitle: 'Custom' })
+    expect(wrapper.find('h2').exists()).toBe(false)
+    expect(wrapper.get('p').text()).toBe('Custom')
+    const provider = mount(ConfigProvider, { props: { locale: 'en-US' }, slots: { default: () => h(Result, { status: '403', preset: true }) } })
+    wrappers.push(provider)
+    expect(provider.get('h2').text()).toBe('Access denied')
+    await provider.setProps({ locale: 'zh-CN' })
+    expect(provider.get('h2').text()).not.toBe('Access denied')
+  })
+  it.each([true, false])('applies pending cancellation policy to passive exits (allow=%s)', async (allowCancelWhilePending) => {
+    let done!: () => void
+    let signal!: AbortSignal
+    const wrapper = mount(Popconfirm, { attachTo: document.body, props: { modelValue: true, teleport: false, allowCancelWhilePending, beforeConfirm: (value) => { signal = value; return new Promise<void>(resolve => { done = resolve }) } }, slots: { default: '<button>Open</button>' } })
+    wrappers.push(wrapper)
+    await flushPromises()
+    await wrapper.get('.scq-popconfirm__confirm').trigger('click')
+    document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
+    await flushPromises()
+    expect(signal.aborted).toBe(allowCancelWhilePending)
+    if (!allowCancelWhilePending) expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+    await wrapper.setProps({ modelValue: false })
+    expect(signal.aborted).toBe(true)
+    done()
+    await flushPromises()
+    expect(wrapper.emitted('confirm')).toBeUndefined()
+  })
+
+  it('keeps confirmation failures visible without exposing raw errors and supports retry', async () => {
+    const error = new Error('Private response')
+    const wrapper = mount(Popconfirm, { props: { teleport: false, danger: true, errorText: 'Try again', beforeConfirm: () => { throw error } }, slots: { default: '<button>Open</button>' } })
+    wrappers.push(wrapper)
+    await wrapper.get('button').trigger('click')
+    await wrapper.get('.scq-popconfirm__confirm').trigger('click')
+    await flushPromises()
+    expect(wrapper.get('[role="alert"]').text()).toBe('Try again')
+    expect(wrapper.text()).not.toContain('Private response')
+    expect(wrapper.emitted('error')).toEqual([[error]])
+    await wrapper.setProps({ beforeConfirm: () => true })
+    await wrapper.get('.scq-popconfirm__confirm').trigger('click')
+    await flushPromises()
+    expect(wrapper.emitted('confirm')).toHaveLength(1)
+  })
   it('keeps notification timers paused while either hover or focus remains', async () => {
     vi.useFakeTimers()
     const wrapper = mount(Notification, { props: { modelValue: true, duration: 500, teleport: false } })
@@ -152,6 +411,17 @@ describe('Extended feedback', () => {
 })
 
 describe('Anchored overlays', () => {
+  it('only shifts across the placement axis when explicitly enabled', async () => {
+    const wrapper = mount(Popover, { props: { teleport: false }, slots: { reference: '<button>Open</button>', default: 'Content' } })
+    wrappers.push(wrapper)
+    await wrapper.get('button').trigger('click')
+    await flushPromises()
+    expect(vi.mocked(shift)).toHaveBeenLastCalledWith(expect.objectContaining({ crossAxis: false }))
+    await wrapper.setProps({ shiftCrossAxis: true })
+    await flushPromises()
+    expect(vi.mocked(shift)).toHaveBeenLastCalledWith(expect.objectContaining({ crossAxis: true }))
+  })
+
   it('opens tooltips on focus and restores existing descriptions', async () => {
     const wrapper = mount(Tooltip, { props: { content: 'Details', teleport: false }, slots: { default: '<button aria-describedby="original">Help</button>' }, attachTo: document.body })
     wrappers.push(wrapper)

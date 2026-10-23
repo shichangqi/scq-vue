@@ -1,5 +1,5 @@
 <template>
-  <div class="scq-config-provider" :class="{ 'scq-theme-dark': theme === 'dark' }" :style="tokenStyle"><slot /></div>
+  <div class="scq-config-provider" :class="{ 'scq-theme-dark': resolved.theme === 'dark' }" :style="tokenStyle"><slot /></div>
 </template>
 
 <script setup lang="ts">
@@ -20,7 +20,7 @@ const resolved = computed(() => ({
   locale: props.locale ?? parent.value.locale,
   disabled: props.disabled ?? parent.value.disabled,
   theme: props.theme ?? parent.value.theme,
-  tokens: { ...parent.value.tokens, ...props.tokens },
+  tokens: { ...parent.value.tokens, ...Object.fromEntries(Object.entries(props.tokens ?? {}).filter(([, value]) => value !== undefined)) },
 }))
 provide(configKey, resolved)
 const tokenStyle = computed(() => getThemeStyle(resolved.value))

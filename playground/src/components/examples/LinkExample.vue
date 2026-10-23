@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ScqLink } from '../../../../src/index'
+import ScqLink from '../../../../src/components/Link'
 
 const synced = ref(false)
 </script>

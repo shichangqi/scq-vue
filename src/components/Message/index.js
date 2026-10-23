@@ -12,3 +12,4 @@ messageWithApi.install = (app) => {
 }
 
 export default messageWithApi
+export { useMessage } from './message-method'
