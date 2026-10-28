@@ -133,23 +133,12 @@
     <DocExample :code="actionsCode" lang="vue">
       <div class="demo-grid">
         <scq-chat-message
-          message="这个示例使用 actions 插槽放置复制、重试、反馈等消息操作。"
+          message="交付内容已整理完成。"
           role="ai"
           name="SCQ Assistant"
           :show-time="false"
-        >
-          <template #actions>
-            <button type="button" class="scq-chat-message__action" aria-label="复制" title="复制">
-              <scq-icon name="copy" :size="14" />
-            </button>
-            <button type="button" class="scq-chat-message__action" aria-label="重新生成" title="重新生成">
-              <scq-icon name="refresh" :size="14" />
-            </button>
-            <button type="button" class="scq-chat-message__action" aria-label="有帮助" title="有帮助">
-              <scq-icon name="thumbs-up" :size="14" />
-            </button>
-          </template>
-        </scq-chat-message>
+          :actions="['copy', 'like', 'dislike']"
+        />
       </div>
     </DocExample>
 
@@ -326,7 +315,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>message</td><td>{{ t('chat.message.desc') }}</td><td>unknown</td><td>-</td></tr>
+            <tr><td>message</td><td>{{ t('chat.message.desc') }}</td><td>unknown</td><td>''</td></tr>
             <tr><td>role</td><td>{{ t('chat.role.desc') }}</td><td>ai | user</td><td>ai</td></tr>
             <tr><td>contentType</td><td>{{ t('chat.contentType.desc') }}</td><td>auto | text | markdown | json | image | video</td><td>auto</td></tr>
             <tr><td>markdownBreaks</td><td>{{ t('chat.markdownBreaks.desc') }}</td><td>boolean</td><td>true</td></tr>
@@ -386,7 +375,6 @@
 
 <script setup lang="ts">
 import ScqChatMessage from '../../../src/components/ChatMessage'
-import ScqIcon from '../../../src/components/Icon'
 import Message from '../../../src/components/Message'
 import { ref } from 'vue'
 import DocExample from '../components/DocExample.vue'
@@ -484,23 +472,12 @@ const formatTime = (value: string | number | Date | null | undefined): string =>
 
 const actionsCode = `<template>
   <scq-chat-message
-    message="这个示例使用 actions 插槽放置复制、重试、反馈等消息操作。"
+    message="交付内容已整理完成。"
     role="ai"
     name="SCQ Assistant"
     :show-time="false"
-  >
-    <template #actions>
-      <button type="button" class="scq-chat-message__action" aria-label="复制" title="复制">
-        <scq-icon name="copy" :size="14" />
-      </button>
-      <button type="button" class="scq-chat-message__action" aria-label="重新生成" title="重新生成">
-        <scq-icon name="refresh" :size="14" />
-      </button>
-      <button type="button" class="scq-chat-message__action" aria-label="有帮助" title="有帮助">
-        <scq-icon name="thumbs-up" :size="14" />
-      </button>
-    </template>
-  </scq-chat-message>
+    :actions="['copy', 'like', 'dislike']"
+  />
 </template>`
 
 const choiceCode = `<template>

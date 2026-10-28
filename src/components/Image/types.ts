@@ -16,6 +16,8 @@ export interface ImageProps {
   crossorigin?: '' | 'anonymous' | 'use-credentials'
   referrerpolicy?: ReferrerPolicy
   preview?: boolean
+  previewLabel?: string
+  previewCloseLabel?: string
   previewVisible?: boolean
   previewSrcList?: string[]
   previewIndex?: number

@@ -53,7 +53,7 @@ const renderProps = {
   Table: { data: [], columns: [] },
   Tabs: { items: [] },
   Tabbar: { items: [] },
-  ChatMessage: { message: 'Package check', showTime: false },
+  ChatMessage: { message: 'Package check', showTime: false, parts: [{ id: 'text', type: 'markdown', content: '**Package check**' }, { id: 'image', type: 'image', content: { src: '/photo.png', alt: 'Preview' } }], sources: [{ title: 'Guide', page: 1 }], attachments: [{ id: 'file', name: 'guide.pdf', status: 'error' }] },
   Message: { modelValue: false },
 }
 
@@ -256,6 +256,13 @@ const consumerSource = [
   "import type { WatermarkProps as IndividualWatermarkProps } from 'scq-vue/components/Watermark'",
   "import type { AvatarProps as IndividualAvatarProps } from 'scq-vue/components/Avatar'",
   "import type { ImageExpose as IndividualImageExpose } from 'scq-vue/components/Image'",
+  "import type { ChatMessagePart, ChatMessageSource, ChatMessageTexts, ChatAttachmentActionHandler } from 'scq-vue'",
+  "import type { ChatMessagePart as IndividualChatPart } from 'scq-vue/components/ChatMessage'",
+  "const chatParts: ChatMessagePart[] = [{ id: 'summary', type: 'markdown', content: '**Summary**' }, { id: 'custom', type: 'custom', data: { confirmed: true }, text: 'Confirmed' }]",
+  'const individualChatParts: IndividualChatPart[] = chatParts',
+  "const chatSources: ChatMessageSource[] = [{ title: 'Guide', url: 'https://example.com', page: 2, excerpt: 'Release process' }]",
+  "const chatTexts: ChatMessageTexts = { sources: 'References', copy: 'Copy code' }",
+  "const attachmentHandler: ChatAttachmentActionHandler = async (payload, signal) => !signal.aborted && payload.action === 'download'",
   "import type { CardProps as IndividualCardProps } from 'scq-vue/components/Card'",
   "const watermarkProps: WatermarkProps = { content: ['Project', 'Member'], image: '/logo.svg', offset: [12, 0], lineHeight: 24, print: false }",
   'const individualWatermarkProps: IndividualWatermarkProps = watermarkProps',
@@ -404,6 +411,7 @@ const isolatedConsumers = {
   FormItem: ['.scq-form-item'],
   RadioGroup: ['.scq-radio-group'],
   ChatChoice: ['.scq-chat-choice', '.my-btn', '.scq-input', '.scq-radio', '.scq-checkbox', '.scq-icon'],
+  ChatMessage: ['.scq-chat-message', '.scq-chat-message__attachment', '.scq-chat-message__sources', '.scq-image', '.scq-image-viewer', '.scq-icon'],
   ActionSheet: ['.scq-action-sheet', '.scq-drawer', '.scq-loading', '.scq-icon'],
   Toast: ['.scq-toast', '.scq-toast-layer', '.scq-icon'],
   Search: ['.scq-search', '.scq-icon'],
@@ -443,6 +451,7 @@ const scopedDependencies = {
   Container: ['Drawer', 'Icon'],
   Input: ['Icon'],
   ChatChoice: ['Button', 'Input', 'Radio', 'RadioGroup', 'Checkbox', 'CheckboxGroup', 'Icon'],
+  ChatMessage: ['Image', 'Icon'],
   ActionSheet: ['Drawer', 'Loading', 'Icon'],
   Toast: ['Icon'],
   Search: ['Icon'],
@@ -472,9 +481,9 @@ for (const [name, selectors] of Object.entries(isolatedConsumers)) {
     const scopeId = scopeIds.get(componentName)
     if (scopeId) assert(bundle.css.includes(`[${scopeId}]`), `${name}: scoped style for ${componentName}`)
   }
-  assert(!bundle.css.includes('.scq-chat-message'), `${name}: unrelated chat styles were bundled`)
+  if (name !== 'ChatMessage') assert(!bundle.css.includes('.scq-chat-message'), `${name}: unrelated chat styles were bundled`)
   assert(!bundle.modules.some((filename) => filename.endsWith('/dist/scq-vue.es.js')), `${name}: full registry was bundled`)
-  assert(!bundle.modules.some((filename) => filename.includes('/dist/components/ChatMessage/')), `${name}: unrelated chat component was bundled`)
+  if (name !== 'ChatMessage') assert(!bundle.modules.some((filename) => filename.includes('/dist/components/ChatMessage/')), `${name}: unrelated chat component was bundled`)
 }
 
 console.log(`Verified ${names.length} components: full and individual imports, declarations, installation and SSR with overlays closed.`)

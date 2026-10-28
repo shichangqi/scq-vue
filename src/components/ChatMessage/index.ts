@@ -15,4 +15,5 @@ _ChatMessage.install = (app: App): void => {
 }
 
 export default _ChatMessage
-export type { ChatAttachment, ChatAttachmentClickPayload, ChatAttachmentStatus, ChatAttachmentType, ChatContentType, ChatMediaMessage, ChatMediaType, ChatMessageSelection, ChatMessageSelectionMode, ChatMessageSelectionOption, ChatMessageSelectionPayload, ChatMessageSelectionStatus, ChatMessageSelectionValue, ChatMessageStatus, ChatRole, ChatStatusTexts, ChatStatusType, ChatVideoPreload } from './ChatMessage.vue'
+export type { ChatAttachmentAction, ChatAttachmentActionHandler, ChatAttachmentActionPayload, ChatAttachmentActionTexts, ChatMessagePart, ChatMessageSource, ChatMessageSourcePayload, ChatMessageTexts } from './ChatMessage.vue'
+export type { ChatAttachment, ChatAttachmentClickPayload, ChatAttachmentStatus, ChatAttachmentType, ChatContentType, ChatGenerationStatus, ChatMediaMessage, ChatMediaType, ChatMessageAction, ChatMessageActionConfig, ChatMessageActionHandler, ChatMessageActionPayload, ChatMessageActionTexts, ChatMessageCopyFormat, ChatMessageFeedback, ChatMessageSelection, ChatMessageSelectionMode, ChatMessageSelectionOption, ChatMessageSelectionPayload, ChatMessageSelectionStatus, ChatMessageSelectionSubmit, ChatMessageSelectionValue, ChatMessageStatus, ChatRole, ChatStatusTexts, ChatStatusType, ChatVideoPreload } from './ChatMessage.vue'
